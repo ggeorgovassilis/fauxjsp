@@ -33,6 +33,7 @@ Constraints and missing features:
 2. Put the JAR in your webapp's WEB-INF/lib
 3. Declare an instance of the JspServlet in web.xml:
 
+```xml
 <servlet>
         <servlet-name>FauxJsp</servlet-name>
         <servlet-class>fauxjsp.servlet.JspServlet</servlet-class>
@@ -42,6 +43,7 @@ Constraints and missing features:
 	<servlet-name>FauxJsp</servlet-name>
 	<url-pattern>*.jsp</url-pattern>
 </servlet-mapping>
+```
 
 ## Roadmap
 
