@@ -49,12 +49,17 @@ Constraints and missing features:
 
 Features to come in the near future:
 
-* jsp:include, jsp:attribute, jsp:var
-* fmt
+* jsp:include, jsp:attribute, jsp:var, import
+* fmt, fn
 * spring mvc taglibs
 
-Science fiction (things I have a rough idea how to implement but need to work out yet):
+Science fiction (things I have a rough idea how to implement but need to work out yet and may never come):
 
 * wrapper for using any third-party taglib
 * jsp debugger
 * scriptlets
+
+## License
+
+Fauxjsp is available under the [GPL](http://www.gnu.org/copyleft/gpl.html). Since fauxjsp is a development tool, you normally wouldn't deploy it with your
+application binaries into production, so the "non-commerical" aspect of the GPL doesn't affect your application.
