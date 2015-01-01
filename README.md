@@ -21,7 +21,7 @@ Currently implemented features:
 Constraints and missing features:
 
 * Cannot use taglibs out of the box. You have to provide your own implementations of taglibs other than core taglibs. This means that c:out will work but
-  you can't use third party taglibs such as displaytag (unless you re-implement it for fauxjsp).
+  you can't use third party taglibs such as [displaytag](http://www.displaytag.org) (unless you re-implement it for fauxjsp).
 * I didn't read up on JSP/JSTL/servlet specifications. This implementation is "steer by sight" (aka "works for me").
 * Features of the core taglibs are still very limited
 * No scriptlets, at all
@@ -57,3 +57,4 @@ Science fiction (things I have a rough idea how to implement but need to work ou
 
 * wrapper for using any third-party taglib
 * jsp debugger
+* scriptlets
