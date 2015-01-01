@@ -1,13 +1,13 @@
 fauxjsp
 =======
 
-JSP implementation with fast page reloads that uses an interpreter rather than a compiler. Documentation will follow :-)
+JSP implementation with fast page reloads that uses an interpreter rather than a compiler. More documentation will follow :-)
 
 ## A JSP implementation for development (not production)
 
 For most of you cool dudes JSP is horribly out of fashion, but I like using it for prototyping and [Tagfiles](http://docs.oracle.com/javaee/1.4/tutorial/doc/JSPTags5.html). Sadly and suprisingly, not many people know about tagfiles which is a well-supported and matured technique for creating reusable web components.
 
-Because Tomcat's JSP implementation Jasper will compile JSP and tagfiles to java source code, then to byte code and then to machine code, starting a JSP-heavy application is slow. Also, when making changes to JSP files, the entire process has to be gone through again, which slow down development. At some point you'll even get unexplainable compile errors, class loading errors, run out of memory and the likes and you'll have to restart Tomcat.
+Because Tomcat's JSP implementation Jasper will compile JSP and tagfiles to java source code, then to byte code and then to machine code, starting a JSP-heavy application is slow. Also, when making changes to JSP files, the entire process has to be gone through again, which slows down development. At some point you'll even get unexplainable compile errors, class loading errors, run out of memory and the likes, you'll know you've had enough and restart Tomcat.
 
 Fauxjsp is a servlet which reads JSP files and interprets them on the fly. This brings the benefit of instant page reloads, fast application start times and robustness (no classloader fiddling!) but, obviously, the generated JSP pages are slower under load than the standard implementation.
 
