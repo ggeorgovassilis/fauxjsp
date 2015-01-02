@@ -1,4 +1,4 @@
-package fauxjsp.impl.simulatedtaglibs;
+package fauxjsp.impl.simulatedtaglibs.core;
 
 import fauxjsp.api.RenderSession;
 import fauxjsp.api.nodes.JspTaglibInvocation;
@@ -13,12 +13,13 @@ import fauxjsp.api.renderer.JspRenderException;
 public class JstlCoreTaglibOut extends TaglibDefinition{
 
 	protected void runOut(RenderSession session, JspTaglibInvocation invocation) {
+		//TODO: make base method for getting evaluated attributes
 		String outExpression = invocation.getArguments().get("value");
 		if (outExpression == null)
 			throw new RuntimeException("Missing value argument");
 		Object value = session.elEvaluation.evaluate(outExpression, session);
 		try {
-			session.response.getOutputStream().write(("" + value).getBytes());
+			session.response.getOutputStream().write(("" + value).getBytes(session.response.getCharacterEncoding()));
 		} catch (Exception e) {
 			throw new JspRenderException(invocation, e);
 		}

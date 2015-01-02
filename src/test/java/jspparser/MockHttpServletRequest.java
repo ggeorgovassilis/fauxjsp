@@ -31,6 +31,7 @@ public class MockHttpServletRequest implements HttpServletRequest{
 	protected Map<String, Object> attributes = new HashMap<String, Object>();
 	protected HttpSession session = new MockHttpSession();
 	protected ServletContext servletContext = new MockServletContext();
+	protected Locale locale = Locale.ENGLISH;
 		
 	@Override
 	public Object getAttribute(String name) {
@@ -140,7 +141,7 @@ public class MockHttpServletRequest implements HttpServletRequest{
 
 	@Override
 	public Locale getLocale() {
-		throw new RuntimeException("Not implemented");
+		return locale;
 	}
 
 	@Override

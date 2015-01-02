@@ -1,4 +1,4 @@
-package fauxjsp.impl.simulatedtaglibs;
+package fauxjsp.impl.simulatedtaglibs.core;
 
 import java.util.ArrayList;
 import java.util.Collection;

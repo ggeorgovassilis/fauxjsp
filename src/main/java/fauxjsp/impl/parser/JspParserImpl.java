@@ -181,7 +181,7 @@ public class JspParserImpl implements JspParser {
 		if (definition == null) {
 			if (path.startsWith("http:")) {
 				parsingError("Unknown taglib "
-						+ path
+						+ fullPath
 						+ ". Either you misspelled the uri or you need to write an emulation for this taglib.");
 			} else {
 				logger.debug(invocation.getName()

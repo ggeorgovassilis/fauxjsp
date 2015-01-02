@@ -16,6 +16,7 @@ public class MockHttpServletResponse implements HttpServletResponse{
 	protected PrintWriter writer;
 	protected ServletOutputStream out;
 	protected ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	protected String characterEncoding = "UTF-8";
 
 	public ByteArrayOutputStream getBaos(){
 		return baos;
@@ -23,7 +24,7 @@ public class MockHttpServletResponse implements HttpServletResponse{
 	
 	@Override
 	public String getCharacterEncoding() {
-		throw new RuntimeException("Not implemented");
+		return characterEncoding;
 	}
 
 	@Override

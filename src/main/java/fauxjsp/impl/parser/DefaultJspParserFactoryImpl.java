@@ -3,12 +3,14 @@ package fauxjsp.impl.parser;
 import fauxjsp.api.parser.JspParser;
 import fauxjsp.api.parser.JspParserFactory;
 import fauxjsp.api.parser.ResourceResolver;
-import fauxjsp.impl.simulatedtaglibs.JspBuiltinTaglibDoBody;
-import fauxjsp.impl.simulatedtaglibs.JstlCoreTaglibChoose;
-import fauxjsp.impl.simulatedtaglibs.JstlCoreTaglibForEach;
-import fauxjsp.impl.simulatedtaglibs.JstlCoreTaglibIf;
-import fauxjsp.impl.simulatedtaglibs.JstlCoreTaglibOut;
-import fauxjsp.impl.simulatedtaglibs.JstlCoreTaglibWhen;
+import fauxjsp.impl.simulatedtaglibs.core.JspBuiltinTaglibDoBody;
+import fauxjsp.impl.simulatedtaglibs.core.JstlCoreTaglibChoose;
+import fauxjsp.impl.simulatedtaglibs.core.JstlCoreTaglibForEach;
+import fauxjsp.impl.simulatedtaglibs.core.JstlCoreTaglibIf;
+import fauxjsp.impl.simulatedtaglibs.core.JstlCoreTaglibOut;
+import fauxjsp.impl.simulatedtaglibs.core.JstlCoreTaglibWhen;
+import fauxjsp.impl.simulatedtaglibs.fmt.JstlFmtMessage;
+import fauxjsp.impl.simulatedtaglibs.fmt.JstlFmtSetBundle;
 
 /**
  * 
@@ -42,6 +44,9 @@ public class DefaultJspParserFactoryImpl implements JspParserFactory {
 				new JspBuiltinTaglibDoBody());
 		parser.registerTaglibDefinition("jsp", "http://java.sun.com/jsp",
 				new JspBuiltinTaglibDoBody());
+		
+		parser.registerTaglibDefinition("http://java.sun.com/jsp/jstl/fmt/message", new JstlFmtMessage());
+		parser.registerTaglibDefinition("http://java.sun.com/jsp/jstl/fmt/setBundle", new JstlFmtSetBundle());
 	}
 
 	public DefaultJspParserFactoryImpl(ResourceResolver location) {

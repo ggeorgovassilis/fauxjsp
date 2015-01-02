@@ -1,4 +1,4 @@
-package fauxjsp.impl.simulatedtaglibs;
+package fauxjsp.impl.simulatedtaglibs.core;
 
 import fauxjsp.api.RenderSession;
 import fauxjsp.api.nodes.JspNode;
