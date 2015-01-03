@@ -39,7 +39,7 @@ public class TestJspParser extends BaseTest{
 
 		JspInstruction j3 = (JspInstruction) page.getChildren().get(2);
 		assertEquals("taglib", j3.getName());
-		assertEquals("az", j3.getArguments().get("prefix"));
+		assertEquals("t", j3.getArguments().get("prefix"));
 		assertEquals("/WEB-INF/tags", j3.getArguments().get("tagdir"));
 
 		JspText j4 = (JspText) page.getChildren().get(3);
@@ -47,7 +47,7 @@ public class TestJspParser extends BaseTest{
 
 		JspTaglibInvocation j5 = (JspTaglibInvocation) page.getChildren()
 				.get(4);
-		assertEquals("az:structure", j5.getName());
+		assertEquals("t:structure", j5.getName());
 
 		assertEquals(3, j5.getChildren().size());
 
@@ -57,7 +57,7 @@ public class TestJspParser extends BaseTest{
 
 		JspTaglibInvocation j5_2 = (JspTaglibInvocation) j5.getChildren()
 				.get(1);
-		assertEquals("az:news", j5_2.getName());
+		assertEquals("t:news", j5_2.getName());
 		assertTrue(j5_2.getChildren().isEmpty());
 		assertEquals("${listOfNews}", j5_2.getArguments().get("listOfNews"));
 
@@ -153,6 +153,29 @@ public class TestJspParser extends BaseTest{
 		renderer.render(page, session);
 		String text = new String(baos.toByteArray());
 		assertEquals("\nNEWS SECTION 1: 012\nNEWS SECTION 2: 12\nNEWS SECTION 3: 0\nVARSTATUS: 1,0,true,false\n2,1,false,false\n3,2,false,true\n", text);
+	}
+
+	//The jsp parser is using regular expressions. It's known that regular expressions can't parse hierarchical syntaxes like HTML (or JSP),
+	//so the implementation has some workarounds for regex limitations. This test verifies that the regex doesn't get fooled by alternating,
+	//nested tags
+	@Test
+	public void testParserMultipleNesting() {
+		JspPage page = parser.parse("WEB-INF/jsp/nesting.jsp");
+		MockHttpServletRequest request = new MockHttpServletRequest();
+		MockHttpServletResponse response = new MockHttpServletResponse();
+		ByteArrayOutputStream baos = response.getBaos();
+		RenderSession session = new RenderSession();
+		session.request = request;
+		session.out = baos;
+		session.renderer = renderer;
+		session.elEvaluation = elEvaluation;
+		session.response = response;
+
+		renderer.render(page, session);
+		String text = new String(baos.toByteArray());
+		assertEquals(
+				"\nlevel0-a-opens\n <a value=\"level1\">\nlevel1-b-opens\n <b value=\"level2\">\nlevel2-a-opens\n <a value=\"level3\">\nlevel3-b-opens\n <b value=\"level4\">\nlevel4-inner\n</b>\nlevel3-b-closed\n</a>\nlevel2-a-closed\n</b>\nlevel1-b-closed\n</a>\nlevel0-a-closed",
+				text);
 	}
 
 }

@@ -25,7 +25,7 @@ Constraints and missing features:
 * I didn't read up on JSP/JSTL/servlet specifications. This implementation is "steer by sight" (aka "works for me").
 * Features of the core taglibs are still very limited
 * No scriptlets, at all
-* You'll need some EL 3.0 implementation (i.e. works with Tomcat 8, not with Tomcat 7)
+* Your servlet container needs to provide some EL 3.0 implementation (i.e. works with Tomcat 8, not with Tomcat 7)
 
 ## Getting started
 
@@ -51,11 +51,13 @@ Constraints and missing features:
 * Java EL 3.0 API
 * JSTL
 * Servlet API
+* commons-lang 2.6
+* log4j 4
 
 ## Extending fauxjsp's functionality and working around bugs
 
 Please consider submit a bug report when you find a bug or require a feature implemented. Now, in real (project) life, 
-you are probably on a tight schedule and don't want to wait for an official fix. Luckily, fauxjsp is modular and easily
+you are probably on a tight schedule and don't want to wait for an official fix. Fauxjsp is modular and easily
 extensible. So have a look at the next chapter about fauxjsp's architecture which will help you understand the various,
 rather simple components, how to modify them and implement new functionality.
 
