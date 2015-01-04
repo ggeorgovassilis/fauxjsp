@@ -1,7 +1,10 @@
 package fauxjsp.impl;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,11 +15,34 @@ import fauxjsp.api.RenderSession;
 
 public class Utils {
 
+	protected static byte[] readContents(InputStream in) throws IOException{
+		if (in == null)
+			return null;
+		byte[] buffer = new byte[1024];
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		int length;
+		while (-1!=(length = in.read(buffer))){
+			baos.write(buffer, 0 , length);
+		}
+		return baos.toByteArray();
+	}
+	
 	public static byte[] readFile(File f) {
 		try (FileInputStream fis = new FileInputStream(f)) {
-			byte[] b = new byte[(int) f.length()];
-			fis.read(b);
-			return b;
+			return readContents(fis);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public static byte[] readClassPathResource(String name) {
+		InputStream in = Utils.class.getResourceAsStream(name);
+		if (in == null)
+			in = ClassLoader.getSystemResourceAsStream(name);
+		if (in == null)
+			return null;
+		try (InputStream in2=in) {
+			return readContents(in2);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
