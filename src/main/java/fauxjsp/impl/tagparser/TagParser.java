@@ -28,12 +28,14 @@ public class TagParser {
 		public JspTaglibInvocation taglib;
 	}
 
-	protected Pattern namespaceAndTagPattern = Pattern.compile(
+	protected final static Pattern namespaceAndTagPattern = Pattern.compile(
 			"<\\s*([_a-zA-Z0-9\\-]+):([a-zA-Z0-9\\-]+)\\s*(.*)\\/{0,1}>",
 			Pattern.DOTALL | Pattern.MULTILINE);
-	protected Pattern tagPattern = Pattern.compile(
+	protected final static Pattern tagPattern = Pattern.compile(
 			"<\\s*([_a-zA-Z0-9\\-]+)\\s*(.*)\\/{0,1}>", Pattern.DOTALL
 					| Pattern.MULTILINE);
+	
+	protected final static Pattern colonPattern = Pattern.compile("\\:");
 
 	protected String getTagSegment(String text) {
 		boolean inQuotes = false;
@@ -52,7 +54,7 @@ public class TagParser {
 		boolean inQuotes = false;
 		String name = "";
 		String value = "";
-		String text = "";
+		StringBuilder text = new StringBuilder();
 		for (int i = 0; i < tagSegment.length(); i++) {
 			char c = tagSegment.charAt(i);
 			switch (c) {
@@ -63,8 +65,8 @@ public class TagParser {
 			case '"':
 				inQuotes = !inQuotes;
 				if (!inQuotes) {
-					value = text;
-					text = "";
+					value = text.toString();
+					text.setLength(0);
 					attributes.put(name, value);
 					name = "";
 					value = "";
@@ -72,12 +74,12 @@ public class TagParser {
 				continue;
 			case '=':
 				if (!inQuotes) {
-					name = text.trim();
-					text = "";
+					name = text.toString().trim();
+					text.setLength(0);
 					continue;
 				}
 			default:
-				text = text + c;
+				text.append(c);
 			}
 		}
 		return attributes;
@@ -119,7 +121,7 @@ public class TagParser {
 		if (end == -1)
 			return null;
 		String name = text.substring(2, end).trim();
-		String[] parts = name.split(":");
+		String[] parts = colonPattern.split(name);
 		if (parts.length != 2)
 			return null;
 		JspTaglibInvocation inv = new JspTaglibInvocation(parts[0], parts[1],
@@ -129,12 +131,36 @@ public class TagParser {
 		tag.type = TagType.closing;
 		return tag;
 	}
+	
+	/**
+	 * Fast plausibility check on a large string. If this returns true, there might be a tag declaration (but doesn't have to be).
+	 * If it returns false, there definitely isn't a tag declaration.
+	 * @param text Big string containing (somewhere) the tag.
+	 * @param offset Look for tag only after "offset"
+	 * @return
+	 */
+	public boolean mightContainDeclaration(String text, int offset){
+		/* In an earlier version I replicated the entire logic of parse(text, location), hoping it would
+		 * yield fewer false positives (which it did), but the overall performance dropped.
+		 */
+		return text.charAt(offset)=='<';
+	}
 
 	public Tag parse(String text, CodeLocation location) {
-		if (text.startsWith("</"))
+		if (text.length()<2)
+			return null;
+		char c1 = text.charAt(0);
+		char c2 = text.charAt(1);
+		if (c1=='<' && c2=='/')
 			return parseClosingTag(text, location);
-		if (text.startsWith("<") && text.indexOf(":") > 0
-				&& text.indexOf(":") < text.indexOf(">"))
+		int indexOfColon = text.indexOf(":");
+		int indexOfAttributeOpening = text.indexOf('\"');
+		if (indexOfAttributeOpening==-1)
+			indexOfAttributeOpening = text.indexOf('\'');
+		if (indexOfAttributeOpening==-1)
+			indexOfAttributeOpening = text.length();
+		if (c1=='<' &&  indexOfColon> 0
+				&& indexOfColon < text.indexOf(">") && indexOfColon<indexOfAttributeOpening)
 			return parseOpeningTag(text, location);
 		return null;
 	}

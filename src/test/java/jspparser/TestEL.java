@@ -10,6 +10,12 @@ import org.junit.Test;
 import fauxjsp.api.nodes.JspPage;
 import fauxjsp.api.parser.CodeLocation;
 
+/**
+ * A few test for java EL
+ * @author George Georgovassilis
+ *
+ */
+
 public class TestEL {
 	
 	@Test

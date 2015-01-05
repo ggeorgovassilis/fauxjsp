@@ -1,4 +1,10 @@
-package jspparser;
+package jspparser.utils;
+
+/**
+ * Some utilities used for testing
+ * @author George Georgovassilis
+ *
+ */
 
 public class TestUtils {
 

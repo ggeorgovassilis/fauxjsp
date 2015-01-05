@@ -1,4 +1,10 @@
-package jspparser;
+package jspparser.dto;
+
+/**
+ * DTO passed by the servlet to JSP, holds navigation breadcrumbs
+ * @author George Georgovassilis
+ *
+ */
 
 public class NavigationItem {
 

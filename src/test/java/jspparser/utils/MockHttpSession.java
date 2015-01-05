@@ -1,10 +1,16 @@
-package jspparser;
+package jspparser.utils;
 
 import java.util.Enumeration;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionContext;
+
+/**
+ * POJO implementation of an {@link HttpSession}
+ * @author George Georgovassilis
+ *
+ */
 
 @SuppressWarnings("deprecation")
 public class MockHttpSession implements HttpSession {

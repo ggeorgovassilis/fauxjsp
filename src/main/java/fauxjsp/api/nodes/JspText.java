@@ -1,5 +1,7 @@
 package fauxjsp.api.nodes;
 
+import java.io.UnsupportedEncodingException;
+
 import fauxjsp.api.parser.CodeLocation;
 import fauxjsp.api.parser.ELEvaluation;
 
@@ -9,15 +11,19 @@ import fauxjsp.api.parser.ELEvaluation;
  *
  */
 public class JspText extends JspNode {
-	protected final byte[] content;
+	protected final String content;
 
-	public JspText(byte[] content, CodeLocation location) {
+	public JspText(String content, CodeLocation location) {
 		super(location);
 		this.content = content;
 	}
 
-	public byte[] getContent() {
-		return content;
+	public byte[] getContentAsBytes(String charset) {
+		try {
+			return content.getBytes(charset);
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	public String getContentAsString() {

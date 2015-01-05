@@ -47,7 +47,8 @@ public class JspParserImpl implements JspParser {
 	protected int line = 0;
 	protected int column = 0;
 
-	// TODO: speed: keep a running pointer instead of recomputing the location every
+	// TODO: speed: keep a running pointer instead of recomputing the location
+	// every
 	// time. this is important because this function is called every time a node
 	// is constructed
 	protected CodeLocation getCurrentLocation() {
@@ -63,7 +64,8 @@ public class JspParserImpl implements JspParser {
 		this.location = location;
 	}
 
-	// TODO: speed: construct a parsing tree and check ("remains") based on different
+	// TODO: speed: construct a parsing tree and check ("remains") based on
+	// different
 	// groups of the same substring length
 	public JspParserImpl(JspParserFactory factory, JspParser parent) {
 		this.parserFactory = factory;
@@ -72,8 +74,8 @@ public class JspParserImpl implements JspParser {
 		this.taglibDefinitions = parent.getTaglibDefinitions();
 	}
 
-	protected void advanceCodeLocation(int length){
-		int end = index+length;
+	protected void advanceCodeLocation(int length) {
+		int end = index + length;
 		for (int i = index; i < end; i++) {
 			char c = jsp.charAt(i);
 			switch (c) {
@@ -86,7 +88,7 @@ public class JspParserImpl implements JspParser {
 			}
 		}
 	}
-	
+
 	protected void advance(int length) {
 		if (length < 1)
 			throw new IllegalArgumentException("Length is " + length);
@@ -133,7 +135,7 @@ public class JspParserImpl implements JspParser {
 		if (offset == -1)
 			parsingError("Expected to find '" + what + "' after offset "
 					+ offset);
-		advance(offset-index);
+		advance(offset - index);
 	}
 
 	protected void advanceAfterNext(String what) {
@@ -150,9 +152,7 @@ public class JspParserImpl implements JspParser {
 	}
 
 	protected boolean isNext(String what) {
-		if (index + what.length() >= jsp.length())
-			return false;
-		return what.equals(substring(what.length()));
+		return jsp.regionMatches(index, what, 0, what.length());
 	}
 
 	protected boolean toBool(String s, boolean defaultValue) {
@@ -171,12 +171,12 @@ public class JspParserImpl implements JspParser {
 		String namespace = invocation.getNamespace();
 		String path = taglibNamespaces.get(namespace);
 		if (path == null)
-			parsingError("Unknown taglib namespace " + namespace);
+			parsingError("Unknown taglib namespace '" + namespace+"'");
 		String fullPath = null;
 		if (!path.startsWith("http:")) {
 			fullPath = path + "/" + invocation.getTaglib() + ".tag";
 		} else
-			fullPath = path+"/"+invocation.getTaglib();
+			fullPath = path + "/" + invocation.getTaglib();
 		TaglibDefinition definition = taglibDefinitions.getDefinition(fullPath);
 		if (definition == null) {
 			if (path.startsWith("http:")) {
@@ -221,23 +221,32 @@ public class JspParserImpl implements JspParser {
 	}
 
 	protected JspInstruction processInstruction() {
-		if (!OPEN_INSTRUCTION.equals(substring(OPEN_INSTRUCTION.length())))
+		if (!isNext(OPEN_INSTRUCTION))
 			parsingError("Expected open instruction");
 		int closingIndex = nextIndexOf(CLOSE_INSTRUCTION);
 		if (closingIndex <= index)
 			parsingError("Expected closing instruction");
 
-		String sInstruction = substring(CLOSE_INSTRUCTION.length()
-				+ closingIndex - index);
-		sInstruction = sInstruction.substring(0, sInstruction.indexOf('@'))
-				+ sInstruction.substring(sInstruction.indexOf('@') + 1);
-		sInstruction = sInstruction.substring(0, sInstruction.indexOf('%'))
-				+ sInstruction.substring(sInstruction.indexOf('%') + 1);
-		sInstruction = sInstruction.substring(0, sInstruction.lastIndexOf('%'))
-				+ sInstruction.substring(sInstruction.lastIndexOf('%') + 1);
-		sInstruction = sInstruction.replaceFirst("< ", "<");
-		sInstruction = sInstruction.replaceFirst("<", "<__:");
-		TagParser.Tag tag = tagParser.parse(sInstruction, getCurrentLocation());
+		StringBuilder sInstruction = new StringBuilder(
+				substring(CLOSE_INSTRUCTION.length() + closingIndex - index));
+
+		int indexOfAt = sInstruction.indexOf("@");
+		sInstruction.deleteCharAt(indexOfAt);
+
+		int indexOfPercent = sInstruction.indexOf("%");
+		sInstruction.deleteCharAt(indexOfPercent);
+
+		int lastIndexOfPercent = sInstruction.lastIndexOf("%");
+		sInstruction.deleteCharAt(lastIndexOfPercent);
+
+		/*
+		 * we're reusing the tagparser for parsing instructions. But the
+		 * tagparser requires tags to be in the form <namespace:tagname ...>, so
+		 * we'll "invent" the namespace "__" to keep it happy.
+		 */
+		sInstruction = Utils.replace(sInstruction, "< ", "<");
+		sInstruction = Utils.replace(sInstruction, "<", "<__:");
+		TagParser.Tag tag = tagParser.parse(sInstruction.toString(), getCurrentLocation());
 		if (tag == null)
 			parsingError("Can't parse instruction from " + sInstruction);
 		JspInstruction instruction = new JspInstruction(tag.taglib.getTaglib(),
@@ -250,7 +259,7 @@ public class JspParserImpl implements JspParser {
 	protected void flushText() {
 		if (buffer.length() > 0) {
 			String content = buffer.toString();
-			JspText text = new JspText(content.getBytes(), getCurrentLocation());
+			JspText text = new JspText(content, getCurrentLocation());
 			JspNodeWithChildren currentNode = getCurrentNode();
 			currentNode.getChildren().add(text);
 			buffer.setLength(0);
@@ -357,32 +366,40 @@ public class JspParserImpl implements JspParser {
 						JspInstruction instruction = processInstruction();
 						maybeRegisterTaglib(instruction);
 						page.getChildren().add(instruction);
-						continue;
 					} else
 						parsingError("This looks like a scriptlet. This parser doesn't support scriptlets.");
+					continue;
 				}
-
-				TagParser.Tag tag = tagParser.parse(remaining(),
-						getCurrentLocation());
+				// calling remaining() is slow, so we run a fast plausibility
+				// check first
+				TagParser.Tag tag = tagParser.mightContainDeclaration(jsp,
+						index) ? tagParser.parse(remaining(), getCurrentLocation())
+						: null;
 				if (tag != null) {
-					if (tag.type == TagParser.Tag.TagType.opening)
+					switch (tag.type) {
+					case opening:
 						processOpenTaglib(tag.taglib);
-					else if (tag.type == TagParser.Tag.TagType.openingAndClosing)
+						break;
+					case openingAndClosing:
 						processOpenCloseTaglib(tag.taglib);
-					else if (tag.type == TagParser.Tag.TagType.closing)
+						break;
+					case closing:
 						processCloseTaglib(tag.taglib);
-					else
+						break;
+					default:
 						throw new RuntimeException("Unknown tag state");
+					}
 				} else {
-					String nextChar = substring(1);
-					buffer.append(nextChar);
-					advance(nextChar);
+					buffer.append(jsp.charAt(index));
+					advance(1);
 				}
 			}
 			flushText();
 			return page;
 		} catch (JspParsingException pe) {
 			throw new JspParsingException(pe, getCurrentLocation());
+		} catch (RuntimeException re) {
+			throw re;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

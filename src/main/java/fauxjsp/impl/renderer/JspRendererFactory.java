@@ -9,5 +9,5 @@ import fauxjsp.api.renderer.JspRenderer;
  */
 public interface JspRendererFactory {
 
-	JspRenderer newInstance();
+	JspRenderer create();
 }

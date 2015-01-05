@@ -11,7 +11,7 @@ import fauxjsp.api.renderer.JspRenderer;
 public class JspRendererFactoryImpl implements JspRendererFactory{
 
 	@Override
-	public JspRenderer newInstance() {
+	public JspRenderer create() {
 		return new JspRendererImpl();
 	}
 

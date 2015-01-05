@@ -3,11 +3,20 @@ package jspparser;
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.GregorianCalendar;
+
+import jspparser.dto.NavigationItem;
+import jspparser.dto.News;
+import jspparser.dto.Stock;
+import jspparser.utils.MockHttpServletRequest;
+import jspparser.utils.MockHttpServletResponse;
+import jspparser.utils.TestUtils;
 
 import org.junit.Test;
 
 import fauxjsp.api.RenderSession;
 import fauxjsp.api.nodes.JspInstruction;
+import fauxjsp.api.nodes.JspNode;
 import fauxjsp.api.nodes.JspPage;
 import fauxjsp.api.nodes.JspTaglibInvocation;
 import fauxjsp.api.nodes.JspText;
@@ -35,7 +44,7 @@ public class TestJspParser extends BaseTest{
 				.get("uri"));
 
 		JspText j2 = (JspText) page.getChildren().get(1);
-		assertEquals("\r\n", new String(j2.getContent()));
+		assertEquals("\r\n", j2.getContentAsString());
 
 		JspInstruction j3 = (JspInstruction) page.getChildren().get(2);
 		assertEquals("taglib", j3.getName());
@@ -43,7 +52,7 @@ public class TestJspParser extends BaseTest{
 		assertEquals("/WEB-INF/tags", j3.getArguments().get("tagdir"));
 
 		JspText j4 = (JspText) page.getChildren().get(3);
-		assertTrue(new String(j4.getContent()).equals("\r\n"));
+		assertTrue(new String(j4.getContentAsString()).equals("\r\n"));
 
 		JspTaglibInvocation j5 = (JspTaglibInvocation) page.getChildren()
 				.get(4);
@@ -89,7 +98,7 @@ public class TestJspParser extends BaseTest{
 				new News("2", "headline 2", "description 2",
 						"full text of news 2", false)));
 
-		session.request.setAttribute("date", new Date(100, 2, 2));
+		session.request.setAttribute("date", new GregorianCalendar(2000, 2, 2).getTime());
 		renderer.render(page, session);
 		String text = new String(baos.toByteArray());
 		assertTrue(text.contains("Thu Mar 02"));
@@ -176,6 +185,18 @@ public class TestJspParser extends BaseTest{
 		assertEquals(
 				"\nlevel0-a-opens\n <a value=\"level1\">\nlevel1-b-opens\n <b value=\"level2\">\nlevel2-a-opens\n <a value=\"level3\">\nlevel3-b-opens\n <b value=\"level4\">\nlevel4-inner\n</b>\nlevel3-b-closed\n</a>\nlevel2-a-closed\n</b>\nlevel1-b-closed\n</a>\nlevel0-a-closed",
 				text);
+	}
+	
+	/**
+	 * In a previous implementation, the {@link JspParserImpl} had a regular expression that would look for tags in the form of <namespace:tagname ...>
+	 * However this picks up HTML/XML that has colons in attribute values such as <a href="http://example.com">
+	 */
+	@Test
+	public void testTrickyColonInAttribute(){
+		JspPage page = parser.parse("WEB-INF/jsp/link.jsp");
+		assertEquals(1, page.getChildren().size());
+		JspText node = (JspText)page.getChildren().get(0);
+		assertEquals("<a class=nav href=\"http://www.example.com/q?a:bbb:cccc\" id=\"some/id\"><span class=\"some class\">[...]</span>Link</a>\n", node.getContentAsString());
 	}
 
 }

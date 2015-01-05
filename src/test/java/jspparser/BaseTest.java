@@ -16,21 +16,34 @@ import fauxjsp.impl.renderer.ELFactoryServlet3Impl;
 import fauxjsp.impl.renderer.JspRendererFactory;
 import fauxjsp.impl.renderer.JspRendererFactoryImpl;
 
+/**
+ * Base class for unit tests. Provides factories for parsers and renderers
+ * @author George Georgovassilis
+ *
+ */
 public abstract class BaseTest {
 
 	protected JspParserFactory parserFactory;
 	protected JspParser parser;
 	protected JspRenderer renderer;
 	protected ELEvaluation elEvaluation;
-	protected JspRendererFactory jspRendererFactory;
+	protected JspRendererFactory rendererFactory;
 
+	protected JspParser newParser(){
+		return parser=parserFactory.create();
+	}
+	
+	protected JspRenderer newRenderer(){
+		return renderer = rendererFactory.create();
+	}
+	
 	@Before
 	public void setup() {
 		ResourceResolver location = new FileLocation(new File("examples"));
 		parserFactory = new DefaultJspParserFactoryImpl(location);
-		parser = parserFactory.create();
-		jspRendererFactory = new JspRendererFactoryImpl();
-		renderer = jspRendererFactory.newInstance();
+		parser = newParser();
+		rendererFactory = new JspRendererFactoryImpl();
+		renderer = rendererFactory.create();
 		elEvaluation = new ELEvaluationImpl(new ELFactoryServlet3Impl());
 	}
 

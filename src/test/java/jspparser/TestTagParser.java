@@ -7,11 +7,15 @@ import static org.junit.Assert.*;
 
 public class TestTagParser{
 
+	String s(String s){
+		return s;
+	}
+	
 	@Test
 	public void test1(){
 		TagParser parser = new TagParser();
 		
-		TagParser.Tag tag = parser.parse("<c:out value=\"abc\"/>", null);
+		TagParser.Tag tag = parser.parse(s("<c:out value=\"abc\"/>"), null);
 		assertEquals("c", tag.taglib.getNamespace());
 		assertEquals("out", tag.taglib.getTaglib());
 
@@ -23,7 +27,7 @@ public class TestTagParser{
 	public void test2(){
 		TagParser parser = new TagParser();
 		
-		TagParser.Tag tag = parser.parse("<c:out value=\"abc\">\n this is something else</c:out>", null);
+		TagParser.Tag tag = parser.parse(s("<c:out value=\"abc\">\n this is something else</c:out>"), null);
 		assertEquals("c", tag.taglib.getNamespace());
 		assertEquals("out", tag.taglib.getTaglib());
 
@@ -35,7 +39,7 @@ public class TestTagParser{
 	public void test3(){
 		TagParser parser = new TagParser();
 		
-		TagParser.Tag tag = parser.parse("<c:out value=\"abc\" encoding=\"UTF-8\">\n this is something else</c:out>", null);
+		TagParser.Tag tag = parser.parse(s("<c:out value=\"abc\" encoding=\"UTF-8\">\n this is something else</c:out>"), null);
 		assertEquals("c", tag.taglib.getNamespace());
 		assertEquals("out", tag.taglib.getTaglib());
 

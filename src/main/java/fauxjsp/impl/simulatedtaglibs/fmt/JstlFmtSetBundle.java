@@ -1,7 +1,5 @@
 package fauxjsp.impl.simulatedtaglibs.fmt;
 
-import java.util.ResourceBundle;
-
 import fauxjsp.api.RenderSession;
 import fauxjsp.api.nodes.JspTaglibInvocation;
 import fauxjsp.api.nodes.TaglibDefinition;

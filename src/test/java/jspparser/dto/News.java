@@ -1,4 +1,10 @@
-package jspparser;
+package jspparser.dto;
+
+/**
+ * DTO passed by the servlet to JSP, models a news item in a news portal
+ * @author George Georgovassilis
+ *
+ */
 
 public class News {
 

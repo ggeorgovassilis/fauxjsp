@@ -11,10 +11,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.lang.StringEscapeUtils;
-
 import fauxjsp.api.RenderSession;
 import fauxjsp.api.parser.ELEvaluation;
+import fauxjsp.impl.Utils;
 
 public class ELEvaluationImpl implements ELEvaluation {
 
@@ -67,7 +66,7 @@ public class ELEvaluationImpl implements ELEvaluation {
 
 		}
 
-		expression = StringEscapeUtils.unescapeHtml(expression);
+		expression = Utils.unescapeHtml(expression);
 		ValueExpression expr = expressionFactory.createValueExpression(context,
 				expression, Object.class);
 		Object result = expr.getValue(context);

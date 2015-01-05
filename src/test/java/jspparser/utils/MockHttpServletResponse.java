@@ -1,4 +1,4 @@
-package jspparser;
+package jspparser.utils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -10,6 +10,12 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.WriteListener;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+
+/**
+ * POJO implementation of an {@link HttpServletResponse}
+ * @author George Georgovassilis
+ *
+ */
 
 public class MockHttpServletResponse implements HttpServletResponse{
 

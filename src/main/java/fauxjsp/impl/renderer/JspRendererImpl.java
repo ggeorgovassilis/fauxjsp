@@ -41,7 +41,7 @@ public class JspRendererImpl implements JspRenderer {
 					content = (String) session.elEvaluation.evaluate(content,
 							session);
 				}
-				write(session.out, content.getBytes());
+				write(session.out, content.getBytes(session.response.getCharacterEncoding()));
 			} else if (node instanceof JspTaglibInvocation) {
 				JspTaglibInvocation taglibInvocation = (JspTaglibInvocation) node;
 				taglibInvocation.getDefinition().render(session,

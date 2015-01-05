@@ -5,6 +5,12 @@ import org.junit.Test;
 import fauxjsp.api.parser.JspParsingException;
 import static org.junit.Assert.*;
 
+/**
+ * Tests for error handling
+ * @author George Georgovassilis
+ *
+ */
+
 public class TestErrors extends BaseTest{
 
 	@Test

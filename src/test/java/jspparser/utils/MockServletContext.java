@@ -1,4 +1,4 @@
-package jspparser;
+package jspparser.utils;
 
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -19,6 +19,12 @@ import javax.servlet.ServletRegistration.Dynamic;
 import javax.servlet.SessionCookieConfig;
 import javax.servlet.SessionTrackingMode;
 import javax.servlet.descriptor.JspConfigDescriptor;
+
+/**
+ * POJO implementation of a {@link ServletContext}
+ * @author George Georgovassilis
+ *
+ */
 
 public class MockServletContext implements ServletContext {
 

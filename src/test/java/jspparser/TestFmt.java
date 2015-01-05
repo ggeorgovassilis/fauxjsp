@@ -3,8 +3,9 @@ package jspparser;
 import static org.junit.Assert.*;
 
 import java.io.ByteArrayOutputStream;
-import java.util.Arrays;
-import java.util.Date;
+
+import jspparser.utils.MockHttpServletRequest;
+import jspparser.utils.MockHttpServletResponse;
 
 import org.junit.Test;
 
@@ -12,8 +13,13 @@ import fauxjsp.api.RenderSession;
 import fauxjsp.api.nodes.JspPage;
 import fauxjsp.impl.simulatedtaglibs.fmt.JstlFmtMessage;
 
-public class TestFmt extends BaseTest{
+/**
+ * Tests the FMT taglib implementation
+ * @author George Georgovassilis
+ *
+ */
 
+public class TestFmt extends BaseTest{
 	
 	@Test
 	public void test_fmt_message(){

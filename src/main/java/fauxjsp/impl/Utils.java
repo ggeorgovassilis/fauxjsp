@@ -8,6 +8,8 @@ import java.util.Map;
 
 import javax.servlet.ServletRequest;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 import fauxjsp.api.RenderSession;
 
 public class Utils {
@@ -66,6 +68,18 @@ public class Utils {
 			value = result + "";
 		}
 		return Integer.parseInt(value);
+	}
+	
+	public static StringBuilder replace(StringBuilder sb, String what, String with){
+		int index = sb.indexOf(what);
+		if (index!=-1){
+			sb.replace(index, index+with.length()-1, with);
+		}
+		return sb;
+	}
+	
+	public static String unescapeHtml(String html){
+		return StringEscapeUtils.unescapeHtml(html);
 	}
 
 }

@@ -1,4 +1,4 @@
-package jspparser;
+package jspparser.utils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -25,6 +25,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpUpgradeHandler;
 import javax.servlet.http.Part;
+
+/**
+ * POJO implementation of an {@link HttpServletRequest}
+ * @author George Georgovassilis
+ *
+ */
 
 public class MockHttpServletRequest implements HttpServletRequest{
 
