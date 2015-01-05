@@ -8,6 +8,7 @@ import fauxjsp.impl.simulatedtaglibs.core.JstlCoreTaglibChoose;
 import fauxjsp.impl.simulatedtaglibs.core.JstlCoreTaglibForEach;
 import fauxjsp.impl.simulatedtaglibs.core.JstlCoreTaglibIf;
 import fauxjsp.impl.simulatedtaglibs.core.JstlCoreTaglibOut;
+import fauxjsp.impl.simulatedtaglibs.core.JstlCoreTaglibSet;
 import fauxjsp.impl.simulatedtaglibs.core.JstlCoreTaglibWhen;
 import fauxjsp.impl.simulatedtaglibs.fmt.JstlFmtMessage;
 import fauxjsp.impl.simulatedtaglibs.fmt.JstlFmtSetBundle;
@@ -20,8 +21,13 @@ import fauxjsp.impl.simulatedtaglibs.fmt.JstlFmtSetBundle;
 public class DefaultJspParserFactoryImpl implements JspParserFactory {
 
 	protected ResourceResolver location;
+	protected boolean errorOnScriptlets = true;
 
-	protected void setup(JspParser parser) {
+	public void setErrorOnScriptlets(boolean errorOnScriptlets) {
+		this.errorOnScriptlets = errorOnScriptlets;
+	}
+
+	protected void setup(JspParserImpl parser) {
 		parser.registerTaglibDefinition(
 				"http://java.sun.com/jsp/jstl/core/forEach",
 				new JstlCoreTaglibForEach());
@@ -40,6 +46,9 @@ public class DefaultJspParserFactoryImpl implements JspParserFactory {
 		parser.registerTaglibDefinition(
 				"http://java.sun.com/jsp/jstl/core/if",
 				new JstlCoreTaglibIf());
+		parser.registerTaglibDefinition(
+				"http://java.sun.com/jsp/jstl/core/set",
+				new JstlCoreTaglibSet());
 		parser.registerTaglibDefinition("jsp", "http://java.sun.com/jsp/doBody",
 				new JspBuiltinTaglibDoBody());
 		parser.registerTaglibDefinition("jsp", "http://java.sun.com/jsp",
@@ -47,6 +56,7 @@ public class DefaultJspParserFactoryImpl implements JspParserFactory {
 		
 		parser.registerTaglibDefinition("http://java.sun.com/jsp/jstl/fmt/message", new JstlFmtMessage());
 		parser.registerTaglibDefinition("http://java.sun.com/jsp/jstl/fmt/setBundle", new JstlFmtSetBundle());
+		parser.setErrorOnScriptlets(errorOnScriptlets);
 	}
 
 	public DefaultJspParserFactoryImpl(ResourceResolver location) {

@@ -36,6 +36,10 @@ import fauxjsp.impl.renderer.JspRendererImpl;
  * {@link #getJspParserFactory(ServletConfig)} which creates an {@link JspParserFactory} instance
  * {@link #getElFactory(ServletConfig)} which creates an {@link ELFactory} instance
  * {@link #getJspRendererFactory(ServletConfig)} which creates an {@link JspRendererFactory} instance
+ * 
+ * The following init parameters are recognized:
+ * 
+ * <code>errorOnScriptlet</code> when set to "true" will throw an exception when scriptlets are used, otherwise just log a warning.
  * @author George Georgovassilis
  *
  */
@@ -69,7 +73,9 @@ public class JspServlet extends HttpServlet {
 	 */
 	protected JspParserFactory getJspParserFactory(ServletConfig config){
 		ResourceResolver location = new ServletResourceResolver(jspBase, getServletContext());
-		return new DefaultJspParserFactoryImpl(location);
+		DefaultJspParserFactoryImpl factory = new DefaultJspParserFactoryImpl(location);
+		factory.setErrorOnScriptlets("true".equalsIgnoreCase(config.getInitParameter("errorOnScriptlet")));
+		return factory;
 	}
 	
 	/**

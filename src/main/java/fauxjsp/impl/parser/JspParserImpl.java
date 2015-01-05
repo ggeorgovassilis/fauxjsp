@@ -46,6 +46,7 @@ public class JspParserImpl implements JspParser {
 	protected TagParser tagParser = new TagParser();
 	protected int line = 0;
 	protected int column = 0;
+	protected boolean errorOnScriptlets = true;
 
 	// TODO: speed: keep a running pointer instead of recomputing the location
 	// every
@@ -171,7 +172,7 @@ public class JspParserImpl implements JspParser {
 		String namespace = invocation.getNamespace();
 		String path = taglibNamespaces.get(namespace);
 		if (path == null)
-			parsingError("Unknown taglib namespace '" + namespace+"'");
+			parsingError("Unknown taglib namespace '" + namespace + "'");
 		String fullPath = null;
 		if (!path.startsWith("http:")) {
 			fullPath = path + "/" + invocation.getTaglib() + ".tag";
@@ -246,7 +247,8 @@ public class JspParserImpl implements JspParser {
 		 */
 		sInstruction = Utils.replace(sInstruction, "< ", "<");
 		sInstruction = Utils.replace(sInstruction, "<", "<__:");
-		TagParser.Tag tag = tagParser.parse(sInstruction.toString(), getCurrentLocation());
+		TagParser.Tag tag = tagParser.parse(sInstruction.toString(),
+				getCurrentLocation());
 		if (tag == null)
 			parsingError("Can't parse instruction from " + sInstruction);
 		JspInstruction instruction = new JspInstruction(tag.taglib.getTaglib(),
@@ -366,15 +368,20 @@ public class JspParserImpl implements JspParser {
 						JspInstruction instruction = processInstruction();
 						maybeRegisterTaglib(instruction);
 						page.getChildren().add(instruction);
-					} else
+					} else if (errorOnScriptlets)
 						parsingError("This looks like a scriptlet. This parser doesn't support scriptlets.");
+					else {
+						logger.warn("This looks like a scriptlet. This parser doesn't support scriptlets at "
+								+ getCurrentLocation());
+						advanceAfterNext(CLOSE_INSTRUCTION);
+					}
 					continue;
 				}
 				// calling remaining() is slow, so we run a fast plausibility
 				// check first
 				TagParser.Tag tag = tagParser.mightContainDeclaration(jsp,
-						index) ? tagParser.parse(remaining(), getCurrentLocation())
-						: null;
+						index) ? tagParser.parse(remaining(),
+						getCurrentLocation()) : null;
 				if (tag != null) {
 					switch (tag.type) {
 					case opening:
@@ -403,6 +410,14 @@ public class JspParserImpl implements JspParser {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	public boolean isErrorOnScriptlets() {
+		return errorOnScriptlets;
+	}
+
+	public void setErrorOnScriptlets(boolean errorOnScriptlets) {
+		this.errorOnScriptlets = errorOnScriptlets;
 	}
 
 	@Override

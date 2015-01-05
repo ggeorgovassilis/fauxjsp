@@ -145,6 +145,16 @@ public class TagParser {
 		 */
 		return text.charAt(offset)=='<';
 	}
+	
+	protected int getEarliest(String text, String...subs){
+		int earliest = text.length();
+		for (String s:subs){
+			int index = text.indexOf(s,1);
+			if (index!=-1)
+				earliest = Math.min(earliest, index);
+		}
+		return earliest;
+	}
 
 	public Tag parse(String text, CodeLocation location) {
 		if (text.length()<2)
@@ -154,13 +164,9 @@ public class TagParser {
 		if (c1=='<' && c2=='/')
 			return parseClosingTag(text, location);
 		int indexOfColon = text.indexOf(":");
-		int indexOfAttributeOpening = text.indexOf('\"');
-		if (indexOfAttributeOpening==-1)
-			indexOfAttributeOpening = text.indexOf('\'');
-		if (indexOfAttributeOpening==-1)
-			indexOfAttributeOpening = text.length();
+		int indexOfForbiddenStrings = getEarliest(text, "'", "\"", "<");
 		if (c1=='<' &&  indexOfColon> 0
-				&& indexOfColon < text.indexOf(">") && indexOfColon<indexOfAttributeOpening)
+				&& indexOfColon < text.indexOf(">") && indexOfColon<indexOfForbiddenStrings)
 			return parseOpeningTag(text, location);
 		return null;
 	}
