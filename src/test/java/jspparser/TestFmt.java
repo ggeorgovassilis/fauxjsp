@@ -29,7 +29,6 @@ public class TestFmt extends BaseTest{
 		ByteArrayOutputStream baos = response.getBaos();
 		RenderSession session = new RenderSession();
 		session.request = request;
-		session.out = baos;
 		session.renderer = renderer;
 		session.elEvaluation = elEvaluation;
 		session.response = response;
@@ -49,7 +48,6 @@ public class TestFmt extends BaseTest{
 		ByteArrayOutputStream baos = response.getBaos();
 		RenderSession session = new RenderSession();
 		session.request = request;
-		session.out = baos;
 		session.renderer = renderer;
 		session.elEvaluation = elEvaluation;
 		session.response = response;

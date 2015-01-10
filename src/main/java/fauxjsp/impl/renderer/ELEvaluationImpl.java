@@ -14,21 +14,18 @@ import javax.servlet.http.HttpSession;
 import fauxjsp.api.RenderSession;
 import fauxjsp.api.parser.ELEvaluation;
 import fauxjsp.impl.Utils;
+import fauxjsp.impl.simulatedtaglibs.core.Functions;
 
 public class ELEvaluationImpl implements ELEvaluation {
 
 	protected ELFactory elFactory;
-	
+
 	public ELEvaluationImpl(ELFactory elFactory) {
 		this.elFactory = elFactory;
 	}
-
-	@Override
-	public Object evaluate(String expression, RenderSession session) {
-		ExpressionFactory expressionFactory = elFactory.newExpressionFactory();
-		ELContext context = elFactory.newElContext();
+	
+	protected void populateVariables(ELContext context, ExpressionFactory expressionFactory, RenderSession session){
 		VariableMapper variables = context.getVariableMapper();
-
 		variables.setVariable("request", expressionFactory
 				.createValueExpression(session.request,
 						HttpServletRequest.class));
@@ -65,11 +62,31 @@ public class ELEvaluationImpl implements ELEvaluation {
 								value.getClass()));
 
 		}
+	}
+
+	protected void declareFunctions(ELContext context, ExpressionFactory expressionFactory, RenderSession session){
+		try {
+			context.getFunctionMapper().mapFunction("fn", "startsWith", Functions.class.getMethod("startsWith", new Class[]{String.class, String.class}));
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public Object evaluate(String expression, RenderSession session) {
+		ExpressionFactory expressionFactory = elFactory.newExpressionFactory();
+		ELContext context = new FauxELContext(elFactory.newElContext(), expressionFactory);
+		populateVariables(context, expressionFactory, session);
+		declareFunctions(context, expressionFactory, session);
 
 		expression = Utils.unescapeHtml(expression);
 		ValueExpression expr = expressionFactory.createValueExpression(context,
 				expression, Object.class);
-		Object result = expr.getValue(context);
-		return result;
+		try {
+			Object result = expr.getValue(context);
+			return result;
+		} catch (Exception e) {
+			throw new RuntimeException("Error when evaluating expression '"+expression+"'", e);
+		}
 	}
 }

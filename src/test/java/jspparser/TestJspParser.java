@@ -2,7 +2,6 @@ package jspparser;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.GregorianCalendar;
 
 import jspparser.dto.NavigationItem;
@@ -16,7 +15,6 @@ import org.junit.Test;
 
 import fauxjsp.api.RenderSession;
 import fauxjsp.api.nodes.JspInstruction;
-import fauxjsp.api.nodes.JspNode;
 import fauxjsp.api.nodes.JspPage;
 import fauxjsp.api.nodes.JspTaglibInvocation;
 import fauxjsp.api.nodes.JspText;
@@ -72,7 +70,6 @@ public class TestJspParser extends BaseTest{
 
 	}
 
-	@SuppressWarnings("deprecation")
 	@Test
 	public void testJspRenderer() {
 		JspPage page = parser.parse("WEB-INF/jsp/homepage.jsp");
@@ -81,7 +78,6 @@ public class TestJspParser extends BaseTest{
 		ByteArrayOutputStream baos = response.getBaos();
 		RenderSession session = new RenderSession();
 		session.request = request;
-		session.out = baos;
 		session.renderer = renderer;
 		session.elEvaluation = elEvaluation;
 		session.response = response;
@@ -107,7 +103,7 @@ public class TestJspParser extends BaseTest{
 		assertTrue(text.contains("<span class=price>0.2 €</span>"));
 		
 		//lazy man's arse-covering insurance that we didn't change something in the implementation without knowing about it
-		assertEquals("d5f8562921a8db99d496bd64218bfb30",TestUtils.MD5(text));
+		assertEquals("c55ae99e22e0d3fb23a262328c57bcea",TestUtils.MD5(text));
 	}
 
 	@Test
@@ -118,7 +114,6 @@ public class TestJspParser extends BaseTest{
 		ByteArrayOutputStream baos = response.getBaos();
 		RenderSession session = new RenderSession();
 		session.request = request;
-		session.out = baos;
 		session.renderer = renderer;
 		session.elEvaluation = elEvaluation;
 		session.response = response;
@@ -149,7 +144,6 @@ public class TestJspParser extends BaseTest{
 		ByteArrayOutputStream baos = response.getBaos();
 		RenderSession session = new RenderSession();
 		session.request = request;
-		session.out = baos;
 		session.renderer = renderer;
 		session.elEvaluation = elEvaluation;
 		session.response = response;
@@ -175,7 +169,6 @@ public class TestJspParser extends BaseTest{
 		ByteArrayOutputStream baos = response.getBaos();
 		RenderSession session = new RenderSession();
 		session.request = request;
-		session.out = baos;
 		session.renderer = renderer;
 		session.elEvaluation = elEvaluation;
 		session.response = response;

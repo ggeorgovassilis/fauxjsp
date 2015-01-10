@@ -1,7 +1,6 @@
 package fauxjsp.impl.simulatedtaglibs.core;
 
 import fauxjsp.api.RenderSession;
-import fauxjsp.api.nodes.JspNode;
 import fauxjsp.api.nodes.JspTaglibInvocation;
 import fauxjsp.api.nodes.TaglibDefinition;
 import fauxjsp.api.renderer.JspRenderException;
@@ -36,7 +35,7 @@ public class JstlCoreTaglibSet extends TaglibDefinition {
 	}
 
 	public JstlCoreTaglibSet() {
-		this.name = "if";
+		this.name = "set";
 		this.attributes.put("var", new AttributeDefinition("var", String.class.getName(), false, true));
 		this.attributes.put("value", new AttributeDefinition("value", String.class.getName(), true, true));
 	}

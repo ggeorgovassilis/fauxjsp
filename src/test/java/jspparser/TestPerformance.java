@@ -70,7 +70,6 @@ public class TestPerformance extends BaseTest{
 				ByteArrayOutputStream baos = response.getBaos();
 				RenderSession session = new RenderSession();
 				session.request = request;
-				session.out = baos;
 				session.renderer = newRenderer();
 				session.elEvaluation = elEvaluation;
 				session.response = response;
@@ -95,7 +94,7 @@ public class TestPerformance extends BaseTest{
 				} catch (UnsupportedEncodingException e) {
 					throw new RuntimeException(e);
 				}
-				assertEquals("d5f8562921a8db99d496bd64218bfb30",TestUtils.MD5(text));
+				assertEquals("c55ae99e22e0d3fb23a262328c57bcea",TestUtils.MD5(text));
 			}
 		};
 		run(r, WARMUP_MS);

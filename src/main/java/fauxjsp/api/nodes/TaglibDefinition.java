@@ -61,7 +61,5 @@ public abstract class TaglibDefinition {
 		return attributes;
 	}
 
-	public void render(RenderSession session, JspTaglibInvocation invocation) {
-		throw new RuntimeException("Not implemented");
-	}
+	public abstract void render(RenderSession session, JspTaglibInvocation invocation);
 }

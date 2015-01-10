@@ -3,7 +3,6 @@ package fauxjsp.impl.simulatedtaglibs.core;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.jsp.jstl.core.LoopTagStatus;
 
@@ -35,7 +34,8 @@ public class JstlCoreTaglibForEach extends TaglibDefinition{
 		int end = 0;
 		int step = 1;
 		
-		Map<String, Object> oldAttributeValues = Utils.saveAttributes(session.request);
+		//TODO: I really should figure out how variable scoping works and whether variables need to be saved and restored
+		//Map<String, Object> oldAttributeValues = Utils.saveAttributes(session.request);
 
 		Object rawItems = session.elEvaluation.evaluate(itemsExpression,
 				session);
@@ -71,7 +71,7 @@ public class JstlCoreTaglibForEach extends TaglibDefinition{
 			for (JspNode child : invocation.getChildren())
 				session.renderer.render(child, session);
 		}
-		Utils.restoreAttributes(session.request, oldAttributeValues);
+//		Utils.restoreAttributes(session.request, oldAttributeValues);
 	}
 
 	@Override

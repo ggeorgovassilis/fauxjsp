@@ -34,10 +34,12 @@ public class TagfileDefinition extends TaglibDefinition {
 
 	@Override
 	public void render(RenderSession session, JspTaglibInvocation invocation) {
-		Map<String, Object> oldAttributes = Utils.saveAttributes(session.request);
+		Map<String, Object> oldAttributes = Utils
+				.saveAttributes(session.request);
 		for (String argument : invocation.getArguments().keySet()) {
 
 			Object newValue = null;
+			Object finalValue = null;
 			String valueExpression = invocation.getArguments().get(argument);
 
 			AttributeDefinition def = attributes.get(argument);
@@ -51,13 +53,15 @@ public class TagfileDefinition extends TaglibDefinition {
 			else
 				newValue = valueExpression;
 			Class<?> attributeType = getClass(def.getType());
-			if (newValue != null
-					&& !attributeType.isAssignableFrom(newValue.getClass()))
+			finalValue = Utils.cast(newValue, attributeType);
+			if (finalValue == null) {
+				// Value can't be cast to expected class. Ma
 				throw new ClassCastException("Expected type " + def.getType()
 						+ " for attribute " + argument + " on "
 						+ invocation.getName() + " but got "
 						+ newValue.getClass());
-			session.request.setAttribute(argument, newValue);
+			}
+			session.request.setAttribute(argument, finalValue);
 		}
 
 		session.request.setAttribute(BODY_ATTRIBUTE, invocation);

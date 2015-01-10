@@ -13,16 +13,16 @@ import fauxjsp.api.RenderSession;
 import fauxjsp.api.nodes.JspPage;
 
 /**
- * Tests the JSTL var implementation
+ * Tests fn: functions
  * @author George Georgovassilis
  *
  */
 
-public class TestJstlVar extends BaseTest{
+public class TestFunctions extends BaseTest{
 	
 	@Test
-	public void test_var(){
-		JspPage page = parser.parse("WEB-INF/jsp/var.jsp");
+	public void test_startsWith(){
+		JspPage page = parser.parse("WEB-INF/jsp/functions.jsp");
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		ByteArrayOutputStream baos = response.getBaos();
@@ -31,12 +31,15 @@ public class TestJstlVar extends BaseTest{
 		session.renderer = renderer;
 		session.elEvaluation = elEvaluation;
 		session.response = response;
-		
-		request.setAttribute("x", "test");
 
+		request.setAttribute("s1", "The rain in Spain falls on the plain");
+		request.setAttribute("s2", "The");
+		request.setAttribute("s3", "rain");
+		
 		renderer.render(page, session);
 		String text = new String(baos.toByteArray());
-		assertEquals("\n\n\ntest + string = test string", text);
+		assertTrue(text.contains("Condition 1"));
+		assertFalse(text.contains("Condition 2"));
 	}
 
 }

@@ -3,6 +3,8 @@ package fauxjsp.impl.parser;
 import fauxjsp.api.parser.JspParser;
 import fauxjsp.api.parser.JspParserFactory;
 import fauxjsp.api.parser.ResourceResolver;
+import fauxjsp.impl.simulatedtaglibs.core.JspBuiltinTaglibAttribute;
+import fauxjsp.impl.simulatedtaglibs.core.JspBuiltinTaglibBody;
 import fauxjsp.impl.simulatedtaglibs.core.JspBuiltinTaglibDoBody;
 import fauxjsp.impl.simulatedtaglibs.core.JstlCoreTaglibChoose;
 import fauxjsp.impl.simulatedtaglibs.core.JstlCoreTaglibForEach;
@@ -51,6 +53,10 @@ public class DefaultJspParserFactoryImpl implements JspParserFactory {
 				new JstlCoreTaglibSet());
 		parser.registerTaglibDefinition("jsp", "http://java.sun.com/jsp/doBody",
 				new JspBuiltinTaglibDoBody());
+		parser.registerTaglibDefinition("jsp", "http://java.sun.com/jsp/body",
+				new JspBuiltinTaglibBody());
+		parser.registerTaglibDefinition("jsp", "http://java.sun.com/jsp/attribute",
+				new JspBuiltinTaglibAttribute());
 		parser.registerTaglibDefinition("jsp", "http://java.sun.com/jsp",
 				new JspBuiltinTaglibDoBody());
 		

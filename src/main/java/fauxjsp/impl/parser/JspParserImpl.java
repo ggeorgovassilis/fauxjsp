@@ -1,9 +1,11 @@
 package fauxjsp.impl.parser;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 
 import org.apache.log4j.Logger;
 
@@ -24,6 +26,11 @@ import fauxjsp.api.parser.ResourceResolver;
 import fauxjsp.impl.Utils;
 import fauxjsp.impl.tagparser.TagParser;
 
+/**
+ * Implementation of {@link JspParser}
+ * @author George Georgovassilis
+ *
+ */
 public class JspParserImpl implements JspParser {
 
 	// TODO: our impl doesn't work with < or > in attributes, i.e. <when
@@ -32,7 +39,7 @@ public class JspParserImpl implements JspParser {
 	protected final String OPEN_SCRIPTLET = "<%";
 	protected final String CLOSE_INSTRUCTION = "%>";
 
-	protected String jspName;
+	protected String pagePath;
 	protected String jsp;
 	protected int index;
 	protected StringBuilder buffer = new StringBuilder();
@@ -53,7 +60,7 @@ public class JspParserImpl implements JspParser {
 	// time. this is important because this function is called every time a node
 	// is constructed
 	protected CodeLocation getCurrentLocation() {
-		return new CodeLocation(jspName, line + 1, column + 1);
+		return new CodeLocation(pagePath, line + 1, column + 1);
 	}
 
 	protected void parsingError(String message) throws JspParsingException {
@@ -202,6 +209,8 @@ public class JspParserImpl implements JspParser {
 									.getArguments().get("required");
 							String sType = instruction.getArguments().get(
 									"type");
+							if (Utils.isEmpty(sType))
+								sType = String.class.getCanonicalName();
 							String sRTValue = instruction.getArguments().get(
 									"rtexprvalue");
 
@@ -348,10 +357,31 @@ public class JspParserImpl implements JspParser {
 						+ "' on taglib invocation " + taglib.getName());
 		}
 	}
+	
+	protected void maybeIncludeContent(JspInstruction instruction, JspNodeWithChildren parent){
+		if ("include".equals(instruction.getName())){
+			String path = instruction.getArguments().get("file");
+			String resolvedPath = path;
+			if (Utils.isEmpty(path))
+				parsingError("Missing 'file' attribute");
+			
+			if (!path.startsWith("/")){
+				//relative path needs translation
+				File currentJsp = new File(pagePath);
+				File includedFile = new File(currentJsp.getParentFile(), path);
+				resolvedPath = includedFile.getPath();
+			}
+			byte[] content = location.getContents(resolvedPath);
+			if (content == null)
+				parsingError("Content at '"+resolvedPath+"' not found");
+			JspText text = new JspText(Utils.string(content, "UTF-8"), getCurrentLocation());
+			parent.getChildren().add(text);
+		}
+	}
 
 	public JspPage parse(String path) {
 		try {
-			this.jspName = path;
+			this.pagePath = path;
 			logger.debug("Parsing location " + path);
 			this.jsp = new String(location.getContents(path));
 			this.index = 0;
@@ -367,6 +397,7 @@ public class JspParserImpl implements JspParser {
 						flushText();
 						JspInstruction instruction = processInstruction();
 						maybeRegisterTaglib(instruction);
+						maybeIncludeContent(instruction, getCurrentNode());
 						page.getChildren().add(instruction);
 					} else if (errorOnScriptlets)
 						parsingError("This looks like a scriptlet. This parser doesn't support scriptlets.");

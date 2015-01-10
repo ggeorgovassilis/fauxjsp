@@ -13,16 +13,16 @@ import fauxjsp.api.RenderSession;
 import fauxjsp.api.nodes.JspPage;
 
 /**
- * Tests the JSTL var implementation
+ * Test the include instruction
  * @author George Georgovassilis
  *
  */
 
-public class TestJstlVar extends BaseTest{
+public class TestIncludeInstruction extends BaseTest{
 	
 	@Test
-	public void test_var(){
-		JspPage page = parser.parse("WEB-INF/jsp/var.jsp");
+	public void test_include() throws Exception{
+		JspPage page = parser.parse("WEB-INF/jsp/include.jsp");
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		ByteArrayOutputStream baos = response.getBaos();
@@ -31,12 +31,10 @@ public class TestJstlVar extends BaseTest{
 		session.renderer = renderer;
 		session.elEvaluation = elEvaluation;
 		session.response = response;
-		
-		request.setAttribute("x", "test");
 
 		renderer.render(page, session);
-		String text = new String(baos.toByteArray());
-		assertEquals("\n\n\ntest + string = test string", text);
+		String text = new String(baos.toByteArray(), "UTF-8");
+		assertEquals(text, "Part 1 Part 2 Part 3", text);
 	}
 
 }

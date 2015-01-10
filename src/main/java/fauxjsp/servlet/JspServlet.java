@@ -115,7 +115,6 @@ public class JspServlet extends HttpServlet {
 			JspPage page = parser.parse(servletPath);
 			session.renderer = renderer;
 			session.elEvaluation = new ELEvaluationImpl(elFactory);
-			session.out = resp.getOutputStream();
 			session.request = req;
 			session.response = resp;
 			renderer.render(page, session);

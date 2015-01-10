@@ -10,7 +10,7 @@ import fauxjsp.api.parser.JspParserFactory;
 import fauxjsp.api.parser.ResourceResolver;
 import fauxjsp.api.renderer.JspRenderer;
 import fauxjsp.impl.parser.DefaultJspParserFactoryImpl;
-import fauxjsp.impl.parser.FileLocation;
+import fauxjsp.impl.parser.FileResolver;
 import fauxjsp.impl.renderer.ELEvaluationImpl;
 import fauxjsp.impl.renderer.ELFactoryServlet3Impl;
 import fauxjsp.impl.renderer.JspRendererFactory;
@@ -39,7 +39,7 @@ public abstract class BaseTest {
 	
 	@Before
 	public void setup() {
-		ResourceResolver location = new FileLocation(new File("examples"));
+		ResourceResolver location = new FileResolver(new File("examples"));
 		parserFactory = new DefaultJspParserFactoryImpl(location);
 		parser = newParser();
 		rendererFactory = new JspRendererFactoryImpl();

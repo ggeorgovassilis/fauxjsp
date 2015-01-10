@@ -10,12 +10,11 @@ import fauxjsp.impl.Utils;
  * @author George Georgovassilis
  *
  */
-//TODO: rename to FileResolver
-public class FileLocation implements ResourceResolver{
+public class FileResolver implements ResourceResolver{
 
 	protected File baseFile;
 	
-	public FileLocation(File baseFile) {
+	public FileResolver(File baseFile) {
 		this.baseFile = baseFile;
 	}
 	

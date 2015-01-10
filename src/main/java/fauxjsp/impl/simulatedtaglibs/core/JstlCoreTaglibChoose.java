@@ -36,7 +36,8 @@ public class JstlCoreTaglibChoose extends TaglibDefinition{
 						break;
 					}
 				} else if (taglib.getTaglib().equals("otherwise")) {
-					session.renderer.render(child, session);
+					for (JspNode n:taglib.getChildren())
+						session.renderer.render(n, session);
 				}
 			}
 		}

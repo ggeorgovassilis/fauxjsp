@@ -2,6 +2,7 @@ package fauxjsp.impl;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -44,7 +45,7 @@ public class Utils {
 
 	public static void restoreAttributes(ServletRequest request,
 			Map<String, Object> attributes) {
-		clearAttributes(request);
+		//clearAttributes(request);
 		for (String attr : attributes.keySet())
 			request.setAttribute(attr, attributes.get(attr));
 	}
@@ -69,17 +70,59 @@ public class Utils {
 		}
 		return Integer.parseInt(value);
 	}
-	
-	public static StringBuilder replace(StringBuilder sb, String what, String with){
+
+	public static StringBuilder replace(StringBuilder sb, String what,
+			String with) {
 		int index = sb.indexOf(what);
-		if (index!=-1){
-			sb.replace(index, index+with.length()-1, with);
+		if (index != -1) {
+			sb.delete(index, index+what.length());
+			sb.insert(index, with);
+//			sb.replace(index, index + with.length() - 1, with);
 		}
 		return sb;
 	}
-	
-	public static String unescapeHtml(String html){
+
+	public static String unescapeHtml(String html) {
 		return StringEscapeUtils.unescapeHtml(html);
 	}
 
+	public static String string(byte[] buffer, String characterset) {
+		try {
+			return new String(buffer, characterset);
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * Attempts to cast value to c. If that's not possible, then this method
+	 * will try a few obvious conversions if C is Boolean, Integer, Long, Double, Float, Byte, Short
+	 * 
+	 * @param value
+	 * @param c
+	 * @return
+	 */
+	public static Object cast(Object value, Class<?> c){
+		if (value == null)
+			return null;
+		if (c.isAssignableFrom(value.getClass()))
+			return value;
+		if (c.equals(Boolean.class))
+			return Boolean.parseBoolean(value.toString());
+		if (c.equals(Byte.class))
+			return Byte.parseByte(value.toString());
+		if (c.equals(Short.class))
+			return Short.parseShort(value.toString());
+		if (c.equals(Integer.class))
+			return Integer.parseInt(value.toString());
+		if (c.equals(Long.class))
+			return Long.parseLong(value.toString());
+		if (c.equals(Float.class))
+			return Float.parseFloat(value.toString());
+		if (c.equals(Double.class))
+			return Double.parseDouble(value.toString());
+		if (c.equals(String.class))
+			return value.toString();
+		throw new ClassCastException("Can't cast "+value.getClass()+" to "+c);
+	}
 }
