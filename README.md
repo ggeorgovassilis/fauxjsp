@@ -138,10 +138,11 @@ c:set var
 
 ### Formatting and internationalization
 
-```fmt:message key```
+```jsp
+fmt:message key
 
-```fmt:setBundle basename```
-
+fmt:setBundle basename
+```
 
 ## Roadmap
 
