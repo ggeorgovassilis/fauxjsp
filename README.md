@@ -102,35 +102,38 @@ up under a special namespace, one for each taglib method.
 
 ### Directives
 
-```<%@ taglib prefix uri tagdir%>```
+```<%@ taglib prefix uri tagdir%>
 
-```<@ include file %>```
+<@ include file %>
 
-```<%@ attribute name required rtexprvalue type %>```
+<%@ attribute name required rtexprvalue type %>
 
-```jsp:attribute name```
+jsp:attribute name
 
-```jsp:body```
+jsp:body
 
-```jsp:doBody```
+jsp:doBody
+```
 
 ### Core taglib
 
-```c:out value```
+```
+c:out value
 
-```c:choose test```
+c:choose test
 
-```c:when test```
+c:when test
 
-```c:otherwise```
+c:otherwise
 
-```c:forEach var items varStatus begin end```
+c:forEach var items varStatus begin end
 
-```c:if test```
+c:if test
 
-```c:set var```
+c:set var
 
-```c:set var```
+c:set var
+```
 
 ### Formatting and internationalization
 
