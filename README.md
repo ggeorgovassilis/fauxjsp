@@ -20,8 +20,9 @@ Currently implemented features:
 
 Constraints and missing features:
 
-* Cannot use taglibs out of the box. You have to provide your own implementations of taglibs other than core taglibs. This means that c:out will work but
+* Cannot use just third-party taglibs. You have to provide your own implementations of taglibs other than core taglibs. This means that c:out will work but
   you can't use third party taglibs such as [displaytag](http://www.displaytag.org) (unless you re-implement it for fauxjsp).
+* Not all core taglibs are supported and even not all features of the supported ones are implemented
 * I didn't read up on JSP/JSTL/servlet specifications. This implementation is "steer by sight" (aka "works for me").
 * Features of the core taglibs are still very limited
 * No scriptlets, at all
@@ -96,6 +97,46 @@ the parsed results. In detail:
 Unfortunately, currently it is not possible to load taglibs other than tagfiles. However it is possible to fake missing taglibs by providing a special
 implementation for fauxjsp. For some examples, have a look at the ```JstlCoreTaglib*``` classes. The ```DefaultJspParserFactoryImpl``` factory sets those
 up under a special namespace, one for each taglib method.
+
+## Supported taglibs
+
+### Directives
+
+```<%@ taglib prefix uri tagdir%>```
+
+```<@ include file %>```
+
+```<%@ attribute name required rtexprvalue type %>```
+
+```jsp:attribute name```
+
+```jsp:body```
+
+```jsp:doBody```
+
+### Core taglib
+
+```c:out value```
+
+```c:choose test```
+
+```c:when test```
+
+```c:otherwise```
+
+```c:forEach var items varStatus begin end```
+
+```c:if test```
+
+```c:set var```
+
+```c:set var```
+
+### Formatting and internationalization
+
+```fmt:message key```
+
+```fmt:setBundle basename```
 
 
 ## Roadmap
