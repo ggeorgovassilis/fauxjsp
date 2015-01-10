@@ -28,7 +28,7 @@ import static org.junit.Assert.*;
  *
  */
 
-public class TestJspParser extends BaseTest{
+public class TestJspParserAndRenderer extends BaseTest{
 
 	@Test
 	public void testParser() throws Exception {
@@ -134,6 +134,36 @@ public class TestJspParser extends BaseTest{
 		renderer.render(page, session);
 		String text = new String(baos.toByteArray());
 		assertTrue(text.contains("+++headline 1"));
+	}
+
+	@Test
+	public void testHtmlEscape() {
+		JspPage page = parser.parse("WEB-INF/jsp/news.jsp");
+		MockHttpServletRequest request = new MockHttpServletRequest();
+		MockHttpServletResponse response = new MockHttpServletResponse();
+		ByteArrayOutputStream baos = response.getBaos();
+		RenderSession session = new RenderSession();
+		session.request = request;
+		session.renderer = renderer;
+		session.elEvaluation = elEvaluation;
+		session.response = response;
+
+		session.request.setAttribute("navigation", Arrays.asList(
+				new NavigationItem("path 1", "label 1"), new NavigationItem(
+						"path 2", "label 2")));
+		session.request.setAttribute("listOfStocks", Arrays.asList(new Stock(
+				"S1", "Stock one", 25000, 1), new Stock("S2", "Stock two",
+				10000, -2), new Stock("S3", "Stock3", 9999, 12)));
+		session.request.setAttribute("listOfNews", Arrays.asList(new News("1",
+				"headline 1", "description 1", "full text of news 1", true),
+				new News("2", "headline 2", "description 2",
+						"full text of news 2", false)));
+		session.request.setAttribute("news", new News("1", "Action & news 1",
+				"description 1", "full text of news 3", true));
+
+		renderer.render(page, session);
+		String text = new String(baos.toByteArray());
+		assertTrue(text.contains("+++Action &amp; news 1"));
 	}
 
 	@Test

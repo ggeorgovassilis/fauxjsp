@@ -86,6 +86,10 @@ public class Utils {
 		return StringEscapeUtils.unescapeHtml(html);
 	}
 
+	public static String escapeHtml(String html) {
+		return StringEscapeUtils.escapeHtml(html);
+	}
+
 	public static String string(byte[] buffer, String characterset) {
 		try {
 			return new String(buffer, characterset);

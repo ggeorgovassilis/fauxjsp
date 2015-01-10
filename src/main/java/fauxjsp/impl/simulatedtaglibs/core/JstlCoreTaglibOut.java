@@ -4,6 +4,7 @@ import fauxjsp.api.RenderSession;
 import fauxjsp.api.nodes.JspTaglibInvocation;
 import fauxjsp.api.nodes.TaglibDefinition;
 import fauxjsp.api.renderer.JspRenderException;
+import fauxjsp.impl.Utils;
 
 /**
  * Implementation of c:out
@@ -19,7 +20,8 @@ public class JstlCoreTaglibOut extends TaglibDefinition{
 			throw new RuntimeException("Missing value argument");
 		Object value = session.elEvaluation.evaluate(outExpression, session);
 		try {
-			session.response.getOutputStream().write(("" + value).getBytes(session.response.getCharacterEncoding()));
+			String s = Utils.escapeHtml(""+value);
+			session.response.getOutputStream().write((s).getBytes(session.response.getCharacterEncoding()));
 		} catch (Exception e) {
 			throw new JspRenderException(invocation, e);
 		}
