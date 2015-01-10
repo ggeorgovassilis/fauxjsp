@@ -144,11 +144,20 @@ fmt:message key
 fmt:setBundle basename
 ```
 
+### Functions
+
+```java
+
+fn:startsWith
+
+```
+
+
 ## Roadmap
 
 Features to come in the near future:
 
-* jsp:include, jsp:attribute, jsp:var, import
+* jsp:include, ~~jsp:attribute~~, jsp:var, import
 * fmt, fn
 * spring mvc taglibs
 
