@@ -102,7 +102,8 @@ up under a special namespace, one for each taglib method.
 
 ### Directives
 
-```<%@ taglib prefix uri tagdir%>
+```java
+<%@ taglib prefix uri tagdir%>
 
 <@ include file %>
 
@@ -117,7 +118,7 @@ jsp:doBody
 
 ### Core taglib
 
-```
+```java
 c:out value
 
 c:choose test
