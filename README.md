@@ -31,8 +31,23 @@ Constraints and missing features:
 
 ## Getting started
 
-1. Check out and compile
-2. Put the JAR in your webapp's WEB-INF/lib
+1. download sources and compile
+```sh
+git clone https://github.com/ggeorgovassilis/fauxjsp.git
+cd fauxjsp
+mvn install
+```
+
+2. add the dependency to your project
+
+```xml
+<dependency>
+	<groupId>com.github.ggeorgovassilis</groupId>
+	<artifactId>fauxjsp</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+</dependency>
+```
+
 3. Declare an instance of the JspServlet in web.xml:
 
 ```xml
