@@ -187,7 +187,7 @@ fn:trim(text)
 
 Like written before, fauxjsp can't use taglibs and has to emulate them instead, which means that someone has to program that emulation.
 
-*Step 1*: create the taglib implementation. Just find one of the already simulated taglibs like [JstlCoreTaglibOut](JstlCoreTaglibOut.java) and copy & paste it
+*Step 1*: create the taglib implementation. Just find one of the already simulated taglibs like [JstlCoreTaglibOut](src/main/java/fauxjsp/impl/simulatedtaglibs/core/JstlCoreTaglibOut.java) and copy & paste it
 
 ```java
 
