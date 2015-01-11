@@ -28,6 +28,11 @@ public class JspRenderException extends RuntimeException {
 		this.node = node;
 	}
 
+	public JspRenderException(String message, JspNode node){
+		super(message);
+		this.node = node;
+	}
+
 	public JspNode getNode() {
 		return node;
 	}

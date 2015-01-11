@@ -24,12 +24,12 @@ public class JstlCoreTaglibForEach extends TaglibDefinition{
 
 	protected void runForEachLoop(RenderSession session,
 			JspTaglibInvocation invocation) {
-		String itemsExpression = invocation.getArguments().get("items");
-		String varName = invocation.getArguments().get("var");
-		String sBegin = invocation.getArguments().get("begin");
-		String sEnd = invocation.getArguments().get("end");
-		String sStep = invocation.getArguments().get("step");
-		String varStatus = invocation.getArguments().get("varStatus");
+		String itemsExpression = getAttribute("items", invocation);
+		String varName = getAttribute("var", invocation);
+		String sBegin = getAttribute("begin", invocation);
+		String sEnd = getAttribute("end", invocation);
+		String sStep = getAttribute("step", invocation);
+		String varStatus = getAttribute("varStatus", invocation);
 		int begin = 0;
 		int end = 0;
 		int step = 1;
@@ -37,13 +37,13 @@ public class JstlCoreTaglibForEach extends TaglibDefinition{
 		//TODO: I really should figure out how variable scoping works and whether variables need to be saved and restored
 		//Map<String, Object> oldAttributeValues = Utils.saveAttributes(session.request);
 
-		Object rawItems = session.elEvaluation.evaluate(itemsExpression,
+		Object rawItems = evaluate(itemsExpression,
 				session);
 		if (rawItems == null)
-			throw new RuntimeException(itemsExpression + " is null");
+			throw new JspRenderException(itemsExpression + " is null", invocation);
 		if (!(rawItems instanceof Collection))
-			throw new RuntimeException(
-					"items attribute is not a collection but " + rawItems);
+			throw new JspRenderException(
+					"items attribute is not a collection but " + rawItems, invocation);
 		@SuppressWarnings({ "rawtypes", "unchecked" })
 		List<?> items = new ArrayList((Collection) rawItems);
 		
@@ -83,13 +83,13 @@ public class JstlCoreTaglibForEach extends TaglibDefinition{
 	}
 	
 	public JstlCoreTaglibForEach(){
-		this.name="forEach";
-		this.attributes.put("items", new AttributeDefinition("items", List.class.getName(), true, true));
-		this.attributes.put("var", new AttributeDefinition("var", Object.class.getName(), true, false));
-		this.attributes.put("begin", new AttributeDefinition("begin", Number.class.getName(), true, false));
-		this.attributes.put("end", new AttributeDefinition("end", Number.class.getName(), true, false));
-		this.attributes.put("step", new AttributeDefinition("step", Number.class.getName(), true, false));
-		this.attributes.put("varStatus", new AttributeDefinition("varStatus", String.class.getName(), false, false));
+		super("forEach");
+		declareAttribute("items", List.class.getName(), true, true);
+		declareAttribute("var", Object.class.getName(), true, false);
+		declareAttribute("begin", Number.class.getName(), true, false);
+		declareAttribute("end", Number.class.getName(), true, false);
+		declareAttribute("step", Number.class.getName(), true, false);
+		declareAttribute("varStatus", String.class.getName(), false, false);
 	}
 
 }

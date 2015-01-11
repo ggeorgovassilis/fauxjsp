@@ -74,7 +74,7 @@ public class JspServlet extends HttpServlet {
 	protected JspParserFactory getJspParserFactory(ServletConfig config){
 		ResourceResolver location = new ServletResourceResolver(jspBase, getServletContext());
 		DefaultJspParserFactoryImpl factory = new DefaultJspParserFactoryImpl(location);
-		factory.setErrorOnScriptlets("true".equalsIgnoreCase(config.getInitParameter("errorOnScriptlet")));
+		factory.setFailOnScriptletUsage("true".equalsIgnoreCase(config.getInitParameter("errorOnScriptlet")));
 		return factory;
 	}
 	

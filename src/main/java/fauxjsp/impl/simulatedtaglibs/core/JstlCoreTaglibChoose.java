@@ -8,11 +8,12 @@ import fauxjsp.api.renderer.JspRenderException;
 
 /**
  * Implementation of c:choose
+ * 
  * @author George Georgovassilis
  *
  */
 
-public class JstlCoreTaglibChoose extends TaglibDefinition{
+public class JstlCoreTaglibChoose extends TaglibDefinition {
 
 	protected void runChoose(RenderSession session,
 			JspTaglibInvocation invocation) {
@@ -20,24 +21,24 @@ public class JstlCoreTaglibChoose extends TaglibDefinition{
 			if (child instanceof JspTaglibInvocation) {
 				JspTaglibInvocation taglib = (JspTaglibInvocation) child;
 				if (!taglib.getNamespace().equals(invocation.getNamespace())) {
-					throw new RuntimeException(
-							"Unexpectedly found taglib invocation "+taglib.getName()+" within "+invocation.getNamespace());
+					throw new JspRenderException(
+							"Unexpectedly found taglib invocation "
+									+ taglib.getName() + " within "
+									+ invocation.getNamespace(), child);
 				}
 				if (taglib.getTaglib().equals("when")) {
 					String testExpression = taglib.getArguments().get("test");
 					if (testExpression == null)
-						throw new RuntimeException("Expected test argument");
-					Object result = session.elEvaluation.evaluate(
-							testExpression, session);
-					boolean booleanResult = (result instanceof Boolean) ? (((Boolean) result)
-							.booleanValue()) : result != null;
+						throw new JspRenderException("Expected test argument",
+								taglib);
+					Object result = evaluate(testExpression, session);
+					boolean booleanResult = toBoolean(result);
 					if (booleanResult) {
 						session.renderer.render(child, session);
 						break;
 					}
 				} else if (taglib.getTaglib().equals("otherwise")) {
-					for (JspNode n:taglib.getChildren())
-						session.renderer.render(n, session);
+					render(taglib.getChildren(), session);
 				}
 			}
 		}
@@ -45,8 +46,14 @@ public class JstlCoreTaglibChoose extends TaglibDefinition{
 
 	@Override
 	public void render(RenderSession session, JspTaglibInvocation invocation) {
-		if (!invocation.getTaglib().equals("choose")&&!invocation.getTaglib().equals("otherwise"))
-			throw new JspRenderException(invocation, new RuntimeException("This isn't a choose or otherwise taglib"));
+		if (!invocation.getTaglib().equals("choose")
+				&& !invocation.getTaglib().equals("otherwise"))
+			throw new JspRenderException(invocation, new RuntimeException(
+					"This isn't a choose or otherwise taglib"));
 		runChoose(session, invocation);
+	}
+
+	public JstlCoreTaglibChoose() {
+		super("choose");
 	}
 }

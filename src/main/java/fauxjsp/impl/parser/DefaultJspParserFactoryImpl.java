@@ -25,10 +25,6 @@ public class DefaultJspParserFactoryImpl implements JspParserFactory {
 	protected ResourceResolver location;
 	protected boolean errorOnScriptlets = true;
 
-	public void setErrorOnScriptlets(boolean errorOnScriptlets) {
-		this.errorOnScriptlets = errorOnScriptlets;
-	}
-
 	protected void setup(JspParserImpl parser) {
 		parser.registerTaglibDefinition(
 				"http://java.sun.com/jsp/jstl/core/forEach",
@@ -81,6 +77,11 @@ public class DefaultJspParserFactoryImpl implements JspParserFactory {
 		JspParserImpl parser = new JspParserImpl(this, parent);
 		setup(parser);
 		return parser;
+	}
+
+	@Override
+	public void setFailOnScriptletUsage(boolean value) {
+		this.errorOnScriptlets = value;
 	}
 
 }

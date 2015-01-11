@@ -1,9 +1,9 @@
 package fauxjsp.impl.simulatedtaglibs.core;
 
 import fauxjsp.api.RenderSession;
-import fauxjsp.api.nodes.JspNode;
 import fauxjsp.api.nodes.JspTaglibInvocation;
 import fauxjsp.api.nodes.TaglibDefinition;
+import fauxjsp.api.renderer.JspRenderException;
 
 /**
  * Implements built-in tag jsp:body
@@ -16,28 +16,23 @@ import fauxjsp.api.nodes.TaglibDefinition;
 public class JspBuiltinTaglibBody extends TaglibDefinition {
 
 	public JspBuiltinTaglibBody() {
-		name = "body";
+		super("body");
 	}
 
 	// TODO: this doesn't work yet. result needs to be rendered into a buffer
 	// instead of session.response
 	protected void runAttribute(RenderSession session,
 			JspTaglibInvocation invocation) {
-		for (JspNode child : invocation.getChildren())
-			session.renderer.render(child, session);
+		render(invocation.getChildren(), session);
 	}
 
 	@Override
 	public void render(RenderSession session, JspTaglibInvocation invocation) {
-		try {
-			if (invocation.getTaglib().equals("body")) {
-				runAttribute(session, invocation);
-			} else {
-				throw new RuntimeException("Unknown taglib "
-						+ invocation.getTaglib());
-			}
-		} catch (Exception e) {
-			throw new RuntimeException(e);
+		if (invocation.getTaglib().equals("body")) {
+			runAttribute(session, invocation);
+		} else {
+			throw new JspRenderException("Unknown taglib "
+					+ invocation.getTaglib(), invocation);
 		}
 	}
 }

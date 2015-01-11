@@ -17,24 +17,20 @@ public class JstlFmtMessage extends TaglibDefinition{
 	public final static String ATTR_RESOURCE_BUNDLE = "__fauxjsp_resource_bundle";
 	
 	public JstlFmtMessage() {
-		name = "message";
-		this.attributes.put("key", new AttributeDefinition("key", String.class.getName(), true, true));
+		super("message");
+		declareAttribute("key", String.class.getName(), true, true);
 	}
 
 	protected void runMsg(RenderSession session, JspTaglibInvocation invocation){
-		String key = invocation.getArguments().get("key");
+		String key = getAttribute("key", invocation);
 		String resourceBundleName = (String)session.request.getAttribute(ATTR_RESOURCE_BUNDLE);
 		if (resourceBundleName == null)
-			throw new RuntimeException("No resource bundle name found");
+			throw new JspRenderException("No resource bundle name found", invocation);
 		ResourceBundle bundle = ResourceBundle.getBundle(resourceBundleName, session.request.getLocale());
 		if (bundle == null)
-			throw new RuntimeException("No resource bundle found");
+			throw new JspRenderException("No resource bundle found", invocation);
 		String value = bundle.getString(key);
-		try {
-			session.response.getOutputStream().write(("" + value).getBytes(session.response.getCharacterEncoding()));
-		} catch (Exception e) {
-			throw new JspRenderException(invocation, e);
-		}
+		write(value, session);
 	}
 	
 	@Override

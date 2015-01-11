@@ -50,7 +50,7 @@ public class Functions {
 		if (object == null)
 			return 0;
 		if (object instanceof Collection){
-			return ((Collection)object).size();
+			return ((Collection<?>)object).size();
 		}
 		if (object.getClass().isArray()){
 			return ((Object[])object).length;

@@ -13,8 +13,13 @@ import fauxjsp.impl.Utils;
 
 public class TagfileDefinition extends TaglibDefinition {
 
+
 	public static String BODY_ATTRIBUTE = "__fauxjsp_body";
 	protected JspPage body;
+
+	public TagfileDefinition(String name) {
+		super(name);
+	}
 
 	public JspPage getBody() {
 		return body;

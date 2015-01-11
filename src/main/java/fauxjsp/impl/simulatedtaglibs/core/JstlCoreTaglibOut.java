@@ -8,34 +8,29 @@ import fauxjsp.impl.Utils;
 
 /**
  * Implementation of c:out
+ * 
  * @author George Georgovassilis
  *
  */
-public class JstlCoreTaglibOut extends TaglibDefinition{
+public class JstlCoreTaglibOut extends TaglibDefinition {
 
 	protected void runOut(RenderSession session, JspTaglibInvocation invocation) {
-		//TODO: make base method for getting evaluated attributes
-		String outExpression = invocation.getArguments().get("value");
-		if (outExpression == null)
-			throw new RuntimeException("Missing value argument");
-		Object value = session.elEvaluation.evaluate(outExpression, session);
-		try {
-			String s = Utils.escapeHtml(""+value);
-			session.response.getOutputStream().write((s).getBytes(session.response.getCharacterEncoding()));
-		} catch (Exception e) {
-			throw new JspRenderException(invocation, e);
-		}
+		String valueExpression = getAttribute("value", invocation);
+		Object value = evaluate(valueExpression, session);
+		String s = Utils.escapeHtml("" + value);
+		write(s, session);
 	}
 
 	@Override
 	public void render(RenderSession session, JspTaglibInvocation invocation) {
 		if (!invocation.getTaglib().equals("out"))
-			throw new JspRenderException(invocation, new RuntimeException("This isn't an out taglib"));
+			throw new JspRenderException(invocation, new RuntimeException(
+					"This isn't an out taglib"));
 		runOut(session, invocation);
 	}
-	
+
 	public JstlCoreTaglibOut() {
-		this.name="out";
-		this.attributes.put("value", new AttributeDefinition("value", Object.class.getName(), true, true));
+		super("out");
+		declareAttribute("value", Object.class.getName(), true, true);
 	}
 }

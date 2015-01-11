@@ -147,7 +147,6 @@ public class TestFunctions extends BaseTest{
 	public void test_trim(){
 		renderer.render(page, session);
 		String text = new String(baos.toByteArray());
-		System.out.println(text);
 		assertTrue(text.contains("trim (this    is  some text)"));
 	}
 

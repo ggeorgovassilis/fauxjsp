@@ -196,7 +196,7 @@ public class JspParserImpl implements JspParser {
 						+ " is a tagfile, running parser");
 				JspParser tagfileParser = parserFactory.create(this);
 				JspPage page = tagfileParser.parse(fullPath);
-				TagfileDefinition tagfileDefinition = new TagfileDefinition();
+				TagfileDefinition tagfileDefinition = new TagfileDefinition(path);
 				definition = tagfileDefinition;
 				tagfileDefinition.setBody(page);
 				for (JspNode child : page.getChildren())

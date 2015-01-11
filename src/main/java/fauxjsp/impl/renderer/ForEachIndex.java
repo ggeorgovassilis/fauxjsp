@@ -2,6 +2,11 @@ package fauxjsp.impl.renderer;
 
 import javax.servlet.jsp.jstl.core.LoopTagStatus;
 
+/**
+ * Status variable for the <c:forEach > loop
+ * @author George Georgovassilis
+ *
+ */
 public class ForEachIndex implements LoopTagStatus{
 
 	protected Object current;

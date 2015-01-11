@@ -13,12 +13,12 @@ import fauxjsp.api.renderer.JspRenderException;
 public class JstlFmtSetBundle extends TaglibDefinition{
 
 	public JstlFmtSetBundle() {
-		name = "setBundle";
-		this.attributes.put("basename", new AttributeDefinition("basename", String.class.getName(), true, true));
+		super("setBundle");
+		declareAttribute("basename", String.class.getName(), true, true);
 	}
 
 	protected void runSetBundle(RenderSession session, JspTaglibInvocation invocation){
-		String basename = invocation.getArguments().get("basename");
+		String basename = getAttribute("basename", invocation);
 		String bundleName = (String)session.elEvaluation.evaluate(basename, session);
 		session.request.setAttribute(JstlFmtMessage.ATTR_RESOURCE_BUNDLE, bundleName);
 	}
@@ -26,7 +26,7 @@ public class JstlFmtSetBundle extends TaglibDefinition{
 	@Override
 	public void render(RenderSession session, JspTaglibInvocation invocation) {
 		if (!invocation.getTaglib().equals("setBundle"))
-			throw new JspRenderException(invocation, new RuntimeException("This isn't a message taglib"));
+			throw new JspRenderException("This isn't a message taglib", invocation);
 		runSetBundle(session, invocation);
 	}
 

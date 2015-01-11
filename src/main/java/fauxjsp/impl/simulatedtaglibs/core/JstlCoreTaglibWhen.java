@@ -15,12 +15,9 @@ import fauxjsp.api.renderer.JspRenderException;
 public class JstlCoreTaglibWhen extends TaglibDefinition{
 
 	protected void runWhen(RenderSession session, JspTaglibInvocation invocation) {
-		String testExpression = invocation.getArguments().get("test");
-		if (testExpression == null)
-			throw new RuntimeException("Expected test argument");
-		Object result = session.elEvaluation.evaluate(testExpression, session);
-		boolean booleanResult = (result instanceof Boolean) ? (((Boolean) result)
-				.booleanValue()) : result != null;
+		String testExpression = getAttribute("test", invocation);
+		Object result = evaluate(testExpression, session);
+		boolean booleanResult = toBoolean(result);
 		if (booleanResult) {
 			for (JspNode child : invocation.getChildren())
 				session.renderer.render(child, session);
@@ -29,12 +26,12 @@ public class JstlCoreTaglibWhen extends TaglibDefinition{
 	@Override
 	public void render(RenderSession session, JspTaglibInvocation invocation) {
 		if (!invocation.getTaglib().equals("when"))
-			throw new JspRenderException(invocation, new RuntimeException("This isn't a when taglib"));
+			throw new JspRenderException("This isn't a when taglib", invocation);
 		runWhen(session, invocation);
 	}
 	
 	public JstlCoreTaglibWhen() {
-		this.name = "when";
-		this.attributes.put("test", new AttributeDefinition("test", Boolean.class.getName(), true, true));
+		super("when");
+		declareAttribute("test", Boolean.class.getName(), true, true);
 	}
 }
