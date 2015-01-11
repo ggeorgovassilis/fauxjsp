@@ -1,4 +1,4 @@
-package fauxjsp.impl.parser;
+package jspparser.utils;
 
 import java.io.File;
 

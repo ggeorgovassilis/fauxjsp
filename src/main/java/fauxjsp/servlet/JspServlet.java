@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import fauxjsp.api.RenderSession;
 import fauxjsp.api.nodes.JspPage;
 import fauxjsp.api.parser.JspParser;
 import fauxjsp.api.parser.JspParserFactory;
@@ -17,11 +16,12 @@ import fauxjsp.api.parser.JspParsingException;
 import fauxjsp.api.parser.ResourceResolver;
 import fauxjsp.api.renderer.JspRenderException;
 import fauxjsp.api.renderer.JspRenderer;
+import fauxjsp.api.renderer.JspRendererFactory;
+import fauxjsp.api.renderer.RenderSession;
 import fauxjsp.impl.parser.DefaultJspParserFactoryImpl;
 import fauxjsp.impl.renderer.ELEvaluationImpl;
 import fauxjsp.impl.renderer.ELFactory;
 import fauxjsp.impl.renderer.ELFactoryServlet3Impl;
-import fauxjsp.impl.renderer.JspRendererFactory;
 import fauxjsp.impl.renderer.JspRendererFactoryImpl;
 import fauxjsp.impl.renderer.JspRendererImpl;
 

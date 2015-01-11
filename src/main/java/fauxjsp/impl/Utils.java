@@ -11,7 +11,7 @@ import javax.servlet.ServletRequest;
 
 import org.apache.commons.lang.StringEscapeUtils;
 
-import fauxjsp.api.RenderSession;
+import fauxjsp.api.renderer.RenderSession;
 
 public class Utils {
 

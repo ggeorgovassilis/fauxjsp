@@ -1,7 +1,7 @@
 package fauxjsp.api.parser;
 
 /**
- * Points at a place in the code
+ * Points at a place in the code. Mostly used for pinpointing errors when parsing JSP.
  * 
  * @author George Georgovassilis
  *

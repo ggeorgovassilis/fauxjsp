@@ -1,6 +1,5 @@
 package fauxjsp.api.renderer;
 
-import fauxjsp.api.RenderSession;
 import fauxjsp.api.nodes.JspNode;
 
 /**

@@ -11,8 +11,8 @@ import jspparser.utils.MockHttpServletResponse;
 import org.junit.Before;
 import org.junit.Test;
 
-import fauxjsp.api.RenderSession;
 import fauxjsp.api.nodes.JspPage;
+import fauxjsp.api.renderer.RenderSession;
 
 /**
  * Tests fn: functions

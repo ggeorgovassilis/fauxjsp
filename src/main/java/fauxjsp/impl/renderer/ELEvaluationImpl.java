@@ -13,11 +13,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import fauxjsp.api.RenderSession;
-import fauxjsp.api.parser.ELEvaluation;
+import fauxjsp.api.renderer.ELEvaluation;
+import fauxjsp.api.renderer.RenderSession;
 import fauxjsp.impl.Utils;
 import fauxjsp.impl.simulatedtaglibs.core.Functions;
 
+/**
+ * Default implementation that evaluates java EL expressions
+ * @author George Georgovassilis
+ *
+ */
 public class ELEvaluationImpl implements ELEvaluation {
 
 	protected ELFactory elFactory;

@@ -16,7 +16,7 @@ import fauxjsp.impl.simulatedtaglibs.fmt.JstlFmtMessage;
 import fauxjsp.impl.simulatedtaglibs.fmt.JstlFmtSetBundle;
 
 /**
- * 
+ * Sets up {@link JspParserImpl} instances with emulated taglibs and functions.
  * @author George Georgovassilis
  */
 

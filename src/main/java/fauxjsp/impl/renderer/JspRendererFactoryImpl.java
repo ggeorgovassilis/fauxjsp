@@ -1,6 +1,7 @@
 package fauxjsp.impl.renderer;
 
 import fauxjsp.api.renderer.JspRenderer;
+import fauxjsp.api.renderer.JspRendererFactory;
 
 /**
  * Simple implementation that returns {@link JspRendererImpl} instances

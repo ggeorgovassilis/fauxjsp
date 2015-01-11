@@ -5,7 +5,7 @@ import fauxjsp.api.nodes.TaglibDefinition;
 import fauxjsp.impl.parser.TaglibDefinitionCache;
 
 /**
- * Parses JSPs. Is not multi thread safe.
+ * Parses JSPs. Is not multi-thread safe.
  * @author George Georgovassilis
  */
 public interface JspParser {

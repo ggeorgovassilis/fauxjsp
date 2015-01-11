@@ -3,7 +3,7 @@ package fauxjsp.api.nodes;
 import java.io.UnsupportedEncodingException;
 
 import fauxjsp.api.parser.CodeLocation;
-import fauxjsp.api.parser.ELEvaluation;
+import fauxjsp.api.renderer.ELEvaluation;
 
 /**
  * Models binary content which may include EL (see {@link ELEvaluation}).

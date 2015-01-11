@@ -1,4 +1,4 @@
-package fauxjsp.impl.renderer;
+package fauxjsp.servlet;
 
 import java.io.IOException;
 import java.io.OutputStream;

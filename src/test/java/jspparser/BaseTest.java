@@ -2,18 +2,19 @@ package jspparser;
 
 import java.io.File;
 
+import jspparser.utils.FileResolver;
+
 import org.junit.Before;
 
-import fauxjsp.api.parser.ELEvaluation;
 import fauxjsp.api.parser.JspParser;
 import fauxjsp.api.parser.JspParserFactory;
 import fauxjsp.api.parser.ResourceResolver;
+import fauxjsp.api.renderer.ELEvaluation;
 import fauxjsp.api.renderer.JspRenderer;
+import fauxjsp.api.renderer.JspRendererFactory;
 import fauxjsp.impl.parser.DefaultJspParserFactoryImpl;
-import fauxjsp.impl.parser.FileResolver;
 import fauxjsp.impl.renderer.ELEvaluationImpl;
 import fauxjsp.impl.renderer.ELFactoryServlet3Impl;
-import fauxjsp.impl.renderer.JspRendererFactory;
 import fauxjsp.impl.renderer.JspRendererFactoryImpl;
 
 /**

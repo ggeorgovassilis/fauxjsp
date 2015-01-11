@@ -1,6 +1,5 @@
-package fauxjsp.api.parser;
+package fauxjsp.api.renderer;
 
-import fauxjsp.api.RenderSession;
 
 /**
  * @author George Georgovassilis

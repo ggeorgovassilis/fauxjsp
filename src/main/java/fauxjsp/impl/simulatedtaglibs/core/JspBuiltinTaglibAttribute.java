@@ -4,12 +4,12 @@ import java.io.ByteArrayOutputStream;
 
 import javax.servlet.ServletResponse;
 
-import fauxjsp.api.RenderSession;
 import fauxjsp.api.nodes.JspTaglibInvocation;
 import fauxjsp.api.nodes.TaglibDefinition;
 import fauxjsp.api.renderer.JspRenderException;
+import fauxjsp.api.renderer.RenderSession;
 import fauxjsp.impl.Utils;
-import fauxjsp.impl.renderer.ServletResponseWrapper;
+import fauxjsp.servlet.ServletResponseWrapper;
 
 /**
  * Implements built-in tag jsp:attribute

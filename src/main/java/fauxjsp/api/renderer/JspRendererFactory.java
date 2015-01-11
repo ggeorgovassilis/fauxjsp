@@ -1,6 +1,5 @@
-package fauxjsp.impl.renderer;
+package fauxjsp.api.renderer;
 
-import fauxjsp.api.renderer.JspRenderer;
 
 /**
  * Create {@link JspRenderer} instnaces

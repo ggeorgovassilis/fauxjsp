@@ -15,8 +15,8 @@ import jspparser.utils.TestUtils;
 
 import org.junit.Test;
 
-import fauxjsp.api.RenderSession;
 import fauxjsp.api.nodes.JspPage;
+import fauxjsp.api.renderer.RenderSession;
 import fauxjsp.impl.parser.JspParserImpl;
 import fauxjsp.impl.renderer.JspRendererImpl;
 import static org.junit.Assert.*;

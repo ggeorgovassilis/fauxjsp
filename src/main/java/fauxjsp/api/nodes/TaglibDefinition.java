@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import fauxjsp.api.RenderSession;
 import fauxjsp.api.renderer.JspRenderException;
+import fauxjsp.api.renderer.RenderSession;
 
 /**
  * Definition of a tag library or tagfile

@@ -13,11 +13,11 @@ import jspparser.utils.TestUtils;
 
 import org.junit.Test;
 
-import fauxjsp.api.RenderSession;
 import fauxjsp.api.nodes.JspInstruction;
 import fauxjsp.api.nodes.JspPage;
 import fauxjsp.api.nodes.JspTaglibInvocation;
 import fauxjsp.api.nodes.JspText;
+import fauxjsp.api.renderer.RenderSession;
 import fauxjsp.impl.parser.JspParserImpl;
 import static org.junit.Assert.*;
 

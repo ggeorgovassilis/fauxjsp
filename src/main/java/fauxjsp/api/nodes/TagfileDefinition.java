@@ -2,7 +2,7 @@ package fauxjsp.api.nodes;
 
 import java.util.Map;
 
-import fauxjsp.api.RenderSession;
+import fauxjsp.api.renderer.RenderSession;
 import fauxjsp.impl.Utils;
 
 /**

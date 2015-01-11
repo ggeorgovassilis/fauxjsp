@@ -5,6 +5,11 @@ import java.util.Map;
 
 import fauxjsp.api.nodes.TaglibDefinition;
 
+/**
+ * Simple registry for taglib definitions
+ * @author George Georgovassilis
+ *
+ */
 public class TaglibDefinitionCache {
 
 	protected Map<String, TaglibDefinition> path2definition = new HashMap<String, TaglibDefinition>();
