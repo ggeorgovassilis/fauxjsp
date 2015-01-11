@@ -49,12 +49,14 @@ Constraints and missing features:
 
 ## Run-time Dependencies
 
-* JSP API
+* JSP API 2.0
 * Java EL 3.0 API
-* JSTL
-* Servlet API
+* JSTL 1.2
+* Servlet API 3.0
 * commons-lang 2.6
 * log4j 4
+
+For up-to-date details, [please see the pom](pom.xml).
 
 ## Extending fauxjsp's functionality and working around bugs
 
