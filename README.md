@@ -187,7 +187,7 @@ fn:trim(text)
 
 Like written before, fauxjsp can't use taglibs and has to emulate them instead, which means that someone has to program that emulation.
 
-*Step 1*: create the taglib implementation. Just find one of the already simulated taglibs like (JstlCoreTaglibOut.java) and copy & paste it
+*Step 1*: create the taglib implementation. Just find one of the already simulated taglibs like [JstlCoreTaglibOut](JstlCoreTaglibOut.java) and copy & paste it
 
 ```java
 
@@ -229,7 +229,7 @@ public class TaglibAdd extends TaglibDefinition{
 
 ```
 
-*Step 2*: extend (DefaultJspParserFactoryImpl.java) and override the ```setup``` method. Here you can register the new taglib you wrote
+*Step 2*: extend [DefaultJspParserFactoryImpl](DefaultJspParserFactoryImpl.java) and override the ```setup``` method. Here you can register the new taglib you wrote
 
 ```java
 	public class MyJspParserFactory extends DefaultJspParserFactoryImpl{
@@ -244,7 +244,7 @@ public class TaglibAdd extends TaglibDefinition{
 
 ```
 
-*Step 3*: extend (JspServlet.java) and override ```getJspParserFactory``` so that it returns your new factory
+*Step 3*: extend [JspServlet](JspServlet.java) and override ```getJspParserFactory``` so that it returns your new factory
 
 ```java
 	public class MyJspServlet extends JspServlet{
