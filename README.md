@@ -105,53 +105,52 @@ up under a special namespace, one for each taglib method.
 
 ### Directives
 
-```java
+```xml
 <%@ taglib prefix uri tagdir%>
 
 <@ include file %>
 
 <%@ attribute name required rtexprvalue type %>
 
-jsp:attribute name
+<jsp:attribute name="...">...</jsp:attribute>
 
-jsp:body
+<jsp:body>...</jsp:body>
 
-jsp:doBody
+<jsp:doBody/>
 ```
 
 ### Core taglib
 
-```java
-c:out value
+```xml
+<c:out value="..."/>
 
-c:choose test
+<c:choose test="...">...</c:choose>
 
-c:when test
+<c:when test="...">...</c:when>
 
-c:otherwise
+<c:otherwise>...</c:otherwise>
 
-c:forEach var items varStatus begin end
+<c:forEach var="..." items="..." varStatus="..." begin="..." end="...">...</c:forEach>
 
-c:if test
+<c:if test="...">...</c:if>
 
-c:set var
+<c:set var="..." value="..."/>
 
-c:set var
 ```
 
 ### Formatting and internationalization
 
-```jsp
-fmt:message key
+```xml
+<fmt:message key="..."/>
 
-fmt:setBundle basename
+<fmt:setBundle basename="..."/>
 ```
 
 ### Functions
 
 ```java
 
-fn:startsWith
+fn:startsWith(what, with)
 
 ```
 
