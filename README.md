@@ -151,7 +151,19 @@ up under a special namespace, one for each taglib method.
 ```java
 
 fn:startsWith(what, with)
-
+fn:contains(text, substring)
+fn:containsIgnoreCase(text, substring)
+fn:endsWith(text, suffix)
+fn:escapeXml(text)
+fn:indexOf(text, substring)
+fn:join(array[], delimiter)
+fn:length(object)
+fn:replace(text, what, with)
+fn:split(text, delimiter)
+fn:substring(text, begin, end)
+fn:toLowerCase(text)
+fn:toUpperCase(text)
+fn:trim(text)
 ```
 
 

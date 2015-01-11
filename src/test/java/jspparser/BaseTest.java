@@ -38,7 +38,7 @@ public abstract class BaseTest {
 	}
 	
 	@Before
-	public void setup() {
+	public void setupBaseTest() {
 		ResourceResolver location = new FileResolver(new File("examples"));
 		parserFactory = new DefaultJspParserFactoryImpl(location);
 		parser = newParser();

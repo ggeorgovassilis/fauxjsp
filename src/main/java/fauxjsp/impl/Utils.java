@@ -89,6 +89,10 @@ public class Utils {
 	public static String escapeHtml(String html) {
 		return StringEscapeUtils.escapeHtml(html);
 	}
+	
+	public static String escapeXml(String xml){
+		return StringEscapeUtils.escapeXml(xml);
+	}
 
 	public static String string(byte[] buffer, String characterset) {
 		try {

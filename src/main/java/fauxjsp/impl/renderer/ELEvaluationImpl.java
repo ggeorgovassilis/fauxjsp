@@ -1,5 +1,7 @@
 package fauxjsp.impl.renderer;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Enumeration;
 
 import javax.el.ELContext;
@@ -66,7 +68,11 @@ public class ELEvaluationImpl implements ELEvaluation {
 
 	protected void declareFunctions(ELContext context, ExpressionFactory expressionFactory, RenderSession session){
 		try {
-			context.getFunctionMapper().mapFunction("fn", "startsWith", Functions.class.getMethod("startsWith", new Class[]{String.class, String.class}));
+			// iterate over Functions methods and register static functions that start with an _
+			for (Method m:Functions.class.getMethods())
+				if (m.getName().startsWith("_") && Modifier.isStatic(m.getModifiers())){
+					context.getFunctionMapper().mapFunction("fn", m.getName().substring(1), m);
+				}
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
