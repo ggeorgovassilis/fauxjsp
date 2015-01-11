@@ -181,6 +181,99 @@ fn:toUpperCase(text)
 fn:trim(text)
 ```
 
+## How do I ...
+
+### add a missing tag library?
+
+Like written before, fauxjsp can't use taglibs and has to emulate them instead, which means that someone has to program that emulation.
+
+*Step 1*: create the taglib implementation. Just find one of the already simulated taglibs like (JstlCoreTaglibOut.java) and copy & paste it
+
+```java
+
+public class TaglibAdd extends TaglibDefinition{
+
+	protected void runAdd(RenderSession session, JspTaglibInvocation invocation) {
+		String xExpression = invocation.getArguments().get("x");
+		if (xExpression == null)
+			throw new RuntimeException("Missing x argument");
+		Object x = session.elEvaluation.evaluate(xExpression, session);
+
+		String yExpression = invocation.getArguments().get("y");
+		if (yExpression == null)
+			throw new RuntimeException("Missing y argument");
+		Object y = session.elEvaluation.evaluate(yExpression, session);
+		
+		try {
+		    int ix = (Number)x;
+		    int iy = (Number)y;
+		    String s = ""+(ix+iy);
+			session.response.getOutputStream().write((s).getBytes(session.response.getCharacterEncoding()));
+		} catch (Exception e) {
+			throw new JspRenderException(invocation, e);
+		}
+	}
+
+	@Override
+	public void render(RenderSession session, JspTaglibInvocation invocation) {
+		runAdd(session, invocation);
+	}
+	
+	public TaglibAdd() {
+		this.name="add";
+		this.attributes.put("x", new AttributeDefinition("x", Integer.class.getName(), true, true));
+		this.attributes.put("y", new AttributeDefinition("y", Integer.class.getName(), true, true));
+	}
+}
+
+
+```
+
+*Step 2*: extend (DefaultJspParserFactoryImpl.java) and override the ```setup``` method. Here you can register the new taglib you wrote
+
+```java
+	public class MyJspParserFactory extends DefaultJspParserFactoryImpl{
+		
+	protected void setup(JspParserImpl parser) {
+	  super.setup(parser);
+		parser.registerTaglibDefinition(
+				"http://mytaglibs/add",
+				new TaglibAdd());
+	}		
+	}
+
+```
+
+*Step 3*: extend (JspServlet.java) and override ```getJspParserFactory``` so that it returns your new factory
+
+```java
+	public class MyJspServlet extends JspServlet{
+
+	protected JspParserFactory getJspParserFactory(ServletConfig config){
+		ResourceResolver location = new ServletResourceResolver(jspBase, getServletContext());
+		DefaultJspParserFactoryImpl factory = new MyJspParserFactory(location);
+		return factory;
+	}
+		
+	}
+
+```
+
+
+*Step 4*: use your new JspServlet implementation in web.xml instead of the old JspServlet 
+
+```xml
+<servlet>
+        <servlet-name>FauxJsp</servlet-name>
+        <servlet-class>MyJspServlet</servlet-class>
+</servlet>
+
+<servlet-mapping>
+	<servlet-name>FauxJsp</servlet-name>
+	<url-pattern>*.jsp</url-pattern>
+</servlet-mapping>
+```
+
 
 ## Roadmap
 
