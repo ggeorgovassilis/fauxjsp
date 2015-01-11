@@ -31,14 +31,14 @@ Constraints and missing features:
 
 ## Getting started
 
-1. download sources and compile
+1) download sources and compile
 ```sh
 git clone https://github.com/ggeorgovassilis/fauxjsp.git
 cd fauxjsp
 mvn install
 ```
 
-2. add the dependency to your project
+2) add the dependency to your project
 
 ```xml
 <dependency>
@@ -48,7 +48,7 @@ mvn install
 </dependency>
 ```
 
-3. Declare an instance of the JspServlet in web.xml:
+3) Declare an instance of the JspServlet in web.xml:
 
 ```xml
 <servlet>
