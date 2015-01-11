@@ -229,7 +229,7 @@ public class TaglibAdd extends TaglibDefinition{
 
 ```
 
-*Step 2*: extend [DefaultJspParserFactoryImpl](DefaultJspParserFactoryImpl.java) and override the ```setup``` method. Here you can register the new taglib you wrote
+*Step 2*: extend [DefaultJspParserFactoryImpl](src/main/java/fauxjsp/impl/parser/DefaultJspParserFactoryImpl.java) and override the ```setup``` method. Here you can register the new taglib you wrote
 
 ```java
 	public class MyJspParserFactory extends DefaultJspParserFactoryImpl{
@@ -244,7 +244,7 @@ public class TaglibAdd extends TaglibDefinition{
 
 ```
 
-*Step 3*: extend [JspServlet](JspServlet.java) and override ```getJspParserFactory``` so that it returns your new factory
+*Step 3*: extend [JspServlet](src/main/java/fauxjsp/servlet/JspServlet.java) and override ```getJspParserFactory``` so that it returns your new factory
 
 ```java
 	public class MyJspServlet extends JspServlet{
