@@ -27,6 +27,7 @@ Constraints and missing features:
 * Features of the core taglibs are still very limited
 * No scriptlets, at all
 * Your servlet container needs to provide some EL 3.0 implementation (i.e. works with Tomcat 8, not with Tomcat 7)
+* Variable scoping is arbitrary
 
 ## Getting started
 
