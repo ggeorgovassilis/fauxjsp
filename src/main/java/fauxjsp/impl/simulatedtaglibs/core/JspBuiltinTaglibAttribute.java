@@ -2,8 +2,6 @@ package fauxjsp.impl.simulatedtaglibs.core;
 
 import java.io.ByteArrayOutputStream;
 
-import javax.servlet.ServletResponse;
-
 import fauxjsp.api.nodes.JspTaglibInvocation;
 import fauxjsp.api.nodes.TaglibDefinition;
 import fauxjsp.api.renderer.JspRenderException;
@@ -13,8 +11,6 @@ import fauxjsp.servlet.ServletResponseWrapper;
 
 /**
  * Implements built-in tag jsp:attribute
- * 
- * 
  * 
  * @author George Georgovassilis
  */
@@ -29,7 +25,7 @@ public class JspBuiltinTaglibAttribute extends TaglibDefinition {
 	protected void runAttribute(RenderSession session,
 			JspTaglibInvocation invocation) {
 		String attributeName = getAttribute("name", invocation);
-		ServletResponse oldResponse = session.response;
+		ServletResponseWrapper oldResponse = session.response;
 		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 		session.response = new ServletResponseWrapper(oldResponse, buffer);
 		render(invocation.getChildren(), session);

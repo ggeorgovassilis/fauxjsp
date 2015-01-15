@@ -1,9 +1,8 @@
 package fauxjsp.api.nodes;
 
-import java.util.Map;
-
 import fauxjsp.api.renderer.RenderSession;
 import fauxjsp.impl.Utils;
+import fauxjsp.servlet.ServletRequestWrapper;
 
 /**
  * Definition of a tagfile
@@ -39,8 +38,8 @@ public class TagfileDefinition extends TaglibDefinition {
 
 	@Override
 	public void render(RenderSession session, JspTaglibInvocation invocation) {
-		Map<String, Object> oldAttributes = Utils
-				.saveAttributes(session.request);
+		ServletRequestWrapper originalRequest = session.request;
+		session.request = new ServletRequestWrapper(originalRequest);
 		for (String argument : invocation.getArguments().keySet()) {
 
 			Object newValue = null;
@@ -71,6 +70,6 @@ public class TagfileDefinition extends TaglibDefinition {
 
 		session.request.setAttribute(BODY_ATTRIBUTE, invocation);
 		session.renderer.render(body, session);
-		Utils.restoreAttributes(session.request, oldAttributes);
+		session.request = originalRequest;
 	}
 }

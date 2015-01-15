@@ -1,6 +1,8 @@
 package jspparser;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 
 import jspparser.utils.FileResolver;
 
@@ -36,6 +38,14 @@ public abstract class BaseTest {
 	
 	protected JspRenderer newRenderer(){
 		return renderer = rendererFactory.create();
+	}
+	
+	protected String text(ByteArrayOutputStream baos){
+		try {
+			return new String(baos.toByteArray(), "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	@Before

@@ -19,6 +19,8 @@ import fauxjsp.api.nodes.JspTaglibInvocation;
 import fauxjsp.api.nodes.JspText;
 import fauxjsp.api.renderer.RenderSession;
 import fauxjsp.impl.parser.JspParserImpl;
+import fauxjsp.servlet.ServletRequestWrapper;
+import fauxjsp.servlet.ServletResponseWrapper;
 import static org.junit.Assert.*;
 
 /**
@@ -50,7 +52,7 @@ public class TestJspParserAndRenderer extends BaseTest{
 		assertEquals("/WEB-INF/tags", j3.getArguments().get("tagdir"));
 
 		JspText j4 = (JspText) page.getChildren().get(3);
-		assertTrue(new String(j4.getContentAsString()).equals("\r\n"));
+		assertTrue(j4.getContentAsString().equals("\r\n"));
 
 		JspTaglibInvocation j5 = (JspTaglibInvocation) page.getChildren()
 				.get(4);
@@ -71,16 +73,16 @@ public class TestJspParserAndRenderer extends BaseTest{
 	}
 
 	@Test
-	public void testJspRenderer() {
+	public void testJspRenderer() throws Exception{
 		JspPage page = parser.parse("WEB-INF/jsp/homepage.jsp");
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		ByteArrayOutputStream baos = response.getBaos();
 		RenderSession session = new RenderSession();
-		session.request = request;
+		session.request = new ServletRequestWrapper(request);
 		session.renderer = renderer;
 		session.elEvaluation = elEvaluation;
-		session.response = response;
+		session.response = new ServletResponseWrapper(response, response.getBaos());
 
 		session.request.setAttribute("navigation", Arrays.asList(
 				new NavigationItem("path 1", "label 1"), new NavigationItem(
@@ -96,11 +98,11 @@ public class TestJspParserAndRenderer extends BaseTest{
 
 		session.request.setAttribute("date", new GregorianCalendar(2000, 2, 2).getTime());
 		renderer.render(page, session);
-		String text = new String(baos.toByteArray());
+		String text = text(baos);
 		assertTrue(text.contains("Thu Mar 02"));
 		assertTrue(text
 				.contains("<a href=\"news?id=2\" class=headline>headline 2</a>"));
-		assertTrue(text.contains("<span class=price>0.2 €</span>"));
+		assertTrue(text, text.contains("<span class=price>0.2 €</span>"));
 		
 		//lazy man's arse-covering insurance that we didn't change something in the implementation without knowing about it
 		assertEquals("c55ae99e22e0d3fb23a262328c57bcea",TestUtils.MD5(text));
@@ -113,10 +115,10 @@ public class TestJspParserAndRenderer extends BaseTest{
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		ByteArrayOutputStream baos = response.getBaos();
 		RenderSession session = new RenderSession();
-		session.request = request;
+		session.request = new ServletRequestWrapper(request);
 		session.renderer = renderer;
 		session.elEvaluation = elEvaluation;
-		session.response = response;
+		session.response = new ServletResponseWrapper(response, response.getBaos());
 
 		session.request.setAttribute("navigation", Arrays.asList(
 				new NavigationItem("path 1", "label 1"), new NavigationItem(
@@ -132,7 +134,7 @@ public class TestJspParserAndRenderer extends BaseTest{
 				"description 1", "full text of news 3", true));
 
 		renderer.render(page, session);
-		String text = new String(baos.toByteArray());
+		String text = text(baos);
 		assertTrue(text.contains("+++headline 1"));
 	}
 
@@ -143,10 +145,10 @@ public class TestJspParserAndRenderer extends BaseTest{
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		ByteArrayOutputStream baos = response.getBaos();
 		RenderSession session = new RenderSession();
-		session.request = request;
+		session.request = new ServletRequestWrapper(request);
 		session.renderer = renderer;
 		session.elEvaluation = elEvaluation;
-		session.response = response;
+		session.response = new ServletResponseWrapper(response, response.getBaos());
 
 		session.request.setAttribute("navigation", Arrays.asList(
 				new NavigationItem("path 1", "label 1"), new NavigationItem(
@@ -162,7 +164,7 @@ public class TestJspParserAndRenderer extends BaseTest{
 				"description 1", "full text of news 3", true));
 
 		renderer.render(page, session);
-		String text = new String(baos.toByteArray());
+		String text = text(baos);
 		assertTrue(text.contains("+++Action &amp; news 1"));
 	}
 
@@ -173,10 +175,10 @@ public class TestJspParserAndRenderer extends BaseTest{
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		ByteArrayOutputStream baos = response.getBaos();
 		RenderSession session = new RenderSession();
-		session.request = request;
+		session.request = new ServletRequestWrapper(request);
 		session.renderer = renderer;
 		session.elEvaluation = elEvaluation;
-		session.response = response;
+		session.response = new ServletResponseWrapper(response, response.getBaos());
 
 		session.request.setAttribute("listOfNews", Arrays.asList(new News("0",
 				"headline 0", "description 0", "full text of news 0", false),
@@ -184,7 +186,7 @@ public class TestJspParserAndRenderer extends BaseTest{
 						"full text of news 1", false), new News("2", "headline 2",
 						"description 2", "full text of news 2", false)));
 		renderer.render(page, session);
-		String text = new String(baos.toByteArray());
+		String text = text(baos);
 		assertEquals("\nNEWS SECTION 1: 012\nNEWS SECTION 2: 12\nNEWS SECTION 3: 0\nVARSTATUS: 1,0,true,false\n2,1,false,false\n3,2,false,true\n", text);
 	}
 
@@ -198,13 +200,13 @@ public class TestJspParserAndRenderer extends BaseTest{
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		ByteArrayOutputStream baos = response.getBaos();
 		RenderSession session = new RenderSession();
-		session.request = request;
+		session.request = new ServletRequestWrapper(request);
 		session.renderer = renderer;
 		session.elEvaluation = elEvaluation;
-		session.response = response;
+		session.response = new ServletResponseWrapper(response, response.getBaos());
 
 		renderer.render(page, session);
-		String text = new String(baos.toByteArray());
+		String text = text(baos);
 		assertEquals(
 				"\nlevel0-a-opens\n <a value=\"level1\">\nlevel1-b-opens\n <b value=\"level2\">\nlevel2-a-opens\n <a value=\"level3\">\nlevel3-b-opens\n <b value=\"level4\">\nlevel4-inner\n</b>\nlevel3-b-closed\n</a>\nlevel2-a-closed\n</b>\nlevel1-b-closed\n</a>\nlevel0-a-closed",
 				text);

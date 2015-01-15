@@ -111,12 +111,16 @@ public class JspServlet extends HttpServlet {
 		JspParser parser = jspParserFactory.create();
 		JspRenderer renderer = new JspRendererImpl();
 		try {
+			if (resp.getContentType()==null)
+				resp.setContentType("text/html;charset=UTF-8");
+			if (resp.getCharacterEncoding()==null)
+				resp.setCharacterEncoding("UTF-8");
 			RenderSession session = new RenderSession();
 			JspPage page = parser.parse(servletPath);
 			session.renderer = renderer;
 			session.elEvaluation = new ELEvaluationImpl(elFactory);
-			session.request = req;
-			session.response = resp;
+			session.request = new ServletRequestWrapper(req);
+			session.response = new ServletResponseWrapper(resp, resp.getOutputStream());
 			renderer.render(page, session);
 		} catch (JspParsingException pe) {
 			String explanation = parser.explain(pe);

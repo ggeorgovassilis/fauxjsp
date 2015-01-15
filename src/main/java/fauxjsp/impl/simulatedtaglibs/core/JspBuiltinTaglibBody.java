@@ -1,14 +1,17 @@
 package fauxjsp.impl.simulatedtaglibs.core;
 
+import java.io.ByteArrayOutputStream;
+
 import fauxjsp.api.nodes.JspTaglibInvocation;
+import fauxjsp.api.nodes.TagfileDefinition;
 import fauxjsp.api.nodes.TaglibDefinition;
 import fauxjsp.api.renderer.JspRenderException;
 import fauxjsp.api.renderer.RenderSession;
+import fauxjsp.impl.Utils;
+import fauxjsp.servlet.ServletResponseWrapper;
 
 /**
  * Implements built-in tag jsp:body
- * 
- * 
  * 
  * @author George Georgovassilis
  */
@@ -19,17 +22,22 @@ public class JspBuiltinTaglibBody extends TaglibDefinition {
 		super("body");
 	}
 
-	// TODO: this doesn't work yet. result needs to be rendered into a buffer
-	// instead of session.response
-	protected void runAttribute(RenderSession session,
+	protected void runBody(RenderSession session,
 			JspTaglibInvocation invocation) {
+//		ServletResponseWrapper oldResponse = session.response;
+//		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+//		session.response = new ServletResponseWrapper(oldResponse, buffer);
 		render(invocation.getChildren(), session);
+//		session.response = oldResponse;
+//		String renderedValue = Utils.string(buffer.toByteArray(),
+//				session.response.getCharacterEncoding());
+//		session.request.setAttribute(TagfileDefinition.BODY_ATTRIBUTE, renderedValue);
 	}
 
 	@Override
 	public void render(RenderSession session, JspTaglibInvocation invocation) {
 		if (invocation.getTaglib().equals("body")) {
-			runAttribute(session, invocation);
+			runBody(session, invocation);
 		} else {
 			throw new JspRenderException("Unknown taglib "
 					+ invocation.getTaglib(), invocation);

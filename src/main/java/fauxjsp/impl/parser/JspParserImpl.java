@@ -374,6 +374,7 @@ public class JspParserImpl implements JspParser {
 			byte[] content = location.getContents(resolvedPath);
 			if (content == null)
 				parsingError("Content at '"+resolvedPath+"' not found");
+			//TODO: configurable encoding
 			JspText text = new JspText(Utils.string(content, "UTF-8"), getCurrentLocation());
 			parent.getChildren().add(text);
 		}
@@ -383,7 +384,8 @@ public class JspParserImpl implements JspParser {
 		try {
 			this.pagePath = path;
 			logger.debug("Parsing location " + path);
-			this.jsp = new String(location.getContents(path));
+			//TODO: configurable encoding
+			this.jsp = new String(location.getContents(path), "UTF-8");
 			this.index = 0;
 			JspPage page = new JspPage(path, getCurrentLocation());
 			nodeStack.add(page);

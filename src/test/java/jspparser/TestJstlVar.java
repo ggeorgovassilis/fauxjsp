@@ -11,6 +11,8 @@ import org.junit.Test;
 
 import fauxjsp.api.nodes.JspPage;
 import fauxjsp.api.renderer.RenderSession;
+import fauxjsp.servlet.ServletRequestWrapper;
+import fauxjsp.servlet.ServletResponseWrapper;
 
 /**
  * Tests the JSTL var implementation
@@ -27,15 +29,15 @@ public class TestJstlVar extends BaseTest{
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		ByteArrayOutputStream baos = response.getBaos();
 		RenderSession session = new RenderSession();
-		session.request = request;
+		session.request = new ServletRequestWrapper(request);
 		session.renderer = renderer;
 		session.elEvaluation = elEvaluation;
-		session.response = response;
+		session.response = new ServletResponseWrapper(response, response.getBaos());
 		
 		request.setAttribute("x", "test");
 
 		renderer.render(page, session);
-		String text = new String(baos.toByteArray());
+		String text = text(baos);
 		assertEquals("\n\n\ntest + string = test string", text);
 	}
 

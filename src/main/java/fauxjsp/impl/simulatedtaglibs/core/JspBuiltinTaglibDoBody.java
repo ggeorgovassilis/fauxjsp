@@ -5,6 +5,7 @@ import fauxjsp.api.nodes.TagfileDefinition;
 import fauxjsp.api.nodes.TaglibDefinition;
 import fauxjsp.api.renderer.JspRenderException;
 import fauxjsp.api.renderer.RenderSession;
+import fauxjsp.servlet.ServletRequestWrapper;
 
 /**
  * Implements built-in tags such as jsp:doBody. Currently implemented:
@@ -25,8 +26,12 @@ public class JspBuiltinTaglibDoBody extends TaglibDefinition {
 			JspTaglibInvocation invocation) {
 		JspTaglibInvocation body = (JspTaglibInvocation) session.request
 				.getAttribute(TagfileDefinition.BODY_ATTRIBUTE);
-		if (body != null)
+		if (body != null){
+			ServletRequestWrapper oldRequest = session.request;
+			session.request = new ServletRequestWrapper(oldRequest);
 			render(body.getChildren(), session);
+			session.request = oldRequest;
+		}
 	}
 
 	@Override

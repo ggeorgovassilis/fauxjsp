@@ -1,9 +1,8 @@
 package fauxjsp.api.renderer;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-
 import fauxjsp.api.nodes.JspPage;
+import fauxjsp.servlet.ServletRequestWrapper;
+import fauxjsp.servlet.ServletResponseWrapper;
 
 /**
  * A {@link RenderSession} conveniently groups objects a {@link JspRenderer} needs to render a {@link JspPage}
@@ -13,8 +12,8 @@ import fauxjsp.api.nodes.JspPage;
 public class RenderSession {
 
 	public JspRenderer renderer;
-	public ServletRequest request;
-	public ServletResponse response;
+	public ServletRequestWrapper request;
+	public ServletResponseWrapper response;
 	public ELEvaluation elEvaluation;
 
 }

@@ -12,6 +12,8 @@ import org.junit.Test;
 import fauxjsp.api.nodes.JspPage;
 import fauxjsp.api.renderer.RenderSession;
 import fauxjsp.impl.simulatedtaglibs.fmt.JstlFmtMessage;
+import fauxjsp.servlet.ServletRequestWrapper;
+import fauxjsp.servlet.ServletResponseWrapper;
 
 /**
  * Tests the FMT taglib implementation
@@ -28,15 +30,15 @@ public class TestFmt extends BaseTest{
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		ByteArrayOutputStream baos = response.getBaos();
 		RenderSession session = new RenderSession();
-		session.request = request;
+		session.request = new ServletRequestWrapper(request);
 		session.renderer = renderer;
 		session.elEvaluation = elEvaluation;
-		session.response = response;
+		session.response = new ServletResponseWrapper(response, response.getBaos());
 
 		session.request.setAttribute(JstlFmtMessage.ATTR_RESOURCE_BUNDLE, "messages");
 		
 		renderer.render(page, session);
-		String text = new String(baos.toByteArray());
+		String text = text(baos);
 		assertEquals("\nThe name of the game is blame", text);
 	}
 
@@ -47,15 +49,15 @@ public class TestFmt extends BaseTest{
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		ByteArrayOutputStream baos = response.getBaos();
 		RenderSession session = new RenderSession();
-		session.request = request;
+		session.request = new ServletRequestWrapper(request);
 		session.renderer = renderer;
 		session.elEvaluation = elEvaluation;
-		session.response = response;
+		session.response = new ServletResponseWrapper(response, response.getBaos());
 
 		session.request.setAttribute(JstlFmtMessage.ATTR_RESOURCE_BUNDLE, "messages");
 		
 		renderer.render(page, session);
-		String text = new String(baos.toByteArray());
+		String text = text(baos);
 		assertEquals("\n\nThe name of the game is the same", text);
 	}
 }
