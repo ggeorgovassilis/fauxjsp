@@ -1,7 +1,5 @@
 package fauxjsp.impl.renderer;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.Enumeration;
 
 import javax.el.ELContext;
@@ -16,7 +14,6 @@ import javax.servlet.http.HttpSession;
 import fauxjsp.api.renderer.ELEvaluation;
 import fauxjsp.api.renderer.RenderSession;
 import fauxjsp.impl.Utils;
-import fauxjsp.impl.simulatedtaglibs.core.Functions;
 
 /**
  * Default implementation that evaluates java EL expressions
@@ -71,24 +68,11 @@ public class ELEvaluationImpl implements ELEvaluation {
 		}
 	}
 
-	protected void declareFunctions(ELContext context, ExpressionFactory expressionFactory, RenderSession session){
-		try {
-			// iterate over Functions methods and register static functions that start with an _
-			for (Method m:Functions.class.getMethods())
-				if (m.getName().startsWith("_") && Modifier.isStatic(m.getModifiers())){
-					context.getFunctionMapper().mapFunction("fn", m.getName().substring(1), m);
-				}
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
 	@Override
 	public Object evaluate(String expression, RenderSession session) {
 		ExpressionFactory expressionFactory = elFactory.newExpressionFactory();
 		ELContext context = new FauxELContext(elFactory.newElContext(), expressionFactory);
 		populateVariables(context, expressionFactory, session);
-		declareFunctions(context, expressionFactory, session);
 
 		expression = Utils.unescapeHtml(expression);
 		ValueExpression expr = expressionFactory.createValueExpression(context,

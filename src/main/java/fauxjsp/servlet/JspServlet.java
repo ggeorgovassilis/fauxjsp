@@ -84,7 +84,9 @@ public class JspServlet extends HttpServlet {
 	 * @return
 	 */
 	protected ELFactory getElFactory(ServletConfig config){
-		return new ELFactoryServlet3Impl();
+		ELFactoryServlet3Impl factory = new ELFactoryServlet3Impl();
+		factory.configure(config);
+		return factory;
 	}
 	
 	/**
@@ -99,6 +101,7 @@ public class JspServlet extends HttpServlet {
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
+		config.getServletContext().log("Configuring JspServlet");
 		jspBase = getJspBase(config);
 		jspParserFactory = getJspParserFactory(config);
 		elFactory = getElFactory(config);

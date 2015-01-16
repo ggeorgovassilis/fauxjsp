@@ -1,14 +1,9 @@
 package fauxjsp.impl.simulatedtaglibs.core;
 
-import java.io.ByteArrayOutputStream;
-
 import fauxjsp.api.nodes.JspTaglibInvocation;
-import fauxjsp.api.nodes.TagfileDefinition;
 import fauxjsp.api.nodes.TaglibDefinition;
 import fauxjsp.api.renderer.JspRenderException;
 import fauxjsp.api.renderer.RenderSession;
-import fauxjsp.impl.Utils;
-import fauxjsp.servlet.ServletResponseWrapper;
 
 /**
  * Implements built-in tag jsp:body

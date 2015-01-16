@@ -3,8 +3,13 @@ package jspparser;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.util.Enumeration;
+
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 
 import jspparser.utils.FileResolver;
+import jspparser.utils.MockServletContext;
 
 import org.junit.Before;
 
@@ -55,7 +60,30 @@ public abstract class BaseTest {
 		parser = newParser();
 		rendererFactory = new JspRendererFactoryImpl();
 		renderer = rendererFactory.create();
-		elEvaluation = new ELEvaluationImpl(new ELFactoryServlet3Impl());
+		ELFactoryServlet3Impl elFactory = new ELFactoryServlet3Impl();
+		elFactory.configure(new ServletConfig() {
+			
+			@Override
+			public String getServletName() {
+				return null;
+			}
+			
+			@Override
+			public ServletContext getServletContext() {
+				return new MockServletContext();
+			}
+			
+			@Override
+			public Enumeration<String> getInitParameterNames() {
+				return null;
+			}
+			
+			@Override
+			public String getInitParameter(String name) {
+				return null;
+			}
+		});
+		elEvaluation = new ELEvaluationImpl(elFactory);
 	}
 
 }

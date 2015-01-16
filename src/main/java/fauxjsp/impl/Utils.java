@@ -1,7 +1,11 @@
 package fauxjsp.impl;
 
+import java.io.ByteArrayOutputStream;
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Collections;
 import java.util.HashMap;
@@ -21,6 +25,33 @@ public class Utils {
 			fis.read(b);
 			return b;
 		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public static byte[] read(InputStream in) {
+		try {
+			byte[] buffer = new byte[1024];
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			int l = 0;
+
+			while (l != -1) {
+				l = in.read(buffer);
+				if (l != -1) {
+					baos.write(buffer, 0, l);
+				}
+			}
+			in.close();
+			return baos.toByteArray();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public static void close(Closeable c){
+		try {
+			c.close();
+		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -45,7 +76,7 @@ public class Utils {
 
 	public static void restoreAttributes(ServletRequest request,
 			Map<String, Object> attributes) {
-		//clearAttributes(request);
+		// clearAttributes(request);
 		for (String attr : attributes.keySet())
 			request.setAttribute(attr, attributes.get(attr));
 	}
@@ -75,9 +106,9 @@ public class Utils {
 			String with) {
 		int index = sb.indexOf(what);
 		if (index != -1) {
-			sb.delete(index, index+what.length());
+			sb.delete(index, index + what.length());
 			sb.insert(index, with);
-//			sb.replace(index, index + with.length() - 1, with);
+			// sb.replace(index, index + with.length() - 1, with);
 		}
 		return sb;
 	}
@@ -89,8 +120,8 @@ public class Utils {
 	public static String escapeHtml(String html) {
 		return StringEscapeUtils.escapeHtml(html);
 	}
-	
-	public static String escapeXml(String xml){
+
+	public static String escapeXml(String xml) {
 		return StringEscapeUtils.escapeXml(xml);
 	}
 
@@ -104,13 +135,14 @@ public class Utils {
 
 	/**
 	 * Attempts to cast value to c. If that's not possible, then this method
-	 * will try a few obvious conversions if C is Boolean, Integer, Long, Double, Float, Byte, Short
+	 * will try a few obvious conversions if C is Boolean, Integer, Long,
+	 * Double, Float, Byte, Short
 	 * 
 	 * @param value
 	 * @param c
 	 * @return
 	 */
-	public static Object cast(Object value, Class<?> c){
+	public static Object cast(Object value, Class<?> c) {
 		if (value == null)
 			return null;
 		if (c.isAssignableFrom(value.getClass()))
@@ -131,6 +163,7 @@ public class Utils {
 			return Double.parseDouble(value.toString());
 		if (c.equals(String.class))
 			return value.toString();
-		throw new ClassCastException("Can't cast "+value.getClass()+" to "+c);
+		throw new ClassCastException("Can't cast " + value.getClass() + " to "
+				+ c);
 	}
 }

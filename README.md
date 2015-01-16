@@ -3,11 +3,17 @@ fauxjsp
 
 JSP implementation with fast page reloads that uses an interpreter rather than a compiler.
 
-## A JSP implementation for development (not production)
+## Another JSP implementation?
 
-For most of you cool dudes JSP is horribly out of fashion, but I like using it for prototyping and [Tagfiles](http://docs.oracle.com/javaee/1.4/tutorial/doc/JSPTags5.html). Sadly and surprisingly, not many people know about tagfiles which is a well-supported and matured technique for creating reusable web components.
+In short:
+a. there aren't that many (I only know of one)
+b. it much faster for development and reduces application start times compared to the standard implementation
+c. no memory leaks, more robust, more precise and helpful error messages
+d. extensible
 
-Because Tomcat's JSP implementation Jasper will compile JSP and tagfiles to java source code, then to byte code and then to machine code, starting a JSP-heavy application is slow. Also, when making changes to JSP files, the entire process has to be gone through again, which slows down development. At some point you'll even get unexplainable compile errors, class loading errors, run out of memory and the likes, you'll know you've had enough and restart Tomcat.
+For most of you cool dudes JSP is horribly out of fashion, but I like using it for prototyping and [tagfiles](http://docs.oracle.com/javaee/1.4/tutorial/doc/JSPTags5.html). Sadly and surprisingly, not many people know about tagfiles despite them being a well-supported and mature technique for creating reusable web UI components.
+
+Starting a JSP-heavy application is slow because Tomcat's JSP implementation Jasper will first compile JSP and tagfiles to java source code, then to byte code and then to machine code. Also, when making changes to JSP files, the entire process has to be gone through again, which slows down development. At some point you'll even get unexplainable compile errors, class loading errors, run out of memory and the likes, you'll know you've had enough and you'll restart Tomcat.
 
 Fauxjsp implements a JSP interpreter and a servlet which reads JSP files and interprets them on the fly, skipping compilation altogether. This brings the benefit of instant page reloads, fast application start times and robustness (no classloader fiddling!) but, obviously, the generated JSP pages are slower under load than the standard implementation.
 
@@ -163,23 +169,18 @@ up under a special namespace, one for each taglib method.
 
 ### Functions
 
-```java
+Fauxjsp delegates to the standard JSTL function implementation used by the application server, so everything should work out of the box.
 
-fn:startsWith(what, with)
-fn:contains(text, substring)
-fn:containsIgnoreCase(text, substring)
-fn:endsWith(text, suffix)
-fn:escapeXml(text)
-fn:indexOf(text, substring)
-fn:join(array[], delimiter)
-fn:length(object)
-fn:replace(text, what, with)
-fn:split(text, delimiter)
-fn:substring(text, begin, end)
-fn:toLowerCase(text)
-fn:toUpperCase(text)
-fn:trim(text)
+If you need more function taglibs, don't forget to declare them in web.xml:
+```xml
+<jsp-config> 
+	<taglib>
+		<taglib-uri>http://java.sun.com/jstl/core-rt<taglib-uri>
+		<taglib-location>META-INF/c-1_0-rt.tld</taglib-location>
+	</taglib>
+</jsp-config>
 ```
+taglib-location can be a server- or classpath resource path. 
 
 ## How do I ...
 
@@ -280,7 +281,7 @@ public class TaglibAdd extends TaglibDefinition{
 Features to come in the near future:
 
 * jsp:include, ~~jsp:attribute~~, jsp:var, import
-* fmt, fn
+* fmt, ~~fn~~
 * spring mvc taglibs
 
 Science fiction (things I have a rough idea how to implement but need to work out yet and may never come):

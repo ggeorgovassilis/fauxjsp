@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 
-import org.apache.log4j.Logger;
 
+import fauxjsp.api.logging.Logger;
 import fauxjsp.api.nodes.JspInstruction;
 import fauxjsp.api.nodes.JspNode;
 import fauxjsp.api.nodes.JspNodeWithChildren;
@@ -24,6 +24,7 @@ import fauxjsp.api.parser.JspParserFactory;
 import fauxjsp.api.parser.JspParsingException;
 import fauxjsp.api.parser.ResourceResolver;
 import fauxjsp.impl.Utils;
+import fauxjsp.impl.logging.Logging;
 import fauxjsp.impl.tagparser.TagParser;
 
 /**
@@ -47,7 +48,7 @@ public class JspParserImpl implements JspParser {
 	protected TaglibDefinitionCache taglibDefinitions = new TaglibDefinitionCache();
 	protected List<JspNodeWithChildren> nodeStack = new ArrayList<JspNodeWithChildren>();
 	protected ResourceResolver location;
-	protected Logger logger = Logger.getLogger(JspParserImpl.class);
+	protected Logger logger = Logging.getLogger(JspParserImpl.class);
 	protected JspParser parentParser;
 	protected JspParserFactory parserFactory;
 	protected TagParser tagParser = new TagParser();

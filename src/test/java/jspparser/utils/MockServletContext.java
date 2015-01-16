@@ -28,6 +28,8 @@ import javax.servlet.descriptor.JspConfigDescriptor;
 
 public class MockServletContext implements ServletContext {
 
+	protected JspConfigDescriptor jspConfigDescriptor;
+	
 	@Override
 	public String getContextPath() {
 		throw new RuntimeException("Not implemented");
@@ -281,7 +283,7 @@ public class MockServletContext implements ServletContext {
 
 	@Override
 	public JspConfigDescriptor getJspConfigDescriptor() {
-		throw new RuntimeException("Not implemented");
+		return jspConfigDescriptor;
 	}
 
 	@Override
