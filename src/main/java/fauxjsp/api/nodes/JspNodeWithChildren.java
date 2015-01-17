@@ -24,6 +24,11 @@ public abstract class JspNodeWithChildren extends JspNode{
 		super(location);
 		this.fullQualifiedName = fullQualifiedName;
 	}
+	
+	@Override
+	public String debugLabel() {
+		return getName();
+	}
 
 	public String getName() {
 		return fullQualifiedName;

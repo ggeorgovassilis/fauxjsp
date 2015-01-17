@@ -91,7 +91,7 @@ public class TestPerformance extends BaseTest {
 				session.renderer.render(page, session);
 				String text;
 				text = text(baos);
-				assertEquals("c55ae99e22e0d3fb23a262328c57bcea",
+				assertEquals("29cbe350d17d4f6d8f1bcdf6fc6e8dc2",
 						TestUtils.MD5(text));
 			}
 		};

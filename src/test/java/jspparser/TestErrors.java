@@ -1,8 +1,16 @@
 package jspparser;
 
+import jspparser.utils.MockHttpServletRequest;
+import jspparser.utils.MockHttpServletResponse;
+
 import org.junit.Test;
 
+import fauxjsp.api.nodes.JspPage;
 import fauxjsp.api.parser.JspParsingException;
+import fauxjsp.api.renderer.JspRenderException;
+import fauxjsp.api.renderer.RenderSession;
+import fauxjsp.servlet.ServletRequestWrapper;
+import fauxjsp.servlet.ServletResponseWrapper;
 import static org.junit.Assert.*;
 
 /**
@@ -54,16 +62,24 @@ public class TestErrors extends BaseTest{
 
 	@Test
 	public void test_taglib_missing_argument() {
+		JspPage page = parser.parse("WEB-INF/jsp/error_taglib_missing_argument.jsperr");
 		try {
-			parser.parse("WEB-INF/jsp/error_taglib_missing_argument.jsperr");
+			MockHttpServletRequest request = new MockHttpServletRequest();
+			MockHttpServletResponse response = new MockHttpServletResponse();
+			RenderSession session = new RenderSession();
+			session.request = new ServletRequestWrapper(request);
+			session.renderer = renderer;
+			session.elEvaluation = elEvaluation;
+			session.response = new ServletResponseWrapper(response, response.getBaos());
+			renderer.render(page, session);
 			fail("expected a JspParsingException");
-		} catch (JspParsingException e) {
-			String explanation = parser.explain(e);
+		} catch (JspRenderException e) {
+			String explanation = renderer.explain(e);
 			assertTrue(
 					explanation,
 					explanation
-							.contains("Mandatory argument 'listOfNews' is missing"));
-			assertTrue(explanation, explanation.contains("Line 14"));
+							.contains("for attribute navigation on t:navigation but got null"));
+			assertTrue(explanation, explanation.contains("Line 8"));
 		}
 	}
 

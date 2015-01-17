@@ -23,6 +23,10 @@ import fauxjsp.api.renderer.RenderSession;
  *
  */
 public class Utils {
+	
+	public static Class<?> getClassOf(Object o){
+		return o==null?null:o.getClass();
+	}
 
 	public static byte[] readFile(File f) {
 		try (FileInputStream fis = new FileInputStream(f)) {

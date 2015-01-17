@@ -19,4 +19,6 @@ public abstract class JspNode {
 	public CodeLocation getLocation() {
 		return location;
 	}
+	
+	public abstract String debugLabel();
 }

@@ -19,7 +19,7 @@ public class JspBuiltinTaglibBody extends TaglibDefinition {
 
 	protected void runBody(RenderSession session,
 			JspTaglibInvocation invocation) {
-		render(invocation.getChildren(), session);
+//		render(invocation.getChildren(), session);
 	}
 
 	@Override

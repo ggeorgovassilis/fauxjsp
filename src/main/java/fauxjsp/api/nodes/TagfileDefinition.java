@@ -60,12 +60,23 @@ public class TagfileDefinition extends TaglibDefinition {
 				throw new ClassCastException("Expected type " + def.getType()
 						+ " for attribute " + argument + " on "
 						+ invocation.getName() + " but got "
-						+ newValue.getClass());
+						+ Utils.getClassOf(newValue));
 			}
 			session.request.setAttribute(argument, finalValue);
 		}
 
-		session.request.setAttribute(BODY_ATTRIBUTE, invocation);
+//		render(invocation.children, session);
+		// run over attributes
+		for (JspNode node:invocation.getChildren())
+			if (node instanceof JspNodeWithChildren){
+				JspNodeWithChildren attribute = (JspNodeWithChildren)node;
+				if ("jsp:attribute".equals(attribute.getName())){
+					session.renderer.render(attribute, session);
+				}
+			}
+		session.request.setAttribute(BODY_ATTRIBUTE, invocation.bodyNode);
+		if (invocation.bodyNode==null)
+			session.request.setAttribute(BODY_ATTRIBUTE, invocation);
 		session.renderer.render(body, session);
 	}
 }

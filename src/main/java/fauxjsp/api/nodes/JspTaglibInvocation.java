@@ -11,7 +11,16 @@ import fauxjsp.api.parser.CodeLocation;
 public class JspTaglibInvocation extends JspNodeWithChildren {
 
 	protected TaglibDefinition definition;
+	protected JspNode bodyNode;
 	
+	public JspNode getBodyNode() {
+		return bodyNode;
+	}
+
+	public void setBodyNode(JspNode bodyNode) {
+		this.bodyNode = bodyNode;
+	}
+
 	public TaglibDefinition getDefinition() {
 		return definition;
 	}

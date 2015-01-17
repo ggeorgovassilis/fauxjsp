@@ -3,6 +3,7 @@ package fauxjsp.impl.renderer;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import fauxjsp.api.logging.Logger;
 import fauxjsp.api.nodes.JspNode;
 import fauxjsp.api.nodes.JspNodeWithChildren;
 import fauxjsp.api.nodes.JspTaglibInvocation;
@@ -10,6 +11,7 @@ import fauxjsp.api.nodes.JspText;
 import fauxjsp.api.renderer.JspRenderException;
 import fauxjsp.api.renderer.JspRenderer;
 import fauxjsp.api.renderer.RenderSession;
+import fauxjsp.impl.logging.Logging;
 
 /**
  * JSP renderer implementation
@@ -18,6 +20,8 @@ import fauxjsp.api.renderer.RenderSession;
  */
 
 public class JspRendererImpl implements JspRenderer {
+	
+	protected Logger logger = Logging.getLogger(JspRendererImpl.class);
 
 	@Override
 	public void render(JspNode page, RenderSession session) {
@@ -33,6 +37,7 @@ public class JspRendererImpl implements JspRenderer {
 	}
 
 	protected void renderNode(JspNode node, RenderSession session) {
+		logger.trace("Rendering "+node.debugLabel());
 		try {
 			if (node instanceof JspText) {
 				JspText textNode = (JspText) node;

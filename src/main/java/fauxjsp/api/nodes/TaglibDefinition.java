@@ -108,12 +108,17 @@ public abstract class TaglibDefinition {
 		return (result instanceof Boolean) ? (((Boolean) result).booleanValue())
 				: result != null;
 	}
+	
+	protected boolean shouldUseNewVariableScope(){
+		return true;
+	}
 
 	public void render(RenderSession session, JspTaglibInvocation invocation) {
 		//open a new variable scope
 		ServletRequestWrapper oldRequest = session.request;
 		try {
-			session.request = new ServletRequestWrapper(session.request);
+			if (shouldUseNewVariableScope())
+				session.request = new ServletRequestWrapper(session.request);
 			renderNode(session, invocation);
 		} finally {
 			//restore old variable scope

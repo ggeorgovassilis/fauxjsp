@@ -36,6 +36,16 @@ public abstract class BaseTest {
 	protected JspRenderer renderer;
 	protected ELEvaluation elEvaluation;
 	protected JspRendererFactory rendererFactory;
+	
+	protected String sanitize(String s){
+		while (s.startsWith("\n"))
+			s = s.substring(1);
+		while (s.contains("\n\n"))
+			s = s.replaceAll("\n\n", "\n");
+		while (s.endsWith("\n"))
+			s = s.substring(0,s.length()-1);
+		return s;
+	}
 
 	protected JspParser newParser(){
 		return parser=parserFactory.create();

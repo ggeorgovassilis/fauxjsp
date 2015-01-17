@@ -1,5 +1,7 @@
 package fauxjsp.impl.simulatedtaglibs.core;
 
+import fauxjsp.api.nodes.JspNode;
+import fauxjsp.api.nodes.JspNodeWithChildren;
 import fauxjsp.api.nodes.JspTaglibInvocation;
 import fauxjsp.api.nodes.TagfileDefinition;
 import fauxjsp.api.nodes.TaglibDefinition;
@@ -24,12 +26,14 @@ public class JspBuiltinTaglibDoBody extends TaglibDefinition {
 
 	protected void runDoBody(RenderSession session,
 			JspTaglibInvocation invocation) {
-		JspTaglibInvocation body = (JspTaglibInvocation) session.request
-				.getAttribute(TagfileDefinition.BODY_ATTRIBUTE);
+		JspNode body = invocation.getBodyNode();
+		if (body == null)
+			body = (JspNode)session.request.getAttribute(TagfileDefinition.BODY_ATTRIBUTE);
 		if (body != null){
 			ServletRequestWrapper oldRequest = session.request;
 			session.request = new ServletRequestWrapper(oldRequest);
-			render(body.getChildren(), session);
+			if (body instanceof JspNodeWithChildren)
+				render(((JspNodeWithChildren)body).getChildren(), session);
 			session.request = oldRequest;
 		}
 	}

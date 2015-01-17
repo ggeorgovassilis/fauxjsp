@@ -12,6 +12,11 @@ import fauxjsp.api.renderer.ELEvaluation;
  */
 public class JspText extends JspNode {
 	protected final String content;
+	
+	@Override
+	public String debugLabel() {
+		return ":text";
+	}
 
 	public JspText(String content, CodeLocation location) {
 		super(location);

@@ -98,14 +98,14 @@ public class TestJspParserAndRenderer extends BaseTest{
 
 		session.request.setAttribute("date", new GregorianCalendar(2000, 2, 2).getTime());
 		renderer.render(page, session);
-		String text = text(baos);
+		String text = sanitize(text(baos));
 		assertTrue(text.contains("Thu Mar 02"));
 		assertTrue(text
 				.contains("<a href=\"news?id=2\" class=headline>headline 2</a>"));
 		assertTrue(text, text.contains("<span class=price>0.2 €</span>"));
 		
 		//lazy man's arse-covering insurance that we didn't change something in the implementation without knowing about it
-		assertEquals("c55ae99e22e0d3fb23a262328c57bcea",TestUtils.MD5(text));
+		assertEquals(text, "29cbe350d17d4f6d8f1bcdf6fc6e8dc2",TestUtils.MD5(text));
 	}
 
 	@Test
@@ -206,9 +206,9 @@ public class TestJspParserAndRenderer extends BaseTest{
 		session.response = new ServletResponseWrapper(response, response.getBaos());
 
 		renderer.render(page, session);
-		String text = text(baos);
-		assertEquals(
-				"\nlevel0-a-opens\n <a value=\"level1\">\nlevel1-b-opens\n <b value=\"level2\">\nlevel2-a-opens\n <a value=\"level3\">\nlevel3-b-opens\n <b value=\"level4\">\nlevel4-inner\n</b>\nlevel3-b-closed\n</a>\nlevel2-a-closed\n</b>\nlevel1-b-closed\n</a>\nlevel0-a-closed",
+		String text = sanitize(text(baos));
+		assertEquals(text, 
+				"level0-a-opens\n <a value=\"level1\">\nlevel1-b-opens\n <b value=\"level2\">\nlevel2-a-opens\n <a value=\"level3\">\nlevel3-b-opens\n <b value=\"level4\">\nlevel4-inner\n</b>\nlevel3-b-closed\n</a>\nlevel2-a-closed\n</b>\nlevel1-b-closed\n</a>\nlevel0-a-closed",
 				text);
 	}
 	

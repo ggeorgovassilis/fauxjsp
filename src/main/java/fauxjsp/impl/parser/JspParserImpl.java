@@ -17,7 +17,6 @@ import fauxjsp.api.nodes.JspTaglibInvocation;
 import fauxjsp.api.nodes.JspText;
 import fauxjsp.api.nodes.TagfileDefinition;
 import fauxjsp.api.nodes.TaglibDefinition;
-import fauxjsp.api.nodes.TaglibDefinition.AttributeDefinition;
 import fauxjsp.api.parser.CodeLocation;
 import fauxjsp.api.parser.JspParser;
 import fauxjsp.api.parser.JspParserFactory;
@@ -96,13 +95,13 @@ public class JspParserImpl implements JspParser {
 				column++;
 			}
 		}
+		index += length;
 	}
 
 	protected void advance(int length) {
 		if (length < 1)
 			throw new IllegalArgumentException("Length is " + length);
 		advanceCodeLocation(length);
-		index += length;
 	}
 
 	protected void advance(String str) {
@@ -308,6 +307,16 @@ public class JspParserImpl implements JspParser {
 		advance(taglib.getName());
 		advanceAfterNext(">");
 	}
+	
+	protected void maybeProcessJspBodyTag(JspNodeWithChildren parent, JspTaglibInvocation body){
+		//jsp:body requires special handling, parent node will get a reference to this
+		if ("jsp:body".equals(body.getName())){
+			if (parent instanceof JspTaglibInvocation){
+				JspTaglibInvocation invocation = (JspTaglibInvocation)parent;
+				invocation.setBodyNode(body);
+			}
+		}
+	}
 
 	protected void processOpenCloseTaglib(JspTaglibInvocation taglib)
 			throws Exception {
@@ -318,6 +327,7 @@ public class JspParserImpl implements JspParser {
 		// general approach and might come in handy later
 		taglib.setDefinition(getOrLoadDefinition(taglib));
 		verifyInvocation(taglib, taglib.getDefinition());
+		maybeProcessJspBodyTag(getCurrentNode(), taglib);
 		pushNode(taglib);
 		taglib = pullNode(taglib.getName());
 		if (nodeStack.isEmpty())
@@ -335,21 +345,12 @@ public class JspParserImpl implements JspParser {
 		taglib.setDefinition(getOrLoadDefinition(taglib));
 		verifyInvocation(taglib, taglib.getDefinition());
 		advanceAfterNext(">");
+		maybeProcessJspBodyTag(getCurrentNode(), taglib);
 		pushNode(taglib);
 	}
 
 	protected void verifyInvocation(JspTaglibInvocation taglib,
 			TaglibDefinition definition) {
-		// check that all attributes required by the definition are present on
-		// the invocation
-		for (String attr : definition.getAttributes().keySet()) {
-			AttributeDefinition def = definition.getAttributes().get(attr);
-			if (def.isRequired() && !taglib.getArguments().containsKey(attr))
-				parsingError("Mandatory argument '" + def.getName()
-						+ "' is missing ob taglib invocation "
-						+ taglib.getName());
-		}
-
 		// check that no arguments are present on the invocation that are not in
 		// the definition
 		for (String attr : taglib.getArguments().keySet()) {
