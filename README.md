@@ -184,7 +184,7 @@ taglib-location can be a server- or classpath resource path.
 
 ## How do I ...
 
-### add a missing tag library?
+### ... add a missing tag library?
 
 Like written before, fauxjsp can't use taglibs and has to emulate them instead, which means that someone has to program that emulation.
 
@@ -275,6 +275,21 @@ public class TaglibAdd extends TaglibDefinition{
 </servlet-mapping>
 ```
 
+### ... enable logging to see what's going on?
+
+```JspServlet``` logs through log4j, if found on the classpath, otherwise through the standard JDK logging mechanism.
+A possible logging setup in ```log4j.properties``` could look like this:
+
+```
+log4j.rootLogger=INFO, stdout
+log4j.logger.fauxjsp=INFO, stdout
+log4j.additivity.fauxjsp.impl.parser.JspParserImpl=false
+
+log4j.appender.stdout=org.apache.log4j.ConsoleAppender
+log4j.appender.stdout.Target=System.out
+log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
+log4j.appender.stdout.layout.ConversionPattern=%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n
+```
 
 ## Roadmap
 

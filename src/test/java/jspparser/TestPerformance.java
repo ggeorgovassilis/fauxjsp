@@ -32,7 +32,7 @@ import static org.junit.Assert.*;
 public class TestPerformance extends BaseTest {
 
 	final long WARMUP_MS = 2000;
-	final long RUNS_MS = 2000;
+	final long RUNS_MS = 1000;
 
 	protected int run(Runnable r, long duration) {
 		int loops = 0;
