@@ -20,11 +20,11 @@ public class JstlFmtSetBundle extends TaglibDefinition{
 	protected void runSetBundle(RenderSession session, JspTaglibInvocation invocation){
 		String basename = getAttribute("basename", invocation);
 		String bundleName = (String)session.elEvaluation.evaluate(basename, session);
-		session.request.setAttribute(JstlFmtMessage.ATTR_RESOURCE_BUNDLE, bundleName);
+		session.request.overwriteAttribute(JstlFmtMessage.ATTR_RESOURCE_BUNDLE, bundleName);
 	}
 	
 	@Override
-	public void render(RenderSession session, JspTaglibInvocation invocation) {
+	protected void renderNode(RenderSession session, JspTaglibInvocation invocation) {
 		if (!invocation.getTaglib().equals("setBundle"))
 			throw new JspRenderException("This isn't a message taglib", invocation);
 		runSetBundle(session, invocation);

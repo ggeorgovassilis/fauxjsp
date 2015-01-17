@@ -23,7 +23,7 @@ public class JstlCoreTaglibIf extends TaglibDefinition {
 	}
 
 	@Override
-	public void render(RenderSession session, JspTaglibInvocation invocation) {
+	protected void renderNode(RenderSession session, JspTaglibInvocation invocation) {
 		if (!invocation.getTaglib().equals("if"))
 			throw new JspRenderException("This isn't an if taglib", invocation);
 		runIf(session, invocation);

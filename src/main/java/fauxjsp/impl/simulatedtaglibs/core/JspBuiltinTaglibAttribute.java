@@ -36,7 +36,7 @@ public class JspBuiltinTaglibAttribute extends TaglibDefinition {
 	}
 
 	@Override
-	public void render(RenderSession session, JspTaglibInvocation invocation) {
+	protected void renderNode(RenderSession session, JspTaglibInvocation invocation) {
 		if (invocation.getTaglib().equals("attribute")) {
 			runAttribute(session, invocation);
 		} else

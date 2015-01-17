@@ -21,7 +21,7 @@ public class ServletRequestWrapper extends javax.servlet.ServletRequestWrapper{
 	
 	public ServletRequestWrapper(ServletRequest request) {
 		super(request);
-		attributes = Utils.saveAttributes(request);
+		attributes = Utils.getCopyOfAttributes(request);
 	}
 
 	@Override
@@ -32,6 +32,10 @@ public class ServletRequestWrapper extends javax.servlet.ServletRequestWrapper{
 	public void overwriteAttribute(String name, Object o){
 		setAttribute(name, o);
 		super.setAttribute(name, o);
+		ServletRequest innerRequest = getRequest();
+		if (innerRequest instanceof ServletRequestWrapper){
+			((ServletRequestWrapper)innerRequest).overwriteAttribute(name, o);
+		}
 	}
 	
 	@Override

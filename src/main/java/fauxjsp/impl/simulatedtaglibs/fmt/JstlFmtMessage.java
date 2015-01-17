@@ -34,7 +34,7 @@ public class JstlFmtMessage extends TaglibDefinition{
 	}
 	
 	@Override
-	public void render(RenderSession session, JspTaglibInvocation invocation) {
+	protected void renderNode(RenderSession session, JspTaglibInvocation invocation) {
 		if (!invocation.getTaglib().equals("message"))
 			throw new JspRenderException(invocation, new RuntimeException("This isn't a message taglib"));
 		runMsg(session, invocation);

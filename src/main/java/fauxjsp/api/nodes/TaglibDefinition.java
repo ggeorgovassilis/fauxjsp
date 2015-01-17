@@ -6,6 +6,7 @@ import java.util.Map;
 
 import fauxjsp.api.renderer.JspRenderException;
 import fauxjsp.api.renderer.RenderSession;
+import fauxjsp.servlet.ServletRequestWrapper;
 
 /**
  * Definition of a tag library or tagfile
@@ -108,7 +109,19 @@ public abstract class TaglibDefinition {
 				: result != null;
 	}
 
-	public abstract void render(RenderSession session,
+	public void render(RenderSession session, JspTaglibInvocation invocation) {
+		//open a new variable scope
+		ServletRequestWrapper oldRequest = session.request;
+		try {
+			session.request = new ServletRequestWrapper(session.request);
+			renderNode(session, invocation);
+		} finally {
+			//restore old variable scope
+			session.request = oldRequest;
+		}
+	}
+
+	protected abstract void renderNode(RenderSession session,
 			JspTaglibInvocation invocation);
 
 }

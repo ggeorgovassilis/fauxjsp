@@ -37,9 +37,7 @@ public class TagfileDefinition extends TaglibDefinition {
 	}
 
 	@Override
-	public void render(RenderSession session, JspTaglibInvocation invocation) {
-		ServletRequestWrapper originalRequest = session.request;
-		session.request = new ServletRequestWrapper(originalRequest);
+	protected void renderNode(RenderSession session, JspTaglibInvocation invocation) {
 		for (String argument : invocation.getArguments().keySet()) {
 
 			Object newValue = null;
@@ -70,6 +68,5 @@ public class TagfileDefinition extends TaglibDefinition {
 
 		session.request.setAttribute(BODY_ATTRIBUTE, invocation);
 		session.renderer.render(body, session);
-		session.request = originalRequest;
 	}
 }

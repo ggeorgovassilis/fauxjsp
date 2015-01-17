@@ -17,6 +17,11 @@ import org.apache.commons.lang.StringEscapeUtils;
 
 import fauxjsp.api.renderer.RenderSession;
 
+/**
+ * Tools
+ * @author George Georgovassilis
+ *
+ */
 public class Utils {
 
 	public static byte[] readFile(File f) {
@@ -60,7 +65,7 @@ public class Utils {
 		return s == null || s.isEmpty();
 	}
 
-	public static Map<String, Object> saveAttributes(ServletRequest request) {
+	public static Map<String, Object> getCopyOfAttributes(ServletRequest request) {
 		Map<String, Object> attributes = new HashMap<String, Object>();
 		for (String attr : Collections.list(request.getAttributeNames())) {
 			attributes.put(attr, request.getAttribute(attr));

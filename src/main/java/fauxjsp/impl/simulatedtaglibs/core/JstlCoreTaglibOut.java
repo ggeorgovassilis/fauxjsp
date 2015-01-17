@@ -22,7 +22,7 @@ public class JstlCoreTaglibOut extends TaglibDefinition {
 	}
 
 	@Override
-	public void render(RenderSession session, JspTaglibInvocation invocation) {
+	protected void renderNode(RenderSession session, JspTaglibInvocation invocation) {
 		if (!invocation.getTaglib().equals("out"))
 			throw new JspRenderException(invocation, new RuntimeException(
 					"This isn't an out taglib"));

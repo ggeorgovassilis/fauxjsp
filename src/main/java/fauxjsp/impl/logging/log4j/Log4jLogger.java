@@ -4,7 +4,7 @@ import fauxjsp.api.logging.Logger;
 
 /**
  * Facade for log4j
- * @author Georgios Georgovassilis
+ * @author George Georgovassilis
  *
  */
 public class Log4jLogger implements Logger{

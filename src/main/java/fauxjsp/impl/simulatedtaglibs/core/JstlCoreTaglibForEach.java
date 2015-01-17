@@ -75,7 +75,7 @@ public class JstlCoreTaglibForEach extends TaglibDefinition{
 	}
 
 	@Override
-	public void render(RenderSession session, JspTaglibInvocation invocation) {
+	protected void renderNode(RenderSession session, JspTaglibInvocation invocation) {
 		if (invocation.getTaglib().equals("forEach")) {
 			runForEachLoop(session, invocation);
 		} else 

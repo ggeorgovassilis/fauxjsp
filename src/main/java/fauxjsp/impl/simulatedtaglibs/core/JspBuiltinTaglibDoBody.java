@@ -35,7 +35,7 @@ public class JspBuiltinTaglibDoBody extends TaglibDefinition {
 	}
 
 	@Override
-	public void render(RenderSession session, JspTaglibInvocation invocation) {
+	protected void renderNode(RenderSession session, JspTaglibInvocation invocation) {
 		if (invocation.getTaglib().equals("doBody")) {
 			runDoBody(session, invocation);
 		} else {

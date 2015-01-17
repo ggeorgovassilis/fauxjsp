@@ -30,7 +30,7 @@ public class JstlCoreTaglibSet extends TaglibDefinition {
 	}
 
 	@Override
-	public void render(RenderSession session, JspTaglibInvocation invocation) {
+	protected void renderNode(RenderSession session, JspTaglibInvocation invocation) {
 		if (!invocation.getTaglib().equals("set"))
 			throw new JspRenderException("This isn't a set taglib", invocation);
 		runSet(session, invocation);

@@ -5,7 +5,7 @@ import fauxjsp.api.logging.Logger;
 
 /**
  * Implementation with java logging
- * @author Georgios Georgovassilis
+ * @author George Georgovassilis
  *
  */
 public class JavaLoggingFactory implements LogFactory{

@@ -24,7 +24,7 @@ public class JstlCoreTaglibWhen extends TaglibDefinition{
 		}
 	}
 	@Override
-	public void render(RenderSession session, JspTaglibInvocation invocation) {
+	protected void renderNode(RenderSession session, JspTaglibInvocation invocation) {
 		if (!invocation.getTaglib().equals("when"))
 			throw new JspRenderException("This isn't a when taglib", invocation);
 		runWhen(session, invocation);

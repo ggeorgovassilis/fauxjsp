@@ -19,18 +19,11 @@ public class JspBuiltinTaglibBody extends TaglibDefinition {
 
 	protected void runBody(RenderSession session,
 			JspTaglibInvocation invocation) {
-//		ServletResponseWrapper oldResponse = session.response;
-//		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-//		session.response = new ServletResponseWrapper(oldResponse, buffer);
 		render(invocation.getChildren(), session);
-//		session.response = oldResponse;
-//		String renderedValue = Utils.string(buffer.toByteArray(),
-//				session.response.getCharacterEncoding());
-//		session.request.setAttribute(TagfileDefinition.BODY_ATTRIBUTE, renderedValue);
 	}
 
 	@Override
-	public void render(RenderSession session, JspTaglibInvocation invocation) {
+	protected void renderNode(RenderSession session, JspTaglibInvocation invocation) {
 		if (invocation.getTaglib().equals("body")) {
 			runBody(session, invocation);
 		} else {

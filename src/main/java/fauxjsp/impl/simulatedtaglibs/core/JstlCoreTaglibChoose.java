@@ -45,7 +45,7 @@ public class JstlCoreTaglibChoose extends TaglibDefinition {
 	}
 
 	@Override
-	public void render(RenderSession session, JspTaglibInvocation invocation) {
+	protected void renderNode(RenderSession session, JspTaglibInvocation invocation) {
 		if (!invocation.getTaglib().equals("choose")
 				&& !invocation.getTaglib().equals("otherwise"))
 			throw new JspRenderException(invocation, new RuntimeException(
