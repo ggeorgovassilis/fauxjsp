@@ -2,7 +2,6 @@ package fauxjsp.api.nodes;
 
 import fauxjsp.api.renderer.RenderSession;
 import fauxjsp.impl.Utils;
-import fauxjsp.servlet.ServletRequestWrapper;
 
 /**
  * Definition of a tagfile

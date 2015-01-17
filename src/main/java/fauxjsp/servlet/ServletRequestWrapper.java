@@ -18,6 +18,7 @@ import fauxjsp.impl.Utils;
 public class ServletRequestWrapper extends javax.servlet.ServletRequestWrapper{
 
 	protected Map<String, Object> attributes;
+	protected Set<String> attributeNamesCache;
 	
 	public ServletRequestWrapper(ServletRequest request) {
 		super(request);
@@ -26,6 +27,7 @@ public class ServletRequestWrapper extends javax.servlet.ServletRequestWrapper{
 
 	@Override
 	public void setAttribute(String name, Object o) {
+		attributeNamesCache = null;
 		attributes.put(name, o);
 	}
 
@@ -40,6 +42,7 @@ public class ServletRequestWrapper extends javax.servlet.ServletRequestWrapper{
 	
 	@Override
 	public void removeAttribute(String name) {
+		attributeNamesCache = null;
 		attributes.remove(name);
 	}
 	
@@ -53,9 +56,11 @@ public class ServletRequestWrapper extends javax.servlet.ServletRequestWrapper{
 	
 	@Override
 	public Enumeration<String> getAttributeNames() {
-		Set<String> names = new HashSet<String>(attributes.keySet());
-		names.addAll(Collections.list(super.getAttributeNames()));
-		return Collections.enumeration(names);
+		if (attributeNamesCache==null){
+			attributeNamesCache = new HashSet<String>(attributes.keySet());
+			attributeNamesCache.addAll(Collections.list(super.getAttributeNames()));
+		}
+		return Collections.enumeration(attributeNamesCache);
 	}
 	
 }
