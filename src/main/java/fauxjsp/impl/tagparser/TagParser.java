@@ -11,9 +11,10 @@ import fauxjsp.impl.tagparser.TagParser.Tag.TagType;
 
 /**
  * Utility which can parse tag invocations and jsp instructions. Note that
- * {@link TagParser.Tag#taglib} is not a fully parsed instance but a stub
- * which merely contains the namespace, tagname and attributes but lacks, i.e.
- * nested nodes.
+ * {@link TagParser.Tag#taglib} is not a fully parsed instance but a stub which
+ * merely contains the namespace, tagname and attributes but lacks, i.e. nested
+ * nodes.
+ * 
  * @author George Georgovassilis
  */
 
@@ -29,21 +30,29 @@ public class TagParser {
 	}
 
 	protected final static Pattern namespaceAndTagPattern = Pattern.compile(
-			"<\\s*([_a-zA-Z0-9\\-]+):([a-zA-Z0-9\\-]+)\\s*(.*)\\/{0,1}>",
+			"<\\s*([_a-zA-Z0-9\\-]+):([_a-zA-Z0-9\\-]+)\\s*(.*)\\/{0,1}>",
 			Pattern.DOTALL | Pattern.MULTILINE);
 	protected final static Pattern tagPattern = Pattern.compile(
 			"<\\s*([_a-zA-Z0-9\\-]+)\\s*(.*)\\/{0,1}>", Pattern.DOTALL
 					| Pattern.MULTILINE);
-	
+
 	protected final static Pattern colonPattern = Pattern.compile("\\:");
 
 	protected String getTagSegment(String text) {
 		boolean inQuotes = false;
+		char typeOfQuote = ' ';
 		for (int i = 0; i < text.length(); i++) {
 			char c = text.charAt(i);
-			if (c == '\"')
+			if (c == '\"' || c == '\'') {
+				if (!inQuotes) {
+					inQuotes = true;
+					typeOfQuote = c;
+				} else {
+					if (c == typeOfQuote)
+						inQuotes = false;
+				}
 				inQuotes = !inQuotes;
-			else if (c == '>' && !inQuotes)
+			} else if (c == '>' && !inQuotes)
 				return text.substring(0, i + 1);
 		}
 		return null;
@@ -52,6 +61,7 @@ public class TagParser {
 	protected Map<String, String> getAttributes(String tagSegment) {
 		Map<String, String> attributes = new HashMap<String, String>();
 		boolean inQuotes = false;
+		char typeOfQuotes = ' ';
 		String name = "";
 		String value = "";
 		StringBuilder text = new StringBuilder();
@@ -62,20 +72,26 @@ public class TagParser {
 			case '\n':
 			case '\t':
 				continue;
-			case '"':
-				inQuotes = !inQuotes;
+			case '=':
 				if (!inQuotes) {
+					name = text.toString().trim();
+					text.setLength(0);
+					continue;
+				}
+			case '"':
+			case '\'':
+				if (inQuotes && typeOfQuotes == c) {
 					value = text.toString();
 					text.setLength(0);
 					attributes.put(name, value);
 					name = "";
 					value = "";
+					inQuotes = false;
+					continue;
 				}
-				continue;
-			case '=':
 				if (!inQuotes) {
-					name = text.toString().trim();
-					text.setLength(0);
+					inQuotes = true;
+					typeOfQuotes = c;
 					continue;
 				}
 			default:
@@ -112,7 +128,7 @@ public class TagParser {
 		result.type = Tag.TagType.opening;
 		if (segment.endsWith("/>"))
 			result.type = Tag.TagType.openingAndClosing;
-		taglib.getArguments().putAll(getAttributes(attributesSegment));
+		taglib.getAttributes().putAll(getAttributes(attributesSegment));
 		return result;
 	}
 
@@ -131,42 +147,48 @@ public class TagParser {
 		tag.type = TagType.closing;
 		return tag;
 	}
-	
+
 	/**
-	 * Fast plausibility check on a large string. If this returns true, there might be a tag declaration (but doesn't have to be).
-	 * If it returns false, there definitely isn't a tag declaration.
-	 * @param text Big string containing (somewhere) the tag.
-	 * @param offset Look for tag only after "offset"
+	 * Fast plausibility check on a large string. If this returns true, there
+	 * might be a tag declaration (but doesn't have to be). If it returns false,
+	 * there definitely isn't a tag declaration.
+	 * 
+	 * @param text
+	 *            Big string containing (somewhere) the tag.
+	 * @param offset
+	 *            Look for tag only after "offset"
 	 * @return
 	 */
-	public boolean mightContainDeclaration(String text, int offset){
-		/* In an earlier version I replicated the entire logic of parse(text, location), hoping it would
-		 * yield fewer false positives (which it did), but the overall performance dropped.
+	public boolean mightContainDeclaration(String text, int offset) {
+		/*
+		 * In an earlier version I replicated the entire logic of parse(text,
+		 * location), hoping it would yield fewer false positives (which it
+		 * did), but the overall performance dropped.
 		 */
-		return text.charAt(offset)=='<';
+		return text.charAt(offset) == '<';
 	}
-	
-	protected int getEarliest(String text, String...subs){
+
+	protected int getEarliest(String text, String... subs) {
 		int earliest = text.length();
-		for (String s:subs){
-			int index = text.indexOf(s,1);
-			if (index!=-1)
+		for (String s : subs) {
+			int index = text.indexOf(s, 1);
+			if (index != -1)
 				earliest = Math.min(earliest, index);
 		}
 		return earliest;
 	}
 
 	public Tag parse(String text, CodeLocation location) {
-		if (text.length()<2)
+		if (text.length() < 2)
 			return null;
 		char c1 = text.charAt(0);
 		char c2 = text.charAt(1);
-		if (c1=='<' && c2=='/')
+		if (c1 == '<' && c2 == '/')
 			return parseClosingTag(text, location);
 		int indexOfColon = text.indexOf(":");
 		int indexOfForbiddenStrings = getEarliest(text, "'", "\"", "<");
-		if (c1=='<' &&  indexOfColon> 0
-				&& indexOfColon < text.indexOf(">") && indexOfColon<indexOfForbiddenStrings)
+		if (c1 == '<' && indexOfColon > 0 && indexOfColon < text.indexOf(">")
+				&& indexOfColon < indexOfForbiddenStrings)
 			return parseOpeningTag(text, location);
 		return null;
 	}

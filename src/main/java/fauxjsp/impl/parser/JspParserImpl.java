@@ -195,23 +195,28 @@ public class JspParserImpl implements JspParser {
 				logger.debug(invocation.getName()
 						+ " is a tagfile, running parser");
 				JspParser tagfileParser = parserFactory.create(this);
-				JspPage page = tagfileParser.parse(fullPath);
 				TagfileDefinition tagfileDefinition = new TagfileDefinition(path);
 				definition = tagfileDefinition;
+				//need to add a marker into cache that the tagfile is known, otherwise a recursive call
+				//will lead to a stack overflow
+				definition.setName(fullQuallifiedName);
+				taglibDefinitions.setDefinition(fullPath, definition);
+
+				JspPage page = tagfileParser.parse(fullPath);
 				tagfileDefinition.setBody(page);
 				for (JspNode child : page.getChildren())
 					if (child instanceof JspInstruction) {
 						JspInstruction instruction = (JspInstruction) child;
 						if (instruction.getName().equals("attribute")) {
-							String attributeName = instruction.getArguments()
+							String attributeName = instruction.getAttributes()
 									.get("name");
 							String sAttributeRequired = instruction
-									.getArguments().get("required");
-							String sType = instruction.getArguments().get(
+									.getAttributes().get("required");
+							String sType = instruction.getAttributes().get(
 									"type");
 							if (Utils.isEmpty(sType))
 								sType = String.class.getCanonicalName();
-							String sRTValue = instruction.getArguments().get(
+							String sRTValue = instruction.getAttributes().get(
 									"rtexprvalue");
 
 							TaglibDefinition.AttributeDefinition attributeDefinition = new TaglibDefinition.AttributeDefinition(
@@ -223,8 +228,6 @@ public class JspParserImpl implements JspParser {
 						}
 					}
 			}
-			definition.setName(fullQuallifiedName);
-			taglibDefinitions.setDefinition(fullPath, definition);
 		} else
 			logger.trace("Found " + fullPath + " in cache");
 		return definition;
@@ -262,7 +265,7 @@ public class JspParserImpl implements JspParser {
 			parsingError("Can't parse instruction from " + sInstruction);
 		JspInstruction instruction = new JspInstruction(tag.taglib.getTaglib(),
 				getCurrentLocation());
-		instruction.getArguments().putAll(tag.taglib.getArguments());
+		instruction.getAttributes().putAll(tag.taglib.getAttributes());
 		advanceAfterNext("%>");
 		return instruction;
 	}
@@ -279,16 +282,16 @@ public class JspParserImpl implements JspParser {
 
 	protected void maybeRegisterTaglib(JspInstruction instruction) {
 		if (instruction.getName().equals("taglib")) {
-			String namespace = instruction.getArguments().get("prefix");
+			String namespace = instruction.getAttributes().get("prefix");
 			if (Utils.isEmpty(namespace))
 				parsingError("Missing prefix attribute on taglib");
 			if (taglibNamespaces.containsKey(namespace))
 				parsingError("Taglib prefix '" + namespace + "' already used.");
 			String path = null;
-			if (instruction.getArguments().containsKey("tagdir")) {
-				path = instruction.getArguments().get("tagdir");
-			} else if (instruction.getArguments().containsKey("uri")) {
-				path = instruction.getArguments().get("uri");
+			if (instruction.getAttributes().containsKey("tagdir")) {
+				path = instruction.getAttributes().get("tagdir");
+			} else if (instruction.getAttributes().containsKey("uri")) {
+				path = instruction.getAttributes().get("uri");
 			} else
 				parsingError("Taglib declaration requires either a uri or tagdir attribute");
 			taglibNamespaces.put(namespace, path);
@@ -308,16 +311,6 @@ public class JspParserImpl implements JspParser {
 		advanceAfterNext(">");
 	}
 	
-	protected void maybeProcessJspBodyTag(JspNodeWithChildren parent, JspTaglibInvocation body){
-		//jsp:body requires special handling, parent node will get a reference to this
-		if ("jsp:body".equals(body.getName())){
-			if (parent instanceof JspTaglibInvocation){
-				JspTaglibInvocation invocation = (JspTaglibInvocation)parent;
-				invocation.setBodyNode(body);
-			}
-		}
-	}
-
 	protected void processOpenCloseTaglib(JspTaglibInvocation taglib)
 			throws Exception {
 		flushText();
@@ -326,8 +319,6 @@ public class JspParserImpl implements JspParser {
 		// we don't _really_ have to go through push/pull, but it's a more
 		// general approach and might come in handy later
 		taglib.setDefinition(getOrLoadDefinition(taglib));
-		verifyInvocation(taglib, taglib.getDefinition());
-		maybeProcessJspBodyTag(getCurrentNode(), taglib);
 		pushNode(taglib);
 		taglib = pullNode(taglib.getName());
 		if (nodeStack.isEmpty())
@@ -343,26 +334,13 @@ public class JspParserImpl implements JspParser {
 		flushText();
 		logger.trace("Opening " + taglib.getName());
 		taglib.setDefinition(getOrLoadDefinition(taglib));
-		verifyInvocation(taglib, taglib.getDefinition());
 		advanceAfterNext(">");
-		maybeProcessJspBodyTag(getCurrentNode(), taglib);
 		pushNode(taglib);
 	}
 
-	protected void verifyInvocation(JspTaglibInvocation taglib,
-			TaglibDefinition definition) {
-		// check that no arguments are present on the invocation that are not in
-		// the definition
-		for (String attr : taglib.getArguments().keySet()) {
-			if (!definition.getAttributes().containsKey(attr))
-				parsingError("Unknown argument '" + attr
-						+ "' on taglib invocation " + taglib.getName());
-		}
-	}
-	
 	protected void maybeIncludeContent(JspInstruction instruction, JspNodeWithChildren parent){
 		if ("include".equals(instruction.getName())){
-			String path = instruction.getArguments().get("file");
+			String path = instruction.getAttributes().get("file");
 			String resolvedPath = path;
 			if (Utils.isEmpty(path))
 				parsingError("Missing 'file' attribute");

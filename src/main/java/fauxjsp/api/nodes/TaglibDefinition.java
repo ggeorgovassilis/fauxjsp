@@ -57,12 +57,16 @@ public abstract class TaglibDefinition {
 		this.name = name;
 	}
 
+	protected void error(String message, JspNode invocation) throws JspRenderException{
+		throw new JspRenderException(message, invocation);
+	}
+	
 	protected String getAttribute(String name, JspTaglibInvocation invocation) {
 		AttributeDefinition def = attributes.get(name);
 		if (def == null)
 			throw new JspRenderException("Accessing undeclared attibute '"
 					+ name + "'", invocation);
-		String value = invocation.getArguments().get(name);
+		String value = invocation.getAttributes().get(name);
 		return value;
 	}
 
@@ -112,6 +116,11 @@ public abstract class TaglibDefinition {
 	protected boolean shouldUseNewVariableScope(){
 		return true;
 	}
+	
+	protected void checkInvocation(RenderSession session, JspTaglibInvocation invocation){
+		if (!invocation.getTaglib().equals(getName()))
+			error("Internal error: attempted to render an '"+invocation.getTaglib()+"' taglib with the taglib definition of "+getName(), invocation);
+	}
 
 	public void render(RenderSession session, JspTaglibInvocation invocation) {
 		//open a new variable scope
@@ -119,6 +128,7 @@ public abstract class TaglibDefinition {
 		try {
 			if (shouldUseNewVariableScope())
 				session.request = new ServletRequestWrapper(session.request);
+			checkInvocation(session, invocation);
 			renderNode(session, invocation);
 		} finally {
 			//restore old variable scope

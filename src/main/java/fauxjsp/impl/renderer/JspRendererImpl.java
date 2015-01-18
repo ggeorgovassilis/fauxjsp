@@ -15,12 +15,13 @@ import fauxjsp.impl.logging.Logging;
 
 /**
  * JSP renderer implementation
+ * 
  * @author George Georgovassilis
  *
  */
 
 public class JspRendererImpl implements JspRenderer {
-	
+
 	protected Logger logger = Logging.getLogger(JspRendererImpl.class);
 
 	@Override
@@ -37,7 +38,7 @@ public class JspRendererImpl implements JspRenderer {
 	}
 
 	protected void renderNode(JspNode node, RenderSession session) {
-		logger.trace("Rendering "+node.debugLabel());
+		logger.trace("Rendering " + node.debugLabel());
 		try {
 			if (node instanceof JspText) {
 				JspText textNode = (JspText) node;
@@ -46,7 +47,9 @@ public class JspRendererImpl implements JspRenderer {
 					content = (String) session.elEvaluation.evaluate(content,
 							session);
 				}
-				write(session.response.getOutputStream(), content.getBytes(session.response.getCharacterEncoding()));
+				write(session.response.getOutputStream(),
+						content.getBytes(session.response
+								.getCharacterEncoding()));
 			} else if (node instanceof JspTaglibInvocation) {
 				JspTaglibInvocation taglibInvocation = (JspTaglibInvocation) node;
 				taglibInvocation.getDefinition().render(session,
@@ -56,23 +59,25 @@ public class JspRendererImpl implements JspRenderer {
 				for (JspNode childNode : nodeWithChildren.getChildren())
 					renderNode(childNode, session);
 			}
+		} catch (JspRenderException re) {
+			throw re;
 		} catch (Exception e) {
 			throw new JspRenderException(node, e);
 		}
 	}
 
 	@Override
-	public String explain(JspRenderException exception){
+	public String explain(JspRenderException exception) {
 		if (exception == null)
 			return "";
 		Throwable cause = exception.getCause();
 		String causeExplanation = "";
-		if (cause!=null && cause!=exception){
+		if (cause != null && cause != exception) {
 			if (cause instanceof JspRenderException)
-				causeExplanation = explain((JspRenderException)cause);
+				causeExplanation = explain((JspRenderException) cause);
 			else
 				causeExplanation = cause.getMessage();
 		}
-		return causeExplanation+"\n"+exception.getNode().getLocation();
+		return causeExplanation + "\n" + exception.getNode().getLocation();
 	}
 }

@@ -1,5 +1,7 @@
 package jspparser;
 
+import java.util.ArrayList;
+
 import jspparser.utils.MockHttpServletRequest;
 import jspparser.utils.MockHttpServletResponse;
 
@@ -86,12 +88,23 @@ public class TestErrors extends BaseTest{
 	@Test
 	public void test_taglib_undeclared_argument() {
 		try {
-			parser.parse("WEB-INF/jsp/error_taglib_undeclared_argument.jsperr");
-			fail("expected a JspParsingException");
-		} catch (JspParsingException e) {
-			String explanation = parser.explain(e);
+			JspPage page = parser.parse("WEB-INF/jsp/error_taglib_undeclared_argument.jsperr");
+			MockHttpServletRequest request = new MockHttpServletRequest();
+			MockHttpServletResponse response = new MockHttpServletResponse();
+			RenderSession session = new RenderSession();
+			session.request = new ServletRequestWrapper(request);
+			session.renderer = renderer;
+			session.elEvaluation = elEvaluation;
+			session.response = new ServletResponseWrapper(response, response.getBaos());
+			session.request.setAttribute("navigation", new ArrayList<Object>());
+			session.request.setAttribute("listOfStocks", new ArrayList<Object>());
+			session.request.setAttribute("listOfNews", new ArrayList<Object>());
+			renderer.render(page, session);
+			fail("expected a JspRenderException");
+		} catch (JspRenderException e) {
+			String explanation = renderer.explain(e);
 			assertTrue(explanation,
-					explanation.contains("Unknown argument 'fakearg'"));
+					explanation.contains("unexpected attribute 'fakearg'"));
 			assertTrue(explanation, explanation.contains("Line 14"));
 		}
 	}

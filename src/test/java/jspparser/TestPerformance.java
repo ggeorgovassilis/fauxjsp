@@ -1,18 +1,23 @@
 package jspparser;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.GregorianCalendar;
+import java.util.Iterator;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-import jspparser.dto.NavigationItem;
-import jspparser.dto.News;
-import jspparser.dto.Stock;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import jspparser.dto.Item;
 import jspparser.utils.MockHttpServletRequest;
 import jspparser.utils.MockHttpServletResponse;
 import jspparser.utils.TestUtils;
 
 import org.junit.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import fauxjsp.api.nodes.JspPage;
 import fauxjsp.api.renderer.RenderSession;
@@ -50,7 +55,7 @@ public class TestPerformance extends BaseTest {
 
 			@Override
 			public void run() {
-				newParser().parse("WEB-INF/jsp/homepage.jsp");
+				newParser().parse("WEB-INF/jsp/big.jsp");
 			}
 		};
 		run(r, WARMUP_MS);
@@ -58,10 +63,59 @@ public class TestPerformance extends BaseTest {
 		System.out.println("Parse runs / sec : " + loops * 1000 / RUNS_MS);
 	}
 
+	protected Item makeTree(Item parent, int id, int depth, int childrenPerLevel) {
+		if (depth < 1)
+			return null;
+		Item item = new Item();
+		item.setId("" + id);
+		item.setParent(parent);
+		for (int i = 0; i < childrenPerLevel; i++) {
+			Item subTree = makeTree(item, i, depth - 1, childrenPerLevel);
+			if (subTree != null) {
+				item.getItems().add(subTree);
+				subTree.setParent(item);
+			}
+		}
+		return item;
+	}
+
+	protected void compare(String text, Item tree) {
+		try {
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory
+					.newInstance();
+			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+			Document doc = dBuilder.parse(new ByteArrayInputStream(text
+					.getBytes()));
+			compare(doc.getDocumentElement(), tree);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected void compare(Element node, Item tree) {
+		assertEquals(node.getAttribute("id"), tree.getId());
+		NodeList children = node.getChildNodes();
+		Iterator<Item> childItem = tree.getItems().iterator();
+		for (int i = 0; i < children.getLength(); i++) {
+			Node n = children.item(i);
+			if (n instanceof Element) {
+				Element e = (Element) n;
+				if (e.getTagName().equals("item")) {
+					Item child = childItem.next();
+					compare(e, child);
+				}
+			}
+		}
+	}
+
 	@Test
 	public void testJspRenderer() {
-		final JspPage page = newParser().parse("WEB-INF/jsp/homepage.jsp");
-		final Date date = new GregorianCalendar(2000, 2, 2).getTime();
+		final JspPage page = newParser().parse("WEB-INF/jsp/big.jsp");
+		Item root = new Item();
+		root.setId("0");
+		final Item tree = makeTree(root, 0, 5, 10);
+		final AtomicBoolean comparissonDone = new AtomicBoolean();
+
 		Runnable r = new Runnable() {
 
 			@Override
@@ -73,25 +127,17 @@ public class TestPerformance extends BaseTest {
 				session.request = new ServletRequestWrapper(request);
 				session.renderer = renderer;
 				session.elEvaluation = elEvaluation;
-				session.response = new ServletResponseWrapper(response, response.getBaos());
+				session.response = new ServletResponseWrapper(response,
+						response.getBaos());
 
-				session.request.setAttribute("navigation", Arrays.asList(
-						new NavigationItem("path 1", "label 1"),
-						new NavigationItem("path 2", "label 2")));
-				session.request.setAttribute("listOfStocks", Arrays.asList(
-						new Stock("S1", "Stock one", 10, 20), new Stock("S2",
-								"Stock 2", -9, 88)));
-				session.request.setAttribute("listOfNews", Arrays.asList(
-						new News("1", "headline 1", "description 1",
-								"full text of news 1", false), new News("2",
-								"headline 2", "description 2",
-								"full text of news 2", false)));
-
-				session.request.setAttribute("date", date);
+				session.request.setAttribute("tree", tree);
 				session.renderer.render(page, session);
-				String text;
-				text = text(baos);
-				assertEquals("29cbe350d17d4f6d8f1bcdf6fc6e8dc2",
+				String text = text(baos);
+				if (!comparissonDone.get()){
+					compare(text, tree);
+					comparissonDone.set(true);
+				}
+				assertEquals(text, "796c9c440c4f44e223852d272c18cd0f",
 						TestUtils.MD5(text));
 			}
 		};

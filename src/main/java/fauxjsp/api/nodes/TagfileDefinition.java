@@ -34,25 +34,35 @@ public class TagfileDefinition extends TaglibDefinition {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	@Override
+	protected void checkInvocation(RenderSession session,
+			JspTaglibInvocation invocation) {
+		if (!invocation.getName().equals(getName()))
+			error("Attempted to render a '"+invocation.getName()+"' with a '"+getName()+"' definition", invocation);
+	}
 
 	@Override
 	protected void renderNode(RenderSession session, JspTaglibInvocation invocation) {
-		for (String argument : invocation.getArguments().keySet()) {
+		for (String argument : invocation.getAttributes().keySet()) {
 
 			Object newValue = null;
 			Object finalValue = null;
-			String valueExpression = invocation.getArguments().get(argument);
+			String valueExpression = invocation.getAttributes().get(argument);
 
 			AttributeDefinition def = attributes.get(argument);
 			if (def == null)
-				throw new RuntimeException("Found unexpected attribute "
-						+ argument + " on " + invocation.getName());
+				throw new RuntimeException("Found unexpected attribute '"
+						+ argument + "' on " + invocation.getName());
 
 			if (def.isRtExpression())
 				newValue = session.elEvaluation.evaluate(valueExpression,
 						session);
 			else
 				newValue = valueExpression;
+			if (def.isRequired() && !invocation.getAttributes().containsKey(def.getName()))
+				throw new RuntimeException("Missing required attribute "
+						+ argument + " on " + invocation.getName());
 			Class<?> attributeType = getClass(def.getType());
 			finalValue = Utils.cast(newValue, attributeType);
 			if (finalValue == null) {
@@ -64,19 +74,23 @@ public class TagfileDefinition extends TaglibDefinition {
 			}
 			session.request.setAttribute(argument, finalValue);
 		}
+		
+		
 
-//		render(invocation.children, session);
 		// run over attributes
+		JspNode bodyNode = invocation;
 		for (JspNode node:invocation.getChildren())
 			if (node instanceof JspNodeWithChildren){
 				JspNodeWithChildren attribute = (JspNodeWithChildren)node;
 				if ("jsp:attribute".equals(attribute.getName())){
+					//JspBuiltinTagAttribute renders attributes
 					session.renderer.render(attribute, session);
+				} else
+				if ("jsp:body".equals(attribute.getName())){
+					bodyNode = attribute;
 				}
 			}
-		session.request.setAttribute(BODY_ATTRIBUTE, invocation.bodyNode);
-		if (invocation.bodyNode==null)
-			session.request.setAttribute(BODY_ATTRIBUTE, invocation);
+		session.request.setAttribute(BODY_ATTRIBUTE, bodyNode);
 		session.renderer.render(body, session);
 	}
 }

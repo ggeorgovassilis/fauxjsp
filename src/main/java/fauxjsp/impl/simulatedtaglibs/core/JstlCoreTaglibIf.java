@@ -2,7 +2,6 @@ package fauxjsp.impl.simulatedtaglibs.core;
 
 import fauxjsp.api.nodes.JspTaglibInvocation;
 import fauxjsp.api.nodes.TaglibDefinition;
-import fauxjsp.api.renderer.JspRenderException;
 import fauxjsp.api.renderer.RenderSession;
 
 /**
@@ -14,19 +13,13 @@ import fauxjsp.api.renderer.RenderSession;
 
 public class JstlCoreTaglibIf extends TaglibDefinition {
 
-	protected void runIf(RenderSession session, JspTaglibInvocation invocation) {
+	@Override
+	protected void renderNode(RenderSession session, JspTaglibInvocation invocation) {
 		String testExpression = getAttribute("test", invocation);
 		Object result = evaluate(testExpression, session);
 		boolean booleanResult = toBoolean(result);
 		if (booleanResult)
 			render(invocation.getChildren(), session);
-	}
-
-	@Override
-	protected void renderNode(RenderSession session, JspTaglibInvocation invocation) {
-		if (!invocation.getTaglib().equals("if"))
-			throw new JspRenderException("This isn't an if taglib", invocation);
-		runIf(session, invocation);
 	}
 
 	public JstlCoreTaglibIf() {

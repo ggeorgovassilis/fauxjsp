@@ -17,7 +17,7 @@ import fauxjsp.api.parser.CodeLocation;
 public abstract class JspNodeWithChildren extends JspNode{
 
 	protected List<JspNode> children = new ArrayList<JspNode>();
-	protected final Map<String, String> arguments = new HashMap<String, String>();
+	protected final Map<String, String> attributes = new HashMap<String, String>();
 	protected String fullQualifiedName;
 
 	public JspNodeWithChildren(String fullQualifiedName, CodeLocation location){
@@ -38,18 +38,18 @@ public abstract class JspNodeWithChildren extends JspNode{
 		return children;
 	}
 
-	public Map<String, String> getArguments() {
-		return arguments;
+	public Map<String, String> getAttributes() {
+		return attributes;
 	}
 
 	@Override
 	public String toString() {
 		StringBuffer sb = new StringBuffer("<").append(getName());
-		for (String key:arguments.keySet()){
+		for (String key:attributes.keySet()){
 			sb.append(" ");
 			sb.append(key);
 			sb.append("=");
-			sb.append(arguments.get(key));
+			sb.append(attributes.get(key));
 		}
 		sb.append(">");
 		for (JspNode n:children){

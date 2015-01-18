@@ -39,8 +39,8 @@ public class TestJspParserAndRenderer extends BaseTest{
 
 		JspInstruction j1 = (JspInstruction) page.getChildren().get(0);
 		assertEquals("taglib", j1.getName());
-		assertEquals("c", j1.getArguments().get("prefix"));
-		assertEquals("http://java.sun.com/jsp/jstl/core", j1.getArguments()
+		assertEquals("c", j1.getAttributes().get("prefix"));
+		assertEquals("http://java.sun.com/jsp/jstl/core", j1.getAttributes()
 				.get("uri"));
 
 		JspText j2 = (JspText) page.getChildren().get(1);
@@ -48,8 +48,8 @@ public class TestJspParserAndRenderer extends BaseTest{
 
 		JspInstruction j3 = (JspInstruction) page.getChildren().get(2);
 		assertEquals("taglib", j3.getName());
-		assertEquals("t", j3.getArguments().get("prefix"));
-		assertEquals("/WEB-INF/tags", j3.getArguments().get("tagdir"));
+		assertEquals("t", j3.getAttributes().get("prefix"));
+		assertEquals("/WEB-INF/tags", j3.getAttributes().get("tagdir"));
 
 		JspText j4 = (JspText) page.getChildren().get(3);
 		assertTrue(j4.getContentAsString().equals("\r\n"));
@@ -68,7 +68,7 @@ public class TestJspParserAndRenderer extends BaseTest{
 				.get(1);
 		assertEquals("t:news", j5_2.getName());
 		assertTrue(j5_2.getChildren().isEmpty());
-		assertEquals("${listOfNews}", j5_2.getArguments().get("listOfNews"));
+		assertEquals("${listOfNews}", j5_2.getAttributes().get("listOfNews"));
 
 	}
 
@@ -99,12 +99,12 @@ public class TestJspParserAndRenderer extends BaseTest{
 		session.request.setAttribute("date", new GregorianCalendar(2000, 2, 2).getTime());
 		renderer.render(page, session);
 		String text = sanitize(text(baos));
-		assertTrue(text.contains("Thu Mar 02"));
+		assertTrue(text, text.contains("Thu Mar 02"));
 		assertTrue(text
 				.contains("<a href=\"news?id=2\" class=headline>headline 2</a>"));
 		assertTrue(text, text.contains("<span class=price>0.2 €</span>"));
 		
-		//lazy man's arse-covering insurance that we didn't change something in the implementation without knowing about it
+		//lazy man's insurance that we didn't change something in the implementation without knowing about it
 		assertEquals(text, "29cbe350d17d4f6d8f1bcdf6fc6e8dc2",TestUtils.MD5(text));
 	}
 

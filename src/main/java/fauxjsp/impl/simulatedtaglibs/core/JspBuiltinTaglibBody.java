@@ -1,8 +1,8 @@
 package fauxjsp.impl.simulatedtaglibs.core;
 
 import fauxjsp.api.nodes.JspTaglibInvocation;
+import fauxjsp.api.nodes.TagfileDefinition;
 import fauxjsp.api.nodes.TaglibDefinition;
-import fauxjsp.api.renderer.JspRenderException;
 import fauxjsp.api.renderer.RenderSession;
 
 /**
@@ -17,18 +17,15 @@ public class JspBuiltinTaglibBody extends TaglibDefinition {
 		super("body");
 	}
 
-	protected void runBody(RenderSession session,
-			JspTaglibInvocation invocation) {
-//		render(invocation.getChildren(), session);
+	@Override
+	protected boolean shouldUseNewVariableScope() {
+		return false;
 	}
 
 	@Override
-	protected void renderNode(RenderSession session, JspTaglibInvocation invocation) {
-		if (invocation.getTaglib().equals("body")) {
-			runBody(session, invocation);
-		} else {
-			throw new JspRenderException("Unknown taglib "
-					+ invocation.getTaglib(), invocation);
-		}
+	protected void renderNode(RenderSession session,
+			JspTaglibInvocation invocation) {
+		session.request.setAttribute(TagfileDefinition.BODY_ATTRIBUTE,
+				invocation);
 	}
 }
