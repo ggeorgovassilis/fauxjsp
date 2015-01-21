@@ -1,5 +1,6 @@
 package fauxjsp.api.nodes;
 
+import fauxjsp.api.renderer.JspRenderException;
 import fauxjsp.api.renderer.RenderSession;
 import fauxjsp.impl.Utils;
 
@@ -52,8 +53,8 @@ public class TagfileDefinition extends TaglibDefinition {
 
 			AttributeDefinition def = attributes.get(argument);
 			if (def == null)
-				throw new RuntimeException("Found unexpected attribute '"
-						+ argument + "' on " + invocation.getName());
+				throw new JspRenderException("Found unexpected attribute '"
+						+ argument + "' on " + invocation.getName(), invocation);
 
 			if (def.isRtExpression())
 				newValue = session.elEvaluation.evaluate(valueExpression,
@@ -61,8 +62,8 @@ public class TagfileDefinition extends TaglibDefinition {
 			else
 				newValue = valueExpression;
 			if (def.isRequired() && !invocation.getAttributes().containsKey(def.getName()))
-				throw new RuntimeException("Missing required attribute "
-						+ argument + " on " + invocation.getName());
+				throw new JspRenderException("Missing required attribute "
+						+ argument + " on " + invocation.getName(), invocation);
 			Class<?> attributeType = getClass(def.getType());
 			finalValue = Utils.cast(newValue, attributeType);
 			if (finalValue == null) {

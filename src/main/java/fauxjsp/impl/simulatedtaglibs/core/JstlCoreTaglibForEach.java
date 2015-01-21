@@ -35,11 +35,6 @@ public class JstlCoreTaglibForEach extends TaglibDefinition {
 		int end = 0;
 		int step = 1;
 
-		// TODO: I really should figure out how variable scoping works and
-		// whether variables need to be saved and restored
-		// Map<String, Object> oldAttributeValues =
-		// Utils.saveAttributes(session.request);
-
 		Object rawItems = evaluate(itemsExpression, session);
 		if (rawItems == null)
 			error(itemsExpression + " is null", invocation);

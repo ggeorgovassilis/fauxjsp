@@ -86,7 +86,7 @@ public class TestErrors extends BaseTest{
 	}
 
 	@Test
-	public void test_taglib_undeclared_argument() {
+	public void test_taglib_undeclared_argument() throws Exception{
 		try {
 			JspPage page = parser.parse("WEB-INF/jsp/error_taglib_undeclared_argument.jsperr");
 			MockHttpServletRequest request = new MockHttpServletRequest();

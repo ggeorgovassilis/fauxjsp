@@ -70,6 +70,8 @@ public class ELEvaluationImpl implements ELEvaluation {
 
 	@Override
 	public Object evaluate(String expression, RenderSession session) {
+		if (!expression.contains("${"))
+			return expression;
 		ExpressionFactory expressionFactory = elFactory.newExpressionFactory();
 		ELContext context = new FauxELContext(elFactory.newElContext(), expressionFactory);
 		populateVariables(context, expressionFactory, session);

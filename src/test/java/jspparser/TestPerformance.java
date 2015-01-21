@@ -3,7 +3,7 @@ package jspparser;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.Iterator;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -36,8 +36,8 @@ import static org.junit.Assert.*;
 
 public class TestPerformance extends BaseTest {
 
-	final long WARMUP_MS = 2000;
-	final long RUNS_MS = 1000;
+	final long WARMUP_MS = 3000;
+	final long RUNS_MS = 4000;
 
 	protected int run(Runnable r, long duration) {
 		int loops = 0;
@@ -114,8 +114,8 @@ public class TestPerformance extends BaseTest {
 		Item root = new Item();
 		root.setId("0");
 		final Item tree = makeTree(root, 0, 5, 10);
-		final AtomicBoolean comparissonDone = new AtomicBoolean();
-
+		final int COMPARE_EVERY_SO_MANY_TURNS = 100;
+		final AtomicInteger turn = new AtomicInteger(-1);
 		Runnable r = new Runnable() {
 
 			@Override
@@ -133,12 +133,12 @@ public class TestPerformance extends BaseTest {
 				session.request.setAttribute("tree", tree);
 				session.renderer.render(page, session);
 				String text = text(baos);
-				if (!comparissonDone.get()){
+				int t = turn.incrementAndGet();
+				if (t % COMPARE_EVERY_SO_MANY_TURNS == 0){
 					compare(text, tree);
-					comparissonDone.set(true);
+					assertEquals(text, "796c9c440c4f44e223852d272c18cd0f",
+							TestUtils.MD5(text));
 				}
-				assertEquals(text, "796c9c440c4f44e223852d272c18cd0f",
-						TestUtils.MD5(text));
 			}
 		};
 		run(r, WARMUP_MS);

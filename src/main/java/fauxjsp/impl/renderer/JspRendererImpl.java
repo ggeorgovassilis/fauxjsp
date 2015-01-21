@@ -43,10 +43,8 @@ public class JspRendererImpl implements JspRenderer {
 			if (node instanceof JspText) {
 				JspText textNode = (JspText) node;
 				String content = textNode.getContentAsString();
-				if (content.contains("${")) {
-					content = (String) session.elEvaluation.evaluate(content,
-							session);
-				}
+				content = (String) session.elEvaluation.evaluate(content,
+						session);
 				write(session.response.getOutputStream(),
 						content.getBytes(session.response
 								.getCharacterEncoding()));
@@ -71,7 +69,7 @@ public class JspRendererImpl implements JspRenderer {
 		if (exception == null)
 			return "";
 		Throwable cause = exception.getCause();
-		String causeExplanation = "";
+		String causeExplanation = exception.getMessage();
 		if (cause != null && cause != exception) {
 			if (cause instanceof JspRenderException)
 				causeExplanation = explain((JspRenderException) cause);
