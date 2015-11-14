@@ -1,21 +1,21 @@
 fauxjsp
 =======
 
-JSP implementation with fast page reloads that uses an interpreter rather than a compiler.
+JSP replacement implementation aimed at speeding up developing JSP-heavy web pages. It features fast page reloads by relying on an interpreter rather than a compiler.
 
 ## Another JSP implementation?
 
 In short:
 a. there aren't that many (I only know of one)
-b. it much faster for development and reduces application start times compared to the standard implementation
-c. no memory leaks, more robust, more precise and helpful error messages
+b. it's much faster for development and reduces application start times compared to the standard implementation
+c. no memory leaks, more robust, more precise and helpful error messages for syntax- and runtime errors
 d. extensible
 
 For most of you cool dudes JSP is horribly out of fashion, but I like using it for prototyping and [tagfiles](http://docs.oracle.com/javaee/1.4/tutorial/doc/JSPTags5.html). Sadly and surprisingly, not many people know about tagfiles despite them being a well-supported and mature technique for creating reusable web UI components.
 
-Starting a JSP-heavy application is slow because Tomcat's JSP implementation Jasper will first compile JSP and tagfiles to java source code, then to byte code and then to machine code. Also, when making changes to JSP files, the entire process has to be gone through again, which slows down development. At some point you'll even get unexplainable compile errors, class loading errors, run out of memory and the likes, you'll know you've had enough and you'll restart Tomcat.
+Starting a JSP-heavy application is slow because the widely used JSP implementation Jasper will first compile JSP and tagfiles to java source code, then to byte code and then to machine code. Also, when making changes to JSP files, the entire process has to be repeated which slows down development. At some point you'll even get unexplainable compile errors, class loading errors, run out of memory and the likes, you'll know you've had enough and you'll restart the servlet container.
 
-Fauxjsp implements a JSP interpreter and a servlet which reads JSP files and interprets them on the fly, skipping compilation altogether. This brings the benefit of instant page reloads, fast application start times and robustness (no classloader fiddling!) but, obviously, the generated JSP pages are slower under load than the standard implementation.
+Fauxjsp implements a JSP interpreter and a servlet which reads JSP files and interprets them on the fly, skipping compilation altogether. This brings the benefit of instant page reloads, fast application start times and robustness (no classloader fiddling!) but, obviously, the generated JSP pages are slower under load than the standard implementation and thus fauxjsp shouldn't be used for production.
 
 Currently implemented features:
 
@@ -26,11 +26,10 @@ Currently implemented features:
 
 Constraints and missing features:
 
-* Cannot use just third-party taglibs. You have to provide your own implementations of taglibs other than core taglibs. This means that c:out will work but
+* Cannot use third-party taglibs. You have to provide your own implementations of taglibs other than core taglibs. This means that c:out will work but
   you can't use third party taglibs such as [displaytag](http://www.displaytag.org) (unless you re-implement it for fauxjsp).
-* Not all core taglibs are supported and even not all features of the supported ones are implemented
+* Not all core taglibs are supported and not all features of the supported ones are implemented.
 * I didn't read up on JSP/JSTL/servlet specifications. This implementation is "steer by sight" (aka "works for me").
-* Features of the core taglibs are still very limited
 * No scriptlets, at all
 * Your servlet container needs to provide some EL 3.0 implementation (i.e. works with Tomcat 8, not with Tomcat 7)
 * Variable scoping is arbitrary
@@ -101,7 +100,7 @@ rather simple components, how to modify them and implement new functionality.
 7. Gives the ```JspPage``` and ```RenderSession``` to the ```JspRenderer``` who renders it
 8. Streams the results to the browser
 
-```JspServlet``` has a bunch of protected methods which construct the various factories mentioned earlier. Should you need special setups,
+```JspServlet``` has a bunch of protected methods which construct the various factories mentioned earlier. Should you need special setups
 then overriding these constructor methods allows you to specify your own factories which can return modified or completely new implementations
 of parsers and renderers.
 
@@ -165,6 +164,13 @@ up under a special namespace, one for each taglib method.
 <fmt:message key="..."/>
 
 <fmt:setBundle basename="..."/>
+
+<fmt:formatNumber value="..." .../>
+
+<fmt:formatDate value="..." .../>
+
+<fmt:setLocale value="..."/>
+
 ```
 
 ### Functions
@@ -186,7 +192,7 @@ taglib-location can be a server- or classpath resource path.
 
 ### ... add a missing tag library?
 
-Like written before, fauxjsp can't use taglibs and has to emulate them instead, which means that someone has to program that emulation.
+As written before, fauxjsp can't use taglibs and has to emulate them instead, which means that someone has to program that emulation.
 
 *Step 1*: create the taglib implementation. Just find one of the already simulated taglibs like [JstlCoreTaglibOut](src/main/java/fauxjsp/impl/simulatedtaglibs/core/JstlCoreTaglibOut.java) and copy & paste it
 
