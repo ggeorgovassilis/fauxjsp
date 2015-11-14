@@ -299,10 +299,10 @@ log4j.appender.stdout.layout.ConversionPattern=%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1
 
 ## Roadmap
 
-Features to come in the near future:
+Features to come ~~in the near~~ sometime in the future:
 
 * jsp:include, ~~jsp:attribute~~, jsp:var, import
-* fmt, ~~fn~~
+* ~~fmt, fn~~ Done!
 * spring mvc taglibs
 
 Science fiction (things I have a rough idea how to implement but need to work out yet and may never come):
@@ -315,4 +315,4 @@ Science fiction (things I have a rough idea how to implement but need to work ou
 ## License
 
 Fauxjsp is available under the [GPL](http://www.gnu.org/copyleft/gpl.html). Since fauxjsp is a development tool, you normally wouldn't deploy it with your
-application binaries into production, so the "non-commerical" aspect of the GPL doesn't affect your application.
+application binaries into production, so the "non-commercial" aspect of the GPL doesn't affect your application.
