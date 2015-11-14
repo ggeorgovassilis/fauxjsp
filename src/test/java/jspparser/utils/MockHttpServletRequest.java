@@ -39,6 +39,10 @@ public class MockHttpServletRequest implements HttpServletRequest{
 	protected ServletContext servletContext = new MockServletContext();
 	protected Locale locale = Locale.ENGLISH;
 		
+	public void setLocale(Locale locale) {
+		this.locale = locale;
+	}
+
 	@Override
 	public Object getAttribute(String name) {
 		return attributes.get(name);

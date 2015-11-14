@@ -60,7 +60,11 @@ public abstract class TaglibDefinition {
 	protected void error(String message, JspNode invocation) throws JspRenderException{
 		throw new JspRenderException(message, invocation);
 	}
-	
+
+	protected void error(Exception cause, JspNode invocation) throws JspRenderException{
+		throw new JspRenderException(invocation, cause);
+	}
+
 	protected String getAttribute(String name, JspTaglibInvocation invocation) {
 		AttributeDefinition def = attributes.get(name);
 		if (def == null)

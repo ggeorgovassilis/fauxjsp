@@ -9,7 +9,7 @@ import fauxjsp.api.renderer.RenderSession;
 
 /**
  * 
- * @author George Georgovasilis
+ * @author George Georgovassilis
  *
  */
 public class JstlFmtMessage extends TaglibDefinition{

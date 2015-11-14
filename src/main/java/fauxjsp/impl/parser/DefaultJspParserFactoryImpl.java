@@ -12,6 +12,7 @@ import fauxjsp.impl.simulatedtaglibs.core.JstlCoreTaglibIf;
 import fauxjsp.impl.simulatedtaglibs.core.JstlCoreTaglibOut;
 import fauxjsp.impl.simulatedtaglibs.core.JstlCoreTaglibSet;
 import fauxjsp.impl.simulatedtaglibs.core.JstlCoreTaglibWhen;
+import fauxjsp.impl.simulatedtaglibs.fmt.JstlFmtFormatDate;
 import fauxjsp.impl.simulatedtaglibs.fmt.JstlFmtMessage;
 import fauxjsp.impl.simulatedtaglibs.fmt.JstlFmtSetBundle;
 
@@ -58,6 +59,7 @@ public class DefaultJspParserFactoryImpl implements JspParserFactory {
 		
 		parser.registerTaglibDefinition("http://java.sun.com/jsp/jstl/fmt/message", new JstlFmtMessage());
 		parser.registerTaglibDefinition("http://java.sun.com/jsp/jstl/fmt/setBundle", new JstlFmtSetBundle());
+		parser.registerTaglibDefinition("http://java.sun.com/jsp/jstl/fmt/formatDate", new JstlFmtFormatDate());
 		parser.setErrorOnScriptlets(errorOnScriptlets);
 	}
 

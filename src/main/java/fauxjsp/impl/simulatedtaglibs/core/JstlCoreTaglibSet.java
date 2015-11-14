@@ -1,11 +1,8 @@
 package fauxjsp.impl.simulatedtaglibs.core;
 
-import javax.servlet.ServletRequest;
-
 import fauxjsp.api.nodes.JspTaglibInvocation;
 import fauxjsp.api.nodes.TaglibDefinition;
 import fauxjsp.api.renderer.RenderSession;
-import fauxjsp.servlet.ServletRequestWrapper;
 
 /**
  * Implementation of c:set
@@ -21,12 +18,7 @@ public class JstlCoreTaglibSet extends TaglibDefinition {
 		String varName = getAttribute("var", invocation);
 		String valueExpression = getAttribute("value", invocation);
 		Object result = session.elEvaluation.evaluate(valueExpression, session);
-		ServletRequest request = session.request;
-		//override scopes
-		if (request instanceof ServletRequestWrapper){
-			((ServletRequestWrapper) request).overwriteAttribute(varName, result);
-		} else
-			request.setAttribute(varName, result);
+		session.request.overwriteAttribute(varName, result);
 	}
 
 	public JstlCoreTaglibSet() {
