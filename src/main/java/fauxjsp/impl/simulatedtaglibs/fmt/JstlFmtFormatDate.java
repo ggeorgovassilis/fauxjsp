@@ -20,8 +20,6 @@ import fauxjsp.api.renderer.RenderSession;
  */
 public class JstlFmtFormatDate extends TaglibDefinition {
 
-	public final static String ATTR_RESOURCE_BUNDLE = "__fauxjsp_resource_bundle";
-
 	public JstlFmtFormatDate() {
 		super("formatDate");
 		declareAttribute("value", String.class.getName(), true, true);

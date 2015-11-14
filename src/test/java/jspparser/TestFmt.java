@@ -129,10 +129,39 @@ public class TestFmt extends BaseTest {
 			renderer.render(page, session);
 			fail("Excpected failure");
 		} catch (JspRenderException e) {
-			
+
 			assertEquals("'${now}' is a class java.lang.String but I need a java.util.Date", e.getMessage());
 		}
 
+	}
+
+	@Test
+	public void test_fmt_formatNumber() {
+		JspPage page = parser.parse("WEB-INF/jsp/fmt_format_number.jsp");
+		MockHttpServletRequest request = new MockHttpServletRequest();
+		request.setLocale(Locale.UK);
+		MockHttpServletResponse response = new MockHttpServletResponse();
+		ByteArrayOutputStream baos = response.getBaos();
+		RenderSession session = new RenderSession();
+		request.setAttribute("balance", 120000.231);
+		session.request = new ServletRequestWrapper(request);
+		session.renderer = renderer;
+		session.elEvaluation = elEvaluation;
+		session.response = new ServletResponseWrapper(response, response.getBaos());
+		renderer.render(page, session);
+		String text = text(baos);
+
+		String expected = "\n\n#1 £120,000.23\n" +
+		"#2 000.231\n" +
+		"#3 120000.231\n" +
+		"#4 120000.231\n" +
+		"#5 023%\n" +
+		"#6 12,000,023.1000000000%\n" +
+		"#7 023%\n" +
+		"#8 120E3\n" +
+		"#9 $120,000.23";
+
+		assertEquals(expected, text);
 	}
 
 }

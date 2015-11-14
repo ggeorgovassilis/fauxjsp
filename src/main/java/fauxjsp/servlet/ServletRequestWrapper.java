@@ -3,6 +3,7 @@ package fauxjsp.servlet;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -17,6 +18,8 @@ import fauxjsp.impl.Utils;
  */
 public class ServletRequestWrapper extends javax.servlet.ServletRequestWrapper{
 
+	public final static String OVERRIDEN_LOCALE="__fauxjsp_locale";
+	
 	protected Map<String, Object> attributes;
 	protected Set<String> attributeNamesCache;
 	
@@ -61,6 +64,18 @@ public class ServletRequestWrapper extends javax.servlet.ServletRequestWrapper{
 			attributeNamesCache.addAll(Collections.list(super.getAttributeNames()));
 		}
 		return Collections.enumeration(attributeNamesCache);
+	}
+	
+	@Override
+	public Locale getLocale() {
+		Locale locale = (Locale)getAttribute(OVERRIDEN_LOCALE);
+		if (locale!=null)
+			return locale;
+		return super.getLocale();
+	}
+	
+	public void setLocale(Locale locale){
+		overwriteAttribute(OVERRIDEN_LOCALE, locale);
 	}
 	
 }

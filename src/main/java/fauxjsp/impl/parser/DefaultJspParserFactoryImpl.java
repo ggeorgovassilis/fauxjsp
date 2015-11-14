@@ -13,8 +13,10 @@ import fauxjsp.impl.simulatedtaglibs.core.JstlCoreTaglibOut;
 import fauxjsp.impl.simulatedtaglibs.core.JstlCoreTaglibSet;
 import fauxjsp.impl.simulatedtaglibs.core.JstlCoreTaglibWhen;
 import fauxjsp.impl.simulatedtaglibs.fmt.JstlFmtFormatDate;
+import fauxjsp.impl.simulatedtaglibs.fmt.JstlFmtFormatNumber;
 import fauxjsp.impl.simulatedtaglibs.fmt.JstlFmtMessage;
 import fauxjsp.impl.simulatedtaglibs.fmt.JstlFmtSetBundle;
+import fauxjsp.impl.simulatedtaglibs.fmt.JstlFmtSetLocale;
 
 /**
  * Sets up {@link JspParserImpl} instances with emulated taglibs and functions.
@@ -60,6 +62,8 @@ public class DefaultJspParserFactoryImpl implements JspParserFactory {
 		parser.registerTaglibDefinition("http://java.sun.com/jsp/jstl/fmt/message", new JstlFmtMessage());
 		parser.registerTaglibDefinition("http://java.sun.com/jsp/jstl/fmt/setBundle", new JstlFmtSetBundle());
 		parser.registerTaglibDefinition("http://java.sun.com/jsp/jstl/fmt/formatDate", new JstlFmtFormatDate());
+		parser.registerTaglibDefinition("http://java.sun.com/jsp/jstl/fmt/formatNumber", new JstlFmtFormatNumber());
+		parser.registerTaglibDefinition("http://java.sun.com/jsp/jstl/fmt/setLocale", new JstlFmtSetLocale());
 		parser.setErrorOnScriptlets(errorOnScriptlets);
 	}
 
