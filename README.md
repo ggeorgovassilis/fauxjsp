@@ -301,8 +301,7 @@ log4j.appender.stdout.layout.ConversionPattern=%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1
 
 Features to come ~~in the near~~ sometime in the future:
 
-* jsp:include, ~~jsp:attribute~~, jsp:var, import
-* ~~fmt, fn~~ Done!
+* jsp:var, import
 * spring mvc taglibs
 
 Science fiction (things I have a rough idea how to implement but need to work out yet and may never come):
