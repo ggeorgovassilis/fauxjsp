@@ -1,8 +1,5 @@
 package fauxjsp.test.unittests;
 
-import java.util.logging.Handler;
-import java.util.logging.LogRecord;
-
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.spi.ErrorHandler;
