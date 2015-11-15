@@ -1,6 +1,7 @@
 package fauxjsp.impl.parser;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -122,17 +123,17 @@ public class JspParserImpl implements JspParser {
 		return nodeStack.get(nodeStack.size() - 1);
 	}
 
-	protected JspTaglibInvocation pullNode(String fullyQuallifiedTaglib) {
+	protected JspTaglibInvocation pullNode(String fullyQualifiedTaglib) {
 		if (nodeStack.isEmpty())
-			parsingError("Found closing " + fullyQuallifiedTaglib
+			parsingError("Found closing " + fullyQualifiedTaglib
 					+ " but don't remember opening any");
 		JspNode node = getCurrentNode();
 		if (!(node instanceof JspTaglibInvocation))
-			parsingError("Trying to close " + fullyQuallifiedTaglib
+			parsingError("Trying to close " + fullyQualifiedTaglib
 					+ " but the current open node is not a taglib but " + node);
 		JspTaglibInvocation latestOpenedTaglib = (JspTaglibInvocation) node;
-		if (!latestOpenedTaglib.getName().equals(fullyQuallifiedTaglib))
-			parsingError("Found closing " + fullyQuallifiedTaglib
+		if (!latestOpenedTaglib.getName().equals(fullyQualifiedTaglib))
+			parsingError("Found closing " + fullyQualifiedTaglib
 					+ " but expected closing " + latestOpenedTaglib.getName());
 		nodeStack.remove(nodeStack.size() - 1);
 		return latestOpenedTaglib;
@@ -365,7 +366,10 @@ public class JspParserImpl implements JspParser {
 			this.pagePath = path;
 			logger.debug("Parsing location " + path);
 			//TODO: configurable encoding
-			this.jsp = new String(location.getContents(path), "UTF-8");
+			byte[] fileContent = location.getContents(path);
+			if (fileContent==null)
+				throw new FileNotFoundException(path);
+			this.jsp = new String(fileContent, "UTF-8");
 			this.index = 0;
 			JspPage page = new JspPage(path, getCurrentLocation());
 			nodeStack.add(page);

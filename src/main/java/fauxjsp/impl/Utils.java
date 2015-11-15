@@ -38,25 +38,6 @@ public class Utils {
 		}
 	}
 
-	public static byte[] read(InputStream in) {
-		try {
-			byte[] buffer = new byte[1024];
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			int l = 0;
-
-			while (l != -1) {
-				l = in.read(buffer);
-				if (l != -1) {
-					baos.write(buffer, 0, l);
-				}
-			}
-			in.close();
-			return baos.toByteArray();
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-	
 	public static void close(Closeable c){
 		try {
 			c.close();

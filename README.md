@@ -33,6 +33,7 @@ Constraints and missing features:
 * No scriptlets, at all
 * Your servlet container needs to provide some EL 3.0 implementation (i.e. works with Tomcat 8, not with Tomcat 7)
 * Variable scoping is arbitrary
+* Encodings are pinned to UTF-8
 
 ## Getting started
 
@@ -181,7 +182,7 @@ If you need more function taglibs, don't forget to declare them in web.xml:
 ```xml
 <jsp-config> 
 	<taglib>
-		<taglib-uri>http://java.sun.com/jstl/core-rt<taglib-uri>
+		<taglib-uri>http://java.sun.com/jstl/core-rt</taglib-uri>
 		<taglib-location>META-INF/c-1_0-rt.tld</taglib-location>
 	</taglib>
 </jsp-config>

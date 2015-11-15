@@ -23,16 +23,8 @@ public class JspText extends JspNode {
 		this.content = content;
 	}
 
-	public byte[] getContentAsBytes(String charset) {
-		try {
-			return content.getBytes(charset);
-		} catch (UnsupportedEncodingException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
 	public String getContentAsString() {
-		return new String(content);
+		return content;
 	}
 
 	@Override

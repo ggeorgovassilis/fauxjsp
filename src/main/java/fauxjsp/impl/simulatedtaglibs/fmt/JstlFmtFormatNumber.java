@@ -1,12 +1,7 @@
 package fauxjsp.impl.simulatedtaglibs.fmt;
 
-import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
-import java.util.Currency;
-import java.util.Date;
-import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 
