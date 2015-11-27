@@ -9,7 +9,6 @@ import java.util.Enumeration;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 
 import fauxjsp.api.parser.JspParser;
@@ -18,6 +17,7 @@ import fauxjsp.api.parser.ResourceResolver;
 import fauxjsp.api.renderer.ELEvaluation;
 import fauxjsp.api.renderer.JspRenderer;
 import fauxjsp.api.renderer.JspRendererFactory;
+import fauxjsp.impl.Utils;
 import fauxjsp.impl.parser.DefaultJspParserFactoryImpl;
 import fauxjsp.impl.renderer.ELEvaluationImpl;
 import fauxjsp.impl.renderer.ELFactoryServlet3Impl;
@@ -108,7 +108,7 @@ public abstract class BaseTest {
 		try {
 			InputStream in = getClass().getResourceAsStream(resource);
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			IOUtils.copy(in, baos);
+			Utils.copy(in, baos);
 			in.close();
 			return new String(baos.toByteArray(), "UTF-8");
 		} catch (Exception e) {

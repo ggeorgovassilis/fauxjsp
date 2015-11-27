@@ -58,7 +58,7 @@ public class TestJspParserAndRenderer extends BaseTest {
 		JspTaglibInvocation j5 = (JspTaglibInvocation) page.getChildren().get(4);
 		assertEquals("t:structure", j5.getName());
 
-		assertEquals(3, j5.getChildren().size());
+		assertEquals(5, j5.getChildren().size());
 
 		JspText j5_1 = (JspText) j5.getChildren().get(0);
 		assertTrue(j5_1.getContentAsString().startsWith("\r\n<p>This"));

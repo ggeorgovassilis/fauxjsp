@@ -78,7 +78,6 @@ mvn install
 * JSTL 1.2
 * Servlet API 3.0
 * commons-lang 2.6
-* commons-io 2.4
 * beanshell 2.0b5
 * log4j 4
 
@@ -86,7 +85,7 @@ Servlet API, JSTL, EL are scoped as ```provided``` because the servlet container
 
 log4j, Beanshell are scoped as ```provided``` because they are optional
 
-commons-lang, commons-io are scoped as ```compile``` because they are mandatory
+commons-lang is scoped as ```compile``` because it's mandatory
 
 For up-to-date details, [please see the pom](pom.xml).
 

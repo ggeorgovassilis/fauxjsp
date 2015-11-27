@@ -4,6 +4,8 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Collections;
 import java.util.HashMap;
@@ -17,13 +19,14 @@ import fauxjsp.api.renderer.RenderSession;
 
 /**
  * Tools
+ * 
  * @author George Georgovassilis
  *
  */
 public class Utils {
-	
-	public static Class<?> getClassOf(Object o){
-		return o==null?null:o.getClass();
+
+	public static Class<?> getClassOf(Object o) {
+		return o == null ? null : o.getClass();
 	}
 
 	public static byte[] readFile(File f) {
@@ -36,7 +39,7 @@ public class Utils {
 		}
 	}
 
-	public static void close(Closeable c){
+	public static void close(Closeable c) {
 		try {
 			c.close();
 		} catch (IOException e) {
@@ -62,8 +65,7 @@ public class Utils {
 		}
 	}
 
-	public static void restoreAttributes(ServletRequest request,
-			Map<String, Object> attributes) {
+	public static void restoreAttributes(ServletRequest request, Map<String, Object> attributes) {
 		// clearAttributes(request);
 		for (String attr : attributes.keySet())
 			request.setAttribute(attr, attributes.get(attr));
@@ -90,8 +92,7 @@ public class Utils {
 		return Integer.parseInt(value);
 	}
 
-	public static StringBuilder replace(StringBuilder sb, String what,
-			String with) {
+	public static StringBuilder replace(StringBuilder sb, String what, String with) {
 		int index = sb.indexOf(what);
 		if (index != -1) {
 			sb.delete(index, index + what.length());
@@ -151,7 +152,18 @@ public class Utils {
 			return Double.parseDouble(value.toString());
 		if (c.equals(String.class))
 			return value.toString();
-		throw new ClassCastException("Can't cast " + value.getClass() + " to "
-				+ c);
+		throw new ClassCastException("Can't cast " + value.getClass() + " to " + c);
+	}
+
+	public static void copy(InputStream in, OutputStream out) {
+		if (in == null || out == null)
+			return;
+		int i;
+		try {
+			while (-1 != (i = in.read()))
+				out.write(i);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }

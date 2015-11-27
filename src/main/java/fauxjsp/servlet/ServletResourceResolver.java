@@ -5,9 +5,8 @@ import java.io.InputStream;
 
 import javax.servlet.ServletContext;
 
-import org.apache.commons.io.IOUtils;
-
 import fauxjsp.api.parser.ResourceResolver;
+import fauxjsp.impl.Utils;
 
 /**
  * Returns files on a server
@@ -32,7 +31,7 @@ public class ServletResourceResolver implements ResourceResolver {
 			if (in == null)
 				return null;
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			IOUtils.copy(in, baos);
+			Utils.copy(in, baos);
 			return baos.toByteArray();
 		} catch (Exception e) {
 			throw new RuntimeException(e);

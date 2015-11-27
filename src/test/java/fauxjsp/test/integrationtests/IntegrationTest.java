@@ -3,6 +3,7 @@ package fauxjsp.test.integrationtests;
 import org.junit.Before;
 import org.junit.Test;
 
+import fauxjsp.impl.Utils;
 import fauxjsp.test.unittests.BaseTest;
 
 import static org.junit.Assert.*;
@@ -16,7 +17,6 @@ import java.net.URL;
 import java.util.UUID;
 
 import org.apache.catalina.startup.Tomcat;
-import org.apache.commons.io.IOUtils;
 
 public class IntegrationTest extends BaseTest{
 
@@ -26,7 +26,7 @@ public class IntegrationTest extends BaseTest{
 	protected void copy(String cpResource, File target) throws Exception{
 		InputStream in = getClass().getResourceAsStream(cpResource);
 		FileOutputStream fos = new FileOutputStream(target);
-		IOUtils.copy(in, fos);
+		Utils.copy(in, fos);
 		fos.flush();
 		fos.close();
 		in.close();
@@ -71,7 +71,7 @@ public class IntegrationTest extends BaseTest{
 		HttpURLConnection connection = (HttpURLConnection)url.openConnection();
 		connection.setDoInput(true);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		IOUtils.copy(connection.getInputStream(), baos);
+		Utils.copy(connection.getInputStream(), baos);
 		String actualNewsPage = new String(baos.toByteArray()).replace("\r", "");
 		connection.disconnect();
 
