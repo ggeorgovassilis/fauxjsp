@@ -25,10 +25,20 @@ import fauxjsp.api.renderer.RenderSession;
  */
 public class Utils {
 
+	/**
+	 * Get class of an object or return null for a null argument
+	 * @param o
+	 * @return
+	 */
 	public static Class<?> getClassOf(Object o) {
 		return o == null ? null : o.getClass();
 	}
 
+	/**
+	 * Get file contents
+	 * @param f
+	 * @return
+	 */
 	public static byte[] readFile(File f) {
 		try (FileInputStream fis = new FileInputStream(f)) {
 			byte[] b = new byte[(int) f.length()];
@@ -39,18 +49,32 @@ public class Utils {
 		}
 	}
 
+	/**
+	 * Silently close a closeable, no matter what
+	 * @param c
+	 */
 	public static void close(Closeable c) {
 		try {
 			c.close();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
+	/**
+	 * True if s is null or empty
+	 * @param s
+	 * @return
+	 */
 	public static boolean isEmpty(String s) {
 		return s == null || s.isEmpty();
 	}
 
+	/**
+	 * return a copy of all attributes in {@link ServletRequest}
+	 * @param request
+	 * @return
+	 */
 	public static Map<String, Object> getCopyOfAttributes(ServletRequest request) {
 		Map<String, Object> attributes = new HashMap<String, Object>();
 		for (String attr : Collections.list(request.getAttributeNames())) {
@@ -59,30 +83,12 @@ public class Utils {
 		return attributes;
 	}
 
-	public static void clearAttributes(ServletRequest request) {
-		for (String attr : Collections.list(request.getAttributeNames())) {
-			request.removeAttribute(attr);
-		}
-	}
-
-	public static void restoreAttributes(ServletRequest request, Map<String, Object> attributes) {
-		// clearAttributes(request);
-		for (String attr : attributes.keySet())
-			request.setAttribute(attr, attributes.get(attr));
-	}
-
-	public static Long toLong(String value, long defaultValue) {
-		if (isEmpty(value))
-			return defaultValue;
-		return Long.parseLong(value);
-	}
-
-	public static Integer toInt(String value, int defaultValue) {
-		if (isEmpty(value))
-			return defaultValue;
-		return Integer.parseInt(value);
-	}
-
+	/**
+	 * Evalute "expression" as an EL expression and return its result as an integer
+	 * @param expression
+	 * @param session
+	 * @return
+	 */
 	public static Integer evalToInt(String expression, RenderSession session) {
 		String value = expression;
 		if (expression.contains("${")) {
@@ -92,6 +98,14 @@ public class Utils {
 		return Integer.parseInt(value);
 	}
 
+	/**
+	 * Replace all ocurrences of "what" in "sb" with "with". Modifies "sb" and
+	 * returns the "sb" parameter
+	 * @param sb
+	 * @param what
+	 * @param with
+	 * @return
+	 */
 	public static StringBuilder replace(StringBuilder sb, String what, String with) {
 		int index = sb.indexOf(what);
 		if (index != -1) {
@@ -110,10 +124,13 @@ public class Utils {
 		return StringEscapeUtils.escapeHtml(html);
 	}
 
-	public static String escapeXml(String xml) {
-		return StringEscapeUtils.escapeXml(xml);
-	}
-
+	/**
+	 * Makes a string out of a byte buffer. Convenience method that wraps
+	 * the standard API {@link UnsupportedEncodingException}
+	 * @param buffer
+	 * @param characterset
+	 * @return
+	 */
 	public static String string(byte[] buffer, String characterset) {
 		try {
 			return new String(buffer, characterset);
@@ -134,8 +151,6 @@ public class Utils {
 	public static Object cast(Object value, Class<?> c) {
 		if (value == null)
 			return null;
-		if (c.isAssignableFrom(value.getClass()))
-			return value;
 		if (c.equals(Boolean.class))
 			return Boolean.parseBoolean(value.toString());
 		if (c.equals(Byte.class))
@@ -152,9 +167,16 @@ public class Utils {
 			return Double.parseDouble(value.toString());
 		if (c.equals(String.class))
 			return value.toString();
+		if (c.isAssignableFrom(value.getClass()))
+			return value;
 		throw new ClassCastException("Can't cast " + value.getClass() + " to " + c);
 	}
 
+	/**
+	 * Copy input stream to output stream. Doesn't do anything if either is null.
+	 * @param in
+	 * @param out
+	 */
 	public static void copy(InputStream in, OutputStream out) {
 		if (in == null || out == null)
 			return;
