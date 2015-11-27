@@ -12,6 +12,8 @@ import fauxjsp.api.nodes.JspTaglibInvocation;
 import fauxjsp.api.nodes.JspText;
 import fauxjsp.api.renderer.JspRenderException;
 import fauxjsp.api.renderer.JspRenderer;
+import fauxjsp.api.renderer.JspScriptletRenderer;
+import fauxjsp.api.renderer.NOPScriptletRendererImpl;
 import fauxjsp.api.renderer.RenderSession;
 import fauxjsp.impl.logging.Logging;
 
@@ -25,6 +27,11 @@ import fauxjsp.impl.logging.Logging;
 public class JspRendererImpl implements JspRenderer {
 
 	protected Logger logger = Logging.getLogger(JspRendererImpl.class);
+	protected JspScriptletRenderer scriptletRenderer = new NOPScriptletRendererImpl();
+
+	public void setScriptletRenderer(JspScriptletRenderer scriptletRenderer) {
+		this.scriptletRenderer = scriptletRenderer;
+	}
 
 	@Override
 	public void render(JspNode page, RenderSession session) {
@@ -54,7 +61,7 @@ public class JspRendererImpl implements JspRenderer {
 				taglibInvocation.getDefinition().render(session, taglibInvocation);
 			} else if (node instanceof JspScriptlet) {
 				JspScriptlet scriptlet = (JspScriptlet)node;
-				scriptlet.render(session);
+				scriptletRenderer.render(scriptlet, session);
 			} else if (node instanceof JspNodeWithChildren) {
 				JspNodeWithChildren nodeWithChildren = (JspNodeWithChildren) node;
 				for (JspNode childNode : nodeWithChildren.getChildren())

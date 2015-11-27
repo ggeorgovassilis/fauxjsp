@@ -22,20 +22,21 @@ Currently implemented features:
 * Reads JSP pages
 * Reads tagfiles
 * Supports some core JSTL taglibs
+* Scriptlets
 * Is modular and extensible
 
 Constraints and missing features:
 
-* Cannot use third-party taglibs. You have to provide your own implementations of taglibs other than core taglibs. This means that c:out will work but
+* Out-of-the-box only core taglibs are supported. You have to provide your own implementations of taglibs other than the core taglibs. This means that c:out will work but
   you can't use third party taglibs such as [displaytag](http://www.displaytag.org) (unless you re-implement it for fauxjsp).
 * Not all core taglibs are supported and not all features of the supported ones are implemented.
 * I didn't read up on JSP/JSTL/servlet specifications. This implementation is "steer by sight" (aka "works for me").
-* No scriptlets, at all
 * Your servlet container needs to provide some EL 3.0 implementation (i.e. works with Tomcat 8, not with Tomcat 7)
 * Variable scoping is arbitrary
 * Encodings are pinned to UTF-8
 * Not all JSP implicit objects are available
-* Newline in output is not strict
+* Newline handling in output is not strict
+* Scriptlets are implemented via [beanshell](http://www.beanshell.org) which means that there might be deviations from how scriptlets are handled normally.
 
 ## Getting started
 
@@ -52,7 +53,7 @@ mvn install
 <dependency>
 	<groupId>com.github.ggeorgovassilis</groupId>
 	<artifactId>fauxjsp</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.3-SNAPSHOT</version>
 </dependency>
 ```
 
@@ -77,13 +78,21 @@ mvn install
 * JSTL 1.2
 * Servlet API 3.0
 * commons-lang 2.6
+* commons-io 2.4
+* beanshell 2.0b5
 * log4j 4
+
+Servlet API, JSTL, EL are scoped as ```provided``` because the servlet container or the web application contribute these dependencies
+
+log4j, Beanshell are scoped as ```provided``` because they are optional
+
+commons-lang, commons-io are scoped as ```compile``` because they are mandatory
 
 For up-to-date details, [please see the pom](pom.xml).
 
 ## Extending fauxjsp's functionality and working around bugs
 
-Please consider submit a bug report when you find a bug or require a feature implemented. Now, in real (project) life, 
+Please submit a bug report when you find a bug or require a feature implemented. Now, in real (project) life, 
 you are probably on a tight schedule and don't want to wait for an official fix. Fauxjsp is modular and easily
 extensible. So have a look at the next chapter about fauxjsp's architecture which will help you understand the various,
 rather simple components, how to modify them and implement new functionality.
@@ -109,7 +118,7 @@ of parsers and renderers.
 
 ### JspParser
 
-The ```JspParser``` and more specifically it's only implementation ```JspParserImpl``` is given a JSP file location, renders it and returns
+The ```JspParser``` and more specifically its only implementation ```JspParserImpl``` is given a JSP file location, renders it and returns
 the parsed results. In detail:
 
 1. ```JspParser.parse(path)``` is given the path of the JSP file to render
@@ -120,8 +129,8 @@ the parsed results. In detail:
    taglibs are read only once during each request.
 5. When the parser meets tagfile declarations, it asks the ```JspParserFactory``` for a new parser who recursively parses the tagfile.
 
-Unfortunately, currently it is not possible to load taglibs other than tagfiles. However it is possible to fake missing taglibs by providing a special
-implementation for fauxjsp. For some examples, have a look at the ```JstlCoreTaglib*``` classes. The ```DefaultJspParserFactoryImpl``` factory sets those
+Unfortunately, currently it is not possible to load taglibs other than tagfiles. However it is possible to use missing taglibs by providing a special implementation for fauxjsp yourself. Depending on the taglib you are trying to simulate this may or not be
+a labour-intensive task. For some examples, have a look at the ```JstlCoreTaglib*``` classes. The ```DefaultJspParserFactoryImpl``` factory sets those
 up under a special namespace, one for each taglib method.
 
 ## Supported taglibs
@@ -311,7 +320,6 @@ Science fiction (things I have a rough idea how to implement but need to work ou
 
 * wrapper for using any third-party taglib
 * jsp debugger
-* scriptlets
 * running in more environments
 
 ## License

@@ -59,7 +59,8 @@ public abstract class BaseTest {
 	}
 
 	protected JspRenderer newRenderer() {
-		return renderer = rendererFactory.create();
+		renderer = rendererFactory.create();
+		return renderer;
 	}
 
 	protected String text(ByteArrayOutputStream baos) {
