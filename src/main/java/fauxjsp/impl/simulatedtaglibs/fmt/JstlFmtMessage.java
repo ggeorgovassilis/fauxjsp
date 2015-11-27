@@ -25,10 +25,10 @@ public class JstlFmtMessage extends TaglibDefinition{
 		String key = getAttribute("key", invocation);
 		String resourceBundleName = (String)session.request.getAttribute(ATTR_RESOURCE_BUNDLE);
 		if (resourceBundleName == null)
-			throw new JspRenderException("No resource bundle name found", invocation);
+			error("No resource bundle name found", invocation);
 		ResourceBundle bundle = ResourceBundle.getBundle(resourceBundleName, session.request.getLocale());
 		if (bundle == null)
-			throw new JspRenderException("No resource bundle found", invocation);
+			error("No resource bundle found", invocation);
 		String value = bundle.getString(key);
 		write(value, session);
 	}

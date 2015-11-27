@@ -36,7 +36,6 @@ public class TestFunctions extends BaseTest {
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		baos = response.getBaos();
 		session = new RenderSession();
-		session.request = new ServletRequestWrapper(request);
 		session.renderer = renderer;
 		session.elEvaluation = elEvaluation;
 		session.response = new ServletResponseWrapper(response, response.getBaos());
@@ -47,6 +46,7 @@ public class TestFunctions extends BaseTest {
 				new String[] { "The", "rain", "in", "Spain" });
 		request.setAttribute("list",
 				Arrays.asList(new String[] { "The", "rain", "in", "Spain" }));
+		session.request = new ServletRequestWrapper(request);
 	}
 
 	@Test
@@ -86,7 +86,7 @@ public class TestFunctions extends BaseTest {
 		// TODO: escapeXml(...) will work as advertised. however, if I <c:out
 		// value="fn:escapeXml(...)"/> this will double-encode
 		// the result. verify how "standard" JSP does it.
-		request.setAttribute("xml", "<howdy/>");
+		session.request.setAttribute("xml", "<howdy/>");
 		renderer.render(page, session);
 		String text = text(baos);
 		assertTrue(text, text.contains("escapeXml &lt;howdy/&gt;"));
@@ -103,14 +103,14 @@ public class TestFunctions extends BaseTest {
 	public void test_join() {
 		renderer.render(page, session);
 		String text = text(baos);
-		assertTrue(text.contains("join The_rain_in_Spain"));
+		assertTrue(text, text.contains("join The_rain_in_Spain"));
 	}
 
 	@Test
 	public void test_length() {
 		renderer.render(page, session);
 		String text = text(baos);
-		assertTrue(text.contains("length 4, 4, 36"));
+		assertTrue(text, text.contains("length 4, 4, 36"));
 	}
 
 	@Test

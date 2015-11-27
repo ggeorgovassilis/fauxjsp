@@ -62,12 +62,12 @@ public class TagfileDefinition extends TaglibDefinition {
 			else
 				newValue = valueExpression;
 			if (def.isRequired() && !invocation.getAttributes().containsKey(def.getName()))
-				throw new JspRenderException("Missing required attribute "
+				error("Missing required attribute "
 						+ argument + " on " + invocation.getName(), invocation);
 			Class<?> attributeType = getClass(def.getType());
 			finalValue = Utils.cast(newValue, attributeType);
 			if (finalValue == null) {
-				// Value can't be cast to expected class. Ma
+				// Value can't be cast to expected class.
 				throw new ClassCastException("Expected type " + def.getType()
 						+ " for attribute " + argument + " on "
 						+ invocation.getName() + " but got "

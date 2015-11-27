@@ -26,7 +26,7 @@ public class JstlFmtSetBundle extends TaglibDefinition{
 	@Override
 	protected void renderNode(RenderSession session, JspTaglibInvocation invocation) {
 		if (!invocation.getTaglib().equals("setBundle"))
-			throw new JspRenderException("This isn't a message taglib", invocation);
+			error("This isn't a message taglib", invocation);
 		runSetBundle(session, invocation);
 	}
 

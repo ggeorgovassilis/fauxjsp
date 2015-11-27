@@ -127,7 +127,7 @@ public class JspServlet extends HttpServlet {
 			renderer.render(page, session);
 		} catch (JspParsingException pe) {
 			String explanation = parser.explain(pe);
-			throw new RuntimeException("Error while rendering "+servletPath+"\n"+explanation, pe);
+			throw new RuntimeException("Error while parsing "+servletPath+"\n"+explanation, pe);
 		} catch (JspRenderException re){
 			String explanation = renderer.explain(re);
 			throw new RuntimeException("Error while rendering "+servletPath+"\n"+explanation, re);

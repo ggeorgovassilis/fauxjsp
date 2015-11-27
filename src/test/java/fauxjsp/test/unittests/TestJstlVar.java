@@ -25,6 +25,7 @@ public class TestJstlVar extends BaseTest{
 	public void test_var(){
 		JspPage page = parser.parse("WEB-INF/jsp/var.jsp");
 		MockHttpServletRequest request = new MockHttpServletRequest();
+		request.setAttribute("x", "test");
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		ByteArrayOutputStream baos = response.getBaos();
 		RenderSession session = new RenderSession();
@@ -33,7 +34,6 @@ public class TestJstlVar extends BaseTest{
 		session.elEvaluation = elEvaluation;
 		session.response = new ServletResponseWrapper(response, response.getBaos());
 		
-		request.setAttribute("x", "test");
 
 		renderer.render(page, session);
 		String text = text(baos);

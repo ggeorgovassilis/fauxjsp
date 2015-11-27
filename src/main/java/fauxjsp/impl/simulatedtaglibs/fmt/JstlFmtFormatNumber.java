@@ -38,10 +38,10 @@ public class JstlFmtFormatNumber extends TaglibDefinition {
 		String valueExpression = getAttribute("value", invocation);
 		Object value = evaluate(valueExpression, session);
 		if (value == null)
-			throw new JspRenderException("'" + valueExpression + "' is null", null);
+			error("'" + valueExpression + "' is null", invocation);
 		if (!(value instanceof Number))
-			throw new JspRenderException("'" + valueExpression + "' is a " + value.getClass() + " but I need a number",
-					null);
+			error("'" + valueExpression + "' is a " + value.getClass() + " but I need a number",
+					invocation);
 		Number number = (Number) value;
 		return number;
 	}

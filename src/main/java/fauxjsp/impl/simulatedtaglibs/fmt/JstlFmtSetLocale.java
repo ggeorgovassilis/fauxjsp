@@ -27,7 +27,7 @@ public class JstlFmtSetLocale extends TaglibDefinition{
 	@Override
 	protected void renderNode(RenderSession session, JspTaglibInvocation invocation) {
 		if (!invocation.getTaglib().equals("setLocale"))
-			throw new JspRenderException("This isn't a setLocale taglib", invocation);
+			error("This isn't a setLocale taglib", invocation);
 		run(session, invocation);
 	}
 
