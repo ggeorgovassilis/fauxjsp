@@ -37,7 +37,7 @@ public class TestJavaLogging {
 		logger.info("info message");
 		logger.warn("warn message");
 		logger.error("error message");
-		logger.error("error exception", new RuntimeException());
+		logger.error("error exception", new RuntimeException("Please ignore this exception"));
 
 		String expected = "INFO info message\n" + "WARNING warn message\n" + "SEVERE error message\n"
 				+ "SEVERE error exception\n";
