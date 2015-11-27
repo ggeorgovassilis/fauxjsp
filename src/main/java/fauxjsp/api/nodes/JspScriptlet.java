@@ -1,12 +1,6 @@
 package fauxjsp.api.nodes;
 
-import java.io.PrintStream;
-import java.io.Writer;
-import java.util.Enumeration;
-
 import fauxjsp.api.parser.CodeLocation;
-import fauxjsp.api.renderer.JspPageContextImpl;
-import fauxjsp.api.renderer.RenderSession;
 
 /**
  * {@link JspScriptlet} models a jsp scriptlet.

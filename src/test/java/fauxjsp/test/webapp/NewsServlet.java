@@ -23,7 +23,8 @@ import fauxjsp.test.webapp.dto.Stock;
  */
 public class NewsServlet extends HttpServlet{
 
-	
+	private static final long serialVersionUID = -4440819749909322672L;
+
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse resp) throws ServletException, IOException {
 		request.setAttribute("navigation", Arrays.asList(
