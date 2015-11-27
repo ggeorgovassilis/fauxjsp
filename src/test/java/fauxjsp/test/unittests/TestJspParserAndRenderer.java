@@ -177,6 +177,8 @@ public class TestJspParserAndRenderer extends BaseTest {
 				Arrays.asList(new News("0", "headline 0", "description 0", "full text of news 0", false),
 						new News("1", "headline 1", "description 1", "full text of news 1", false),
 						new News("2", "headline 2", "description 2", "full text of news 2", false)));
+		
+		session.request.setAttribute("end", 2);
 		renderer.render(page, session);
 		String text = text(baos);
 		assertEquals(
