@@ -3,6 +3,7 @@ package fauxjsp.test.webapp;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -10,10 +11,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import fauxjsp.api.renderer.RenderSession;
 import fauxjsp.test.webapp.dto.NavigationItem;
 import fauxjsp.test.webapp.dto.News;
 import fauxjsp.test.webapp.dto.Stock;
 
+
+/**
+ * Renders stocks, news and a fixed current date
+ * @author George Georgovassilis
+ */
 public class NewsServlet extends HttpServlet{
 
 	
@@ -31,7 +38,16 @@ public class NewsServlet extends HttpServlet{
 				new News("2", "headline 2", "description 2",
 						"full text of news 2", false)));
 
-		request.setAttribute("date", new GregorianCalendar(2000, 2, 2).getTime());
+		GregorianCalendar cal = new GregorianCalendar(TimeZone.getTimeZone("UTC"));
+		cal.set(GregorianCalendar.YEAR, 2000);
+		cal.set(GregorianCalendar.MONTH, 2);
+		cal.set(GregorianCalendar.DAY_OF_MONTH, 2);
+		cal.set(GregorianCalendar.SECOND, 0);
+		cal.set(GregorianCalendar.MINUTE, 0);
+		cal.set(GregorianCalendar.MILLISECOND, 0);
+		cal.set(GregorianCalendar.HOUR, 0);
+		request.setAttribute("date", cal.getTime());
+		request.setAttribute(RenderSession.ATTR_TIMEZONE, TimeZone.getTimeZone("UTC"));
 		RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/news.jsp");
 		dispatcher.forward(request, resp);
 	}

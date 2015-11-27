@@ -3,6 +3,8 @@ package fauxjsp.test.integrationtests;
 import org.junit.Before;
 import org.junit.Test;
 
+import fauxjsp.test.unittests.BaseTest;
+
 import static org.junit.Assert.*;
 
 import java.io.ByteArrayOutputStream;
@@ -16,7 +18,7 @@ import java.util.UUID;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.commons.io.IOUtils;
 
-public class IntegrationTest {
+public class IntegrationTest extends BaseTest{
 
 	private Tomcat server;
 	private final String webapp="fauxjsp";
@@ -66,7 +68,6 @@ public class IntegrationTest {
 	@Test
 	public void testNewsPage() throws Exception{
 		URL url = new URL("http://localhost:7777/"+webapp+"/news");
-		System.out.println("Connecting to embedded server at "+url);
 		HttpURLConnection connection = (HttpURLConnection)url.openConnection();
 		connection.setDoInput(true);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -74,10 +75,7 @@ public class IntegrationTest {
 		String actualNewsPage = new String(baos.toByteArray()).replace("\r", "");
 		connection.disconnect();
 
-		baos = new ByteArrayOutputStream();
-		IOUtils.copy(getClass().getResourceAsStream("/expected/newspage.html"), baos);
-		String expectedNewsPage = new String(baos.toByteArray());
-		
-		assertEquals(expectedNewsPage, actualNewsPage);
+		String expected = read("/expected/newspage3.html");
+		assertEquals(expected, actualNewsPage);
 	}
 }

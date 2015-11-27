@@ -4,7 +4,7 @@
 <label>News</label>
 <c:forEach var="news" items="${listOfNews}">
 <div class=news>
-<a href="news?id=${news.id}" class=headline><c:out value="${news.headline}"/></a>
+<a href="news?id=${news.id}" class=headline><c:if test="${news.important}">+++</c:if><c:out value="${news.headline}"/></a>
 <div class=description><c:out value="${news.description}"/></div>
 </div>
 </c:forEach>

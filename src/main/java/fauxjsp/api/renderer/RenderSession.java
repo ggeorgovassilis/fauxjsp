@@ -11,6 +11,7 @@ import fauxjsp.servlet.ServletResponseWrapper;
  */
 public class RenderSession {
 
+	public final static String ATTR_TIMEZONE = "__fauxjsp_timezone";
 	public JspRenderer renderer;
 	public ServletRequestWrapper request;
 	public ServletResponseWrapper response;

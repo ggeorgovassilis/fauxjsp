@@ -34,6 +34,8 @@ Constraints and missing features:
 * Your servlet container needs to provide some EL 3.0 implementation (i.e. works with Tomcat 8, not with Tomcat 7)
 * Variable scoping is arbitrary
 * Encodings are pinned to UTF-8
+* Not all JSP implicit objects are available
+* Newline in output is not strict
 
 ## Getting started
 

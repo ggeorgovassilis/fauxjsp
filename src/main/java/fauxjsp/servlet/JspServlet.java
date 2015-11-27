@@ -109,7 +109,7 @@ public class JspServlet extends HttpServlet {
 	}
 
 	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
+	protected void service(HttpServletRequest req, HttpServletResponse resp) {
 		String servletPath = req.getServletPath();
 		JspParser parser = jspParserFactory.create();
 		JspRenderer renderer = new JspRendererImpl();

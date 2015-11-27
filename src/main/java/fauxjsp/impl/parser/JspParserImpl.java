@@ -14,6 +14,7 @@ import fauxjsp.api.nodes.JspInstruction;
 import fauxjsp.api.nodes.JspNode;
 import fauxjsp.api.nodes.JspNodeWithChildren;
 import fauxjsp.api.nodes.JspPage;
+import fauxjsp.api.nodes.JspScriptlet;
 import fauxjsp.api.nodes.JspTaglibInvocation;
 import fauxjsp.api.nodes.JspText;
 import fauxjsp.api.nodes.TagfileDefinition;
@@ -38,6 +39,7 @@ public class JspParserImpl implements JspParser {
 	// test="${a<b}"> breaks. Fix that.
 	protected final String OPEN_INSTRUCTION = "<%@";
 	protected final String OPEN_SCRIPTLET = "<%";
+	protected final String OPEN_SCRIPTLET_RETURN_VALUE = "<%=";
 	protected final String CLOSE_INSTRUCTION = "%>";
 
 	protected String pagePath;
@@ -236,10 +238,10 @@ public class JspParserImpl implements JspParser {
 
 	protected JspInstruction processInstruction() {
 		if (!isNext(OPEN_INSTRUCTION))
-			parsingError("Expected open instruction");
+			parsingError("Expected open instruction "+OPEN_INSTRUCTION);
 		int closingIndex = nextIndexOf(CLOSE_INSTRUCTION);
 		if (closingIndex <= index)
-			parsingError("Expected closing instruction");
+			parsingError("Expected closing instruction "+CLOSE_INSTRUCTION);
 
 		StringBuilder sInstruction = new StringBuilder(
 				substring(CLOSE_INSTRUCTION.length() + closingIndex - index));
@@ -267,8 +269,21 @@ public class JspParserImpl implements JspParser {
 		JspInstruction instruction = new JspInstruction(tag.taglib.getTaglib(),
 				getCurrentLocation());
 		instruction.getAttributes().putAll(tag.taglib.getAttributes());
-		advanceAfterNext("%>");
+		advanceAfterNext(CLOSE_INSTRUCTION);
 		return instruction;
+	}
+	
+	protected JspScriptlet processScriptlet(){
+		if (!isNext(OPEN_SCRIPTLET))
+			parsingError("Expected scriptlet open tag <% or <%=");
+		int closingIndex = nextIndexOf(CLOSE_INSTRUCTION);
+		if (closingIndex <= index)
+			parsingError("Expected closing instruction "+CLOSE_INSTRUCTION);
+		String sourceCode = jsp.substring(index+OPEN_INSTRUCTION.length(), closingIndex);
+		boolean returnsStatement = isNext(OPEN_SCRIPTLET_RETURN_VALUE);
+		JspScriptlet node = new JspScriptlet(getCurrentLocation(), sourceCode, returnsStatement);
+		advanceAfterNext(CLOSE_INSTRUCTION);
+		return node;
 	}
 
 	protected void flushText() {
@@ -375,22 +390,20 @@ public class JspParserImpl implements JspParser {
 			nodeStack.add(page);
 			while (index < jsp.length()) {
 				if (isNext(OPEN_SCRIPTLET)) {
-					// we don't support scriptlets, but instructions start with
-					// a similar declaration, so
-					// we have to look a bit down the script to distinguish
-					// instructions from scriptlets
 					if (isNext(OPEN_INSTRUCTION)) {
 						flushText();
 						JspInstruction instruction = processInstruction();
 						maybeRegisterTaglib(instruction);
 						maybeIncludeContent(instruction, getCurrentNode());
 						page.getChildren().add(instruction);
-					} else if (errorOnScriptlets)
-						parsingError("This looks like a scriptlet. This parser doesn't support scriptlets.");
-					else {
-						logger.warn("This looks like a scriptlet. This parser doesn't support scriptlets at "
-								+ getCurrentLocation());
-						advanceAfterNext(CLOSE_INSTRUCTION);
+					} else if (isNext(OPEN_SCRIPTLET_RETURN_VALUE)){
+						flushText();
+						JspScriptlet scriptlet = processScriptlet();
+						getCurrentNode().getChildren().add(scriptlet);
+					} else {
+						flushText();
+						JspScriptlet scriptlet = processScriptlet();
+						getCurrentNode().getChildren().add(scriptlet);
 					}
 					continue;
 				}

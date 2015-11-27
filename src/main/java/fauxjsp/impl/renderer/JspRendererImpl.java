@@ -2,10 +2,12 @@ package fauxjsp.impl.renderer;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.TimeZone;
 
 import fauxjsp.api.logging.Logger;
 import fauxjsp.api.nodes.JspNode;
 import fauxjsp.api.nodes.JspNodeWithChildren;
+import fauxjsp.api.nodes.JspScriptlet;
 import fauxjsp.api.nodes.JspTaglibInvocation;
 import fauxjsp.api.nodes.JspText;
 import fauxjsp.api.renderer.JspRenderException;
@@ -26,6 +28,8 @@ public class JspRendererImpl implements JspRenderer {
 
 	@Override
 	public void render(JspNode page, RenderSession session) {
+		if (session.request.getAttribute(RenderSession.ATTR_TIMEZONE)==null)
+			session.request.setAttribute(RenderSession.ATTR_TIMEZONE, TimeZone.getDefault());
 		renderNode(page, session);
 	}
 
@@ -43,15 +47,14 @@ public class JspRendererImpl implements JspRenderer {
 			if (node instanceof JspText) {
 				JspText textNode = (JspText) node;
 				String content = textNode.getContentAsString();
-				content = (String) session.elEvaluation.evaluate(content,
-						session);
-				write(session.response.getOutputStream(),
-						content.getBytes(session.response
-								.getCharacterEncoding()));
+				content = (String) session.elEvaluation.evaluate(content, session);
+				write(session.response.getOutputStream(), content.getBytes(session.response.getCharacterEncoding()));
 			} else if (node instanceof JspTaglibInvocation) {
 				JspTaglibInvocation taglibInvocation = (JspTaglibInvocation) node;
-				taglibInvocation.getDefinition().render(session,
-						taglibInvocation);
+				taglibInvocation.getDefinition().render(session, taglibInvocation);
+			} else if (node instanceof JspScriptlet) {
+				JspScriptlet scriptlet = (JspScriptlet)node;
+				scriptlet.render(session);
 			} else if (node instanceof JspNodeWithChildren) {
 				JspNodeWithChildren nodeWithChildren = (JspNodeWithChildren) node;
 				for (JspNode childNode : nodeWithChildren.getChildren())

@@ -3,8 +3,10 @@ package fauxjsp.test.unittests;
 import static org.junit.Assert.*;
 
 import java.io.ByteArrayOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import org.junit.Test;
 
@@ -65,16 +67,18 @@ public class TestFmt extends BaseTest {
 	}
 
 	@Test
-	public void test_fmt_formatdate() {
+	public void test_fmt_formatdate() throws Exception{
 		JspPage page = parser.parse("WEB-INF/jsp/fmt_format_date.jsp");
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		request.setLocale(Locale.UK);
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		ByteArrayOutputStream baos = response.getBaos();
 		RenderSession session = new RenderSession();
-		@SuppressWarnings("deprecation")
-		Date date = new Date(2010 - 1900, 9 - 1, 23, 14, 27, 18);
+		SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+	    isoFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+		Date date = isoFormat.parse("2010-09-23T14:27:18");
 		request.setAttribute("now", date);
+		request.setAttribute(RenderSession.ATTR_TIMEZONE, TimeZone.getTimeZone("UTC"));
 		session.request = new ServletRequestWrapper(request);
 		session.renderer = renderer;
 		session.elEvaluation = elEvaluation;
@@ -83,8 +87,8 @@ public class TestFmt extends BaseTest {
 		String text = text(baos);
 
 		String expected = "\n\n#1: 14:27:18\n" + "#2: 23-Sep-2010\n" + "#3: 23-Sep-2010 14:27:18\n"
-				+ "#4: 23/09/10 14:27\n" + "#5: 23-Sep-2010 14:27:18\n" + "#6: 23 September 2010 14:27:18 CEST\n"
-				+ "#7: 2010-09-23\n" + "#8: 23/09/10 14:27:18 CEST";
+				+ "#4: 23/09/10 14:27\n" + "#5: 23-Sep-2010 14:27:18\n" + "#6: 23 September 2010 14:27:18 UTC\n"
+				+ "#7: 2010-09-23\n" + "#8: 23/09/10 14:27:18 UTC";
 
 		assertEquals(expected, text);
 	}

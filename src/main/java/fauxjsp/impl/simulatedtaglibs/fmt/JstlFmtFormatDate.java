@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -43,8 +44,8 @@ public class JstlFmtFormatDate extends TaglibDefinition {
 		Date date = (Date) value;
 		return date;
 	}
-	
-	protected int formatLength(String format, String what, JspTaglibInvocation invocation){
+
+	protected int formatLength(String format, String what, JspTaglibInvocation invocation) {
 		if (StringUtils.isEmpty(format))
 			return DateFormat.MEDIUM;
 		format = format.toLowerCase();
@@ -54,7 +55,7 @@ public class JstlFmtFormatDate extends TaglibDefinition {
 			return DateFormat.MEDIUM;
 		if ("short".equals(format))
 			return DateFormat.SHORT;
-		error("Unknown "+what+" '"+format+"'", invocation);
+		error("Unknown " + what + " '" + format + "'", invocation);
 		return -1;
 	}
 
@@ -63,20 +64,29 @@ public class JstlFmtFormatDate extends TaglibDefinition {
 		int dateStyle = formatLength(getAttribute("dateStyle", invocation), "dateStyle", invocation);
 		int timeStyle = formatLength(getAttribute("timeStyle", invocation), "timeStyle", invocation);
 		Locale locale = session.request.getLocale();
+		DateFormat df = null;
 		if ("time".equals(type))
-			return DateFormat.getTimeInstance(timeStyle, locale);
-		if ("date".equals(type))
-			return DateFormat.getDateInstance(dateStyle, locale);
-		if ("both".equals(type))
-			return DateFormat.getDateTimeInstance(dateStyle, timeStyle, locale);
+			df = DateFormat.getTimeInstance(timeStyle, locale);
+		else if ("date".equals(type))
+			df = DateFormat.getDateInstance(dateStyle, locale);
+		else if ("both".equals(type))
+			df = DateFormat.getDateTimeInstance(dateStyle, timeStyle, locale);
 		String pattern = getAttribute("pattern", invocation);
 
 		try {
-			return new SimpleDateFormat(pattern);
+			if (!StringUtils.isEmpty(pattern))
+				df = new SimpleDateFormat(pattern);
 		} catch (Exception e) {
 			error(e, invocation);
 			return null;
 		}
+		TimeZone tz = (TimeZone) session.request.getAttribute(RenderSession.ATTR_TIMEZONE);
+		String sTimeZone = getAttribute("timeZone", invocation);
+		if (!StringUtils.isEmpty(sTimeZone))
+			tz = TimeZone.getTimeZone(sTimeZone);
+		if (tz != null)
+			df.setTimeZone(tz);
+		return df;
 	}
 
 	protected void run(RenderSession session, JspTaglibInvocation invocation) {
@@ -87,7 +97,7 @@ public class JstlFmtFormatDate extends TaglibDefinition {
 		String variableName = getAttribute("var", invocation);
 		if (StringUtils.isEmpty(variableName))
 			write(result, session);
-		else{
+		else {
 			session.request.overwriteAttribute(variableName, result);
 		}
 	}

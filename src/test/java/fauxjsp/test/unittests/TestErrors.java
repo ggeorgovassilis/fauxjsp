@@ -42,8 +42,8 @@ public class TestErrors extends BaseTest{
 			fail("expected a JspParsingException");
 		} catch (JspParsingException e) {
 			String explanation = parser.explain(e);
-			assertTrue(explanation, explanation.contains("scriptlet"));
-			assertTrue(explanation, explanation.contains("Line 2"));
+			assertTrue(explanation, explanation.contains("Unknown taglib namespace 't'"));
+			assertTrue(explanation, explanation.contains("Line 3"));
 		}
 	}
 
