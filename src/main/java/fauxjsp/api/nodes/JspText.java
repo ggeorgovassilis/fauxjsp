@@ -9,7 +9,7 @@ import fauxjsp.api.renderer.ELEvaluation;
  *
  */
 public class JspText extends JspNode {
-	protected final String content;
+	protected String content;
 	
 	@Override
 	public String debugLabel() {
