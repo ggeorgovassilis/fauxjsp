@@ -12,7 +12,7 @@ public class NOPScriptletRendererImpl implements JspScriptletRenderer{
 
 	@Override
 	public void render(JspScriptlet scriptlet, RenderSession session) {
-		throw new JspRenderException("Scriptlets are deactivated.", scriptlet);
+		throw new JspRenderException("Scriptlets are deactivated. Include Beanshell in the classpath to use scriptlets.", scriptlet);
 	}
 
 }

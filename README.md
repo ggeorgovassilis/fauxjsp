@@ -37,6 +37,8 @@ Constraints and missing features:
 * Not all JSP implicit objects are available
 * Newline handling in output is not strict
 * Scriptlets are implemented via [beanshell](http://www.beanshell.org) which means that there might be deviations from how scriptlets are handled normally.
+* The JSP language ecosystem is rather complex; HTML, JSTL, EL and scriptlets are frequently mixed in the same file which is hard to parse. Fauxjsp uses very simple parsers which means that it's likely to get confused by delimiters used in code, e.g.
+"<" or ">" as strings in scriptlets, "{" or "}" as strings in EL etc.
 
 ## Getting started
 
@@ -315,6 +317,10 @@ unless the Beanshell interpreter is found on the classpath. Current limitations 
 * Not all [implicit objects](https://docs.oracle.com/cd/E19316-01/819-3669/bnaij/index.html) are available.
 * Beanshell's syntax is lenient; you can do things in Beanshell that you can't do in Java.
 * Beanshell doesn't understand vararg method signatures, e.g. you can't use [String.format](http://docs.oracle.com/javase/7/docs/api/java/lang/String.html#format%28java.util.Locale,%20java.lang.String,%20java.lang.Object...%29) unless you pack arguments into an Object array. For more see [String formatting with beanshell](http://jedit.9.x6.nabble.com/String-formatting-with-beanshell-td1775061.html).
+
+### ... deal with a fauxjsp limitation?
+Ideally you'd find a way that works both in the production JSP environment as well as with fauxjsp. An example would be the case of
+varargs used in scriptlets we talked about earlier. The fauxjsp parser is likely to be confused by strings that appear in EL expressions and scriptlets which are used elsewhere as delimiters like <, >, {, } etc. In that case try to use escapes like \u007B for {.
 
 ## Roadmap
 
