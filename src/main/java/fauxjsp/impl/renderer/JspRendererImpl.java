@@ -67,8 +67,6 @@ public class JspRendererImpl implements JspRenderer {
 				for (JspNode childNode : nodeWithChildren.getChildren())
 					renderNode(childNode, session);
 			}
-		} catch (JspRenderException re) {
-			throw re;
 		} catch (Exception e) {
 			throw new JspRenderException(node, e);
 		}

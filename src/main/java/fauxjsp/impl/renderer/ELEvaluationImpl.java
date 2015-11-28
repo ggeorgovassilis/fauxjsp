@@ -1,6 +1,8 @@
 package fauxjsp.impl.renderer;
 
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 
 import javax.el.ELContext;
 import javax.el.ExpressionFactory;
@@ -68,10 +70,11 @@ public class ELEvaluationImpl implements ELEvaluation {
 		}
 	}
 
-	@Override
-	public Object evaluate(String expression, RenderSession session) {
-		if (!expression.contains("${"))
-			return expression;
+	protected Object evaluateSimpleExpression(String expression, RenderSession session){
+		if (!expression.startsWith("${"))
+			throw new RuntimeException(expression+" is not a simple EL expression, expected to start with ${");
+		if (!expression.endsWith("}"))
+			throw new RuntimeException(expression+" is not a simple EL expression, expected to end with }");
 		ExpressionFactory expressionFactory = elFactory.newExpressionFactory();
 		ELContext context = new FauxELContext(elFactory.newElContext(), expressionFactory);
 		populateVariables(context, expressionFactory, session);
@@ -85,5 +88,52 @@ public class ELEvaluationImpl implements ELEvaluation {
 		} catch (Exception e) {
 			throw new RuntimeException("Error when evaluating expression '"+expression+"'", e);
 		}
+
+	}
+	
+	protected String getEL(String text){
+		int bracketCount = 1;
+		int i=2;
+		for (;i<text.length()&&bracketCount>0;i++){
+			char c = text.charAt(i);
+			if (c=='{')
+				bracketCount++;
+			else if (c=='}')
+				bracketCount--;
+		}
+		return text.substring(0, i);
+	}
+	
+	@Override
+	public Object evaluate(String expression, RenderSession session) {
+		if (!expression.contains("${"))
+			return expression;
+		List<Object> list = new ArrayList<>();
+		String remainingExpression = expression;
+		while (!remainingExpression.isEmpty()){
+			int nextELStart = remainingExpression.indexOf("${");
+			if (nextELStart==0){
+				String el = getEL(remainingExpression);
+				Object o = evaluateSimpleExpression(el, session);
+				if (o!=null)
+					list.add(o);
+				remainingExpression = remainingExpression.substring(el.length());
+				continue;
+			} else if (nextELStart==-1){
+				nextELStart = remainingExpression.length();
+			}
+			String s = remainingExpression.substring(0, nextELStart);
+			list.add(s);
+			remainingExpression = remainingExpression.substring(s.length());
+		}
+		if (list.isEmpty())
+			return null;
+		if (list.size()==1)
+			return list.get(0);
+		StringBuffer sb = new StringBuffer();
+		for (Object o:list)
+			if (o!=null)
+				sb.append(o);
+		return sb.toString();
 	}
 }

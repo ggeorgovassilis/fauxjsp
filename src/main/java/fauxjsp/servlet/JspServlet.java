@@ -112,7 +112,7 @@ public class JspServlet extends HttpServlet {
 	protected void service(HttpServletRequest req, HttpServletResponse resp) {
 		String servletPath = req.getServletPath();
 		JspParser parser = jspParserFactory.create();
-		JspRenderer renderer = new JspRendererImpl();
+		JspRenderer renderer = jspRendererFactory.create();
 		try {
 			if (resp.getContentType()==null)
 				resp.setContentType("text/html;charset=UTF-8");

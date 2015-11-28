@@ -111,7 +111,7 @@ public class TestFmt extends BaseTest {
 			renderer.render(page, session);
 			fail("Excpected failure");
 		} catch (JspRenderException e) {
-			assertEquals("'${now}' is null", e.getMessage());
+			assertTrue(e.getMessage(), e.getMessage().contains("'${now}' is null"));
 		}
 	}
 
@@ -134,7 +134,7 @@ public class TestFmt extends BaseTest {
 			fail("Excpected failure");
 		} catch (JspRenderException e) {
 
-			assertEquals("'${now}' is a class java.lang.String but I need a java.util.Date", e.getMessage());
+			assertTrue(e.getMessage(),e.getMessage().contains("'${now}' is a class java.lang.String but I need a java.util.Date"));
 		}
 
 	}

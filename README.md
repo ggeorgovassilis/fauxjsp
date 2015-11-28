@@ -308,6 +308,14 @@ log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
 log4j.appender.stdout.layout.ConversionPattern=%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n
 ```
 
+### ... work with scriptlets?
+[Scriptlets](https://docs.oracle.com/javaee/5/tutorial/doc/bnaou.html) are implemented with the use of [beanshell](http://www.beanshell.org), thus some deviations from the standard scriptlet behavior are to be expected. Scriptlets won't be enabled
+unless the Beanshell interpreter is found on the classpath. Current limitations are:
+
+* Not all [implicit objects](https://docs.oracle.com/cd/E19316-01/819-3669/bnaij/index.html) are available.
+* Beanshell's syntax is lenient; you can do things in Beanshell that you can't do in Java.
+* Beanshell doesn't understand vararg method signatures, e.g. you can't use [String.format](http://docs.oracle.com/javase/7/docs/api/java/lang/String.html#format%28java.util.Locale,%20java.lang.String,%20java.lang.Object...%29) unless you pack arguments into an Object array. For more see [String formatting with beanshell](http://jedit.9.x6.nabble.com/String-formatting-with-beanshell-td1775061.html).
+
 ## Roadmap
 
 Features to come ~~in the near~~ sometime in the future:
