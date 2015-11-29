@@ -59,6 +59,7 @@ public abstract class BaseTest {
 			while (s.endsWith("\n"))
 				s = s.substring(0, s.length() - 1);
 			s = s.replaceAll("\r", "");
+			s = s.replaceAll(" \n", "\n");
 		}
 		return s;
 	}
