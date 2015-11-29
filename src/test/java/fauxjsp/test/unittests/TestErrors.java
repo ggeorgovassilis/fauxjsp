@@ -66,13 +66,6 @@ public class TestErrors extends BaseTest{
 	public void test_taglib_missing_argument() {
 		JspPage page = parser.parse("WEB-INF/jsp/error_taglib_missing_argument.jsperr");
 		try {
-			MockHttpServletRequest request = new MockHttpServletRequest();
-			MockHttpServletResponse response = new MockHttpServletResponse();
-			RenderSession session = new RenderSession();
-			session.request = new ServletRequestWrapper(request);
-			session.renderer = renderer;
-			session.elEvaluation = elEvaluation;
-			session.response = new ServletResponseWrapper(response, response.getBaos());
 			renderer.render(page, session);
 			fail("expected a JspParsingException");
 		} catch (JspRenderException e) {
@@ -89,13 +82,6 @@ public class TestErrors extends BaseTest{
 	public void test_taglib_undeclared_argument() throws Exception{
 		try {
 			JspPage page = parser.parse("WEB-INF/jsp/error_taglib_undeclared_argument.jsperr");
-			MockHttpServletRequest request = new MockHttpServletRequest();
-			MockHttpServletResponse response = new MockHttpServletResponse();
-			RenderSession session = new RenderSession();
-			session.request = new ServletRequestWrapper(request);
-			session.renderer = renderer;
-			session.elEvaluation = elEvaluation;
-			session.response = new ServletResponseWrapper(response, response.getBaos());
 			session.request.setAttribute("navigation", new ArrayList<Object>());
 			session.request.setAttribute("listOfStocks", new ArrayList<Object>());
 			session.request.setAttribute("listOfNews", new ArrayList<Object>());

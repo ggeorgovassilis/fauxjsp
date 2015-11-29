@@ -31,60 +31,39 @@ public class TestFmt extends BaseTest {
 	@Test
 	public void test_fmt_message() {
 		JspPage page = parser.parse("WEB-INF/jsp/fmt_message.jsp");
-		MockHttpServletRequest request = new MockHttpServletRequest();
-		MockHttpServletResponse response = new MockHttpServletResponse();
-		ByteArrayOutputStream baos = response.getBaos();
-		RenderSession session = new RenderSession();
-		session.request = new ServletRequestWrapper(request);
-		session.renderer = renderer;
-		session.elEvaluation = elEvaluation;
-		session.response = new ServletResponseWrapper(response, response.getBaos());
 
 		session.request.setAttribute(JstlFmtMessage.ATTR_RESOURCE_BUNDLE, "messages");
 
 		renderer.render(page, session);
-		String text = text(baos);
-		assertEquals("\nThe name of the game is blame", text);
+		String text = getPrettyContent(response);
+		assertEquals("The name of the game is blame", text);
 	}
 
 	@Test
 	public void test_fmt_set_bundle() {
 		JspPage page = parser.parse("WEB-INF/jsp/fmt_set_bundle.jsp");
-		MockHttpServletRequest request = new MockHttpServletRequest();
-		MockHttpServletResponse response = new MockHttpServletResponse();
-		ByteArrayOutputStream baos = response.getBaos();
-		RenderSession session = new RenderSession();
-		session.request = new ServletRequestWrapper(request);
-		session.renderer = renderer;
-		session.elEvaluation = elEvaluation;
-		session.response = new ServletResponseWrapper(response, response.getBaos());
 
 		session.request.setAttribute(JstlFmtMessage.ATTR_RESOURCE_BUNDLE, "messages");
 
 		renderer.render(page, session);
-		String text = text(baos);
-		assertEquals("\n\nThe name of the game is the same", text);
+		String text = getPrettyContent(response)
+				;
+		assertEquals("The name of the game is the same", text);
 	}
 
 	@Test
 	public void test_fmt_formatdate() throws Exception{
 		JspPage page = parser.parse("WEB-INF/jsp/fmt_format_date.jsp");
-		MockHttpServletRequest request = new MockHttpServletRequest();
 		request.setLocale(Locale.UK);
-		MockHttpServletResponse response = new MockHttpServletResponse();
-		ByteArrayOutputStream baos = response.getBaos();
-		RenderSession session = new RenderSession();
+
 		SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 	    isoFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 		Date date = isoFormat.parse("2010-09-23T14:27:18");
 		request.setAttribute("now", date);
 		request.setAttribute(RenderSession.ATTR_TIMEZONE, TimeZone.getTimeZone("UTC"));
-		session.request = new ServletRequestWrapper(request);
-		session.renderer = renderer;
-		session.elEvaluation = elEvaluation;
-		session.response = new ServletResponseWrapper(response, response.getBaos());
+		
 		renderer.render(page, session);
-		String text = text(baos);
+		String text = getContent(response);
 
 		String expected = "\n\n#1: 14:27:18\n" + "#2: 23-Sep-2010\n" + "#3: 23-Sep-2010 14:27:18\n"
 				+ "#4: 23/09/10 14:27\n" + "#5: 23-Sep-2010 14:27:18\n" + "#6: 23 September 2010 14:27:18 UTC\n"
@@ -96,16 +75,9 @@ public class TestFmt extends BaseTest {
 	@Test
 	public void test_fmt_formatdate_value_is_null() {
 		JspPage page = parser.parse("WEB-INF/jsp/fmt_format_date.jsp");
-		MockHttpServletRequest request = new MockHttpServletRequest();
 		request.setLocale(Locale.UK);
-		MockHttpServletResponse response = new MockHttpServletResponse();
-		RenderSession session = new RenderSession();
 		Date date = null;
 		request.setAttribute("now", date);
-		session.request = new ServletRequestWrapper(request);
-		session.renderer = renderer;
-		session.elEvaluation = elEvaluation;
-		session.response = new ServletResponseWrapper(response, response.getBaos());
 
 		try {
 			renderer.render(page, session);
@@ -118,22 +90,14 @@ public class TestFmt extends BaseTest {
 	@Test
 	public void test_fmt_formatdate_value_is_not_a_date() {
 		JspPage page = parser.parse("WEB-INF/jsp/fmt_format_date.jsp");
-		MockHttpServletRequest request = new MockHttpServletRequest();
 		request.setLocale(Locale.UK);
-		MockHttpServletResponse response = new MockHttpServletResponse();
-		RenderSession session = new RenderSession();
 		String date = "01-02-2013";
 		request.setAttribute("now", date);
-		session.request = new ServletRequestWrapper(request);
-		session.renderer = renderer;
-		session.elEvaluation = elEvaluation;
-		session.response = new ServletResponseWrapper(response, response.getBaos());
 
 		try {
 			renderer.render(page, session);
 			fail("Excpected failure");
 		} catch (JspRenderException e) {
-
 			assertTrue(e.getMessage(),e.getMessage().contains("'${now}' is a class java.lang.String but I need a java.util.Date"));
 		}
 
@@ -142,18 +106,10 @@ public class TestFmt extends BaseTest {
 	@Test
 	public void test_fmt_formatNumber() {
 		JspPage page = parser.parse("WEB-INF/jsp/fmt_format_number.jsp");
-		MockHttpServletRequest request = new MockHttpServletRequest();
 		request.setLocale(Locale.UK);
-		MockHttpServletResponse response = new MockHttpServletResponse();
-		ByteArrayOutputStream baos = response.getBaos();
-		RenderSession session = new RenderSession();
 		request.setAttribute("balance", 120000.231);
-		session.request = new ServletRequestWrapper(request);
-		session.renderer = renderer;
-		session.elEvaluation = elEvaluation;
-		session.response = new ServletResponseWrapper(response, response.getBaos());
 		renderer.render(page, session);
-		String text = text(baos);
+		String text = getContent(response);
 
 		String expected = "\n\n#1 £120,000.23\n" +
 		"#2 000.231\n" +

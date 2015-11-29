@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import fauxjsp.api.nodes.JspPage;
 import fauxjsp.api.parser.CodeLocation;
-
+import static org.junit.Assert.*;
 /**
  * A few test for java EL
  * @author George Georgovassilis
@@ -28,8 +28,7 @@ public class TestEL {
 		
 		ValueExpression expr = expressionFactory.createValueExpression(elContext, "${page.name}", String.class);
 		Object result = expr.getValue(elContext);
-		Assert.assertEquals("testpath", result	);
-		
+		assertEquals("testpath", result	);
 	}
 
 	@Test
@@ -42,8 +41,7 @@ public class TestEL {
 		
 		ValueExpression expr = expressionFactory.createValueExpression(elContext, "The page name is ${page.name}", String.class);
 		Object result = expr.getValue(elContext);
-		Assert.assertEquals("The page name is testpath", result	);
-		
+		assertEquals("The page name is testpath", result	);
 	}
 
 }
