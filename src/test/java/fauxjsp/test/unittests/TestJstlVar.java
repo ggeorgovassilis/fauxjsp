@@ -24,20 +24,11 @@ public class TestJstlVar extends BaseTest{
 	@Test
 	public void test_var(){
 		JspPage page = parser.parse("WEB-INF/jsp/var.jsp");
-		MockHttpServletRequest request = new MockHttpServletRequest();
 		request.setAttribute("x", "test");
-		MockHttpServletResponse response = new MockHttpServletResponse();
-		ByteArrayOutputStream baos = response.getBaos();
-		RenderSession session = new RenderSession();
-		session.request = new ServletRequestWrapper(request);
-		session.renderer = renderer;
-		session.elEvaluation = elEvaluation;
-		session.response = new ServletResponseWrapper(response, response.getBaos());
-		
 
 		renderer.render(page, session);
-		String text = text(baos);
-		assertEquals("\n\n\ntest + string = test string", text);
+		String text = getPrettyContent(response);
+		assertEquals("test + string = test string", text);
 	}
 
 }

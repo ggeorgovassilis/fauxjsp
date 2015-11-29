@@ -74,27 +74,20 @@ public class TestJspParserAndRenderer extends BaseTest {
 	@Test
 	public void testJspRenderer() throws Exception {
 		JspPage page = parser.parse("WEB-INF/jsp/homepage.jsp");
-		MockHttpServletRequest request = new MockHttpServletRequest();
-		MockHttpServletResponse response = new MockHttpServletResponse();
-		ByteArrayOutputStream baos = response.getBaos();
-		RenderSession session = new RenderSession();
-		session.request = new ServletRequestWrapper(request);
-		session.renderer = renderer;
-		session.elEvaluation = elEvaluation;
-		session.response = new ServletResponseWrapper(response, response.getBaos());
+
 		session.request.setAttribute(RenderSession.ATTR_TIMEZONE, TimeZone.getTimeZone("UTC"));
 
-		session.request.setAttribute("navigation",
+		request.setAttribute("navigation",
 				Arrays.asList(new NavigationItem("path 1", "label 1"), new NavigationItem("path 2", "label 2")));
-		session.request.setAttribute("listOfStocks",
+		request.setAttribute("listOfStocks",
 				Arrays.asList(new Stock("S1", "Stock one", 10, 20), new Stock("S2", "Stock 2", -9, 88)));
-		session.request.setAttribute("listOfNews",
+		request.setAttribute("listOfNews",
 				Arrays.asList(new News("1", "headline 1", "description 1", "full text of news 1", false),
 						new News("2", "headline 2", "description 2", "full text of news 2", false)));
 
-		session.request.setAttribute("date", new GregorianCalendar(2000, 2, 2, 18, 23, 45).getTime());
+		request.setAttribute("date", new GregorianCalendar(2000, 2, 2, 18, 23, 45).getTime());
 		renderer.render(page, session);
-		String text = sanitize(text(baos));
+		String text = getPrettyContent(response);
 
 		String expected = sanitize(read("/expected/newspage.html"));
 		assertEquals(expected, text);
@@ -104,83 +97,59 @@ public class TestJspParserAndRenderer extends BaseTest {
 	public void testJspParserNews() throws Exception {
 		String expected = sanitize(read("/expected/newspage2.html"));
 		JspPage page = parser.parse("news.jsp");
-		MockHttpServletRequest request = new MockHttpServletRequest();
-		MockHttpServletResponse response = new MockHttpServletResponse();
-		ByteArrayOutputStream baos = response.getBaos();
-		RenderSession session = new RenderSession();
-		session.request = new ServletRequestWrapper(request);
-		session.renderer = renderer;
-		session.elEvaluation = elEvaluation;
-		session.response = new ServletResponseWrapper(response, response.getBaos());
+
 		SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 		isoFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 		Date date = isoFormat.parse("2010-09-23T14:27:18");
 
-		session.request.setAttribute("date", date);
+		request.setAttribute("date", date);
 
-		session.request.setAttribute("navigation",
+		request.setAttribute("navigation",
 				Arrays.asList(new NavigationItem("path 1", "label 1"), new NavigationItem("path 2", "label 2")));
-		session.request.setAttribute("listOfStocks", Arrays.asList(new Stock("S1", "Stock one", 25000, 1),
+		request.setAttribute("listOfStocks", Arrays.asList(new Stock("S1", "Stock one", 25000, 1),
 				new Stock("S2", "Stock two", 10000, -2), new Stock("S3", "Stock3", 9999, 12)));
-		session.request.setAttribute("listOfNews",
+		request.setAttribute("listOfNews",
 				Arrays.asList(new News("1", "headline 1", "description 1", "full text of news 1", true),
 						new News("2", "headline 2", "description 2", "full text of news 2", false)));
-		session.request.setAttribute("news", new News("1", "headline 1", "description 1", "full text of news 3", true));
+		request.setAttribute("news", new News("1", "headline 1", "description 1", "full text of news 3", true));
 
 		renderer.render(page, session);
-		String text = sanitize(text(baos));
+		String text = getPrettyContent(response);
 		assertEquals(expected, text);
 	}
 
 	@Test
 	public void testHtmlEscape() throws Exception {
 		JspPage page = parser.parse("news.jsp");
-		MockHttpServletRequest request = new MockHttpServletRequest();
-		MockHttpServletResponse response = new MockHttpServletResponse();
-		ByteArrayOutputStream baos = response.getBaos();
-		RenderSession session = new RenderSession();
-		session.request = new ServletRequestWrapper(request);
-		session.renderer = renderer;
-		session.elEvaluation = elEvaluation;
-		session.response = new ServletResponseWrapper(response, response.getBaos());
-
-		session.request.setAttribute("navigation",
+		request.setAttribute("navigation",
 				Arrays.asList(new NavigationItem("path 1", "label 1"), new NavigationItem("path 2", "label 2")));
-		session.request.setAttribute("listOfStocks", Arrays.asList(new Stock("S1", "Stock one", 25000, 1),
+		request.setAttribute("listOfStocks", Arrays.asList(new Stock("S1", "Stock one", 25000, 1),
 				new Stock("S2", "Stock two", 10000, -2), new Stock("S3", "Stock3", 9999, 12)));
-		session.request.setAttribute("listOfNews",
+		request.setAttribute("listOfNews",
 				Arrays.asList(new News("1", "Action & news 1", "description 1", "full text of news 1", true),
 						new News("2", "headline 2", "description 2", "full text of news 2", false)));
 		SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 		isoFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 		Date date = isoFormat.parse("2010-09-23T14:27:18");
-		session.request.setAttribute("date", date);
+		request.setAttribute("date", date);
 
 		renderer.render(page, session);
-		String text = text(baos);
+		String text = getPrettyContent(response);
 		assertTrue(text, text.contains("+++Action &amp; news 1"));
 	}
 
 	@Test
 	public void testRendererForEach() {
 		JspPage page = parser.parse("WEB-INF/jsp/foreach.jsp");
-		MockHttpServletRequest request = new MockHttpServletRequest();
-		MockHttpServletResponse response = new MockHttpServletResponse();
-		ByteArrayOutputStream baos = response.getBaos();
-		RenderSession session = new RenderSession();
-		session.request = new ServletRequestWrapper(request);
-		session.renderer = renderer;
-		session.elEvaluation = elEvaluation;
-		session.response = new ServletResponseWrapper(response, response.getBaos());
 
-		session.request.setAttribute("listOfNews",
+		request.setAttribute("listOfNews",
 				Arrays.asList(new News("0", "headline 0", "description 0", "full text of news 0", false),
 						new News("1", "headline 1", "description 1", "full text of news 1", false),
 						new News("2", "headline 2", "description 2", "full text of news 2", false)));
 		
-		session.request.setAttribute("end", 2);
+		request.setAttribute("end", 2);
 		renderer.render(page, session);
-		String text = text(baos);
+		String text = getContent(response);
 		assertEquals(
 				"\nNEWS SECTION 1: 012\nNEWS SECTION 2: 12\nNEWS SECTION 3: 0\nVARSTATUS: 1,0,true,false\n2,1,false,false\n3,2,false,true\n",
 				text);
@@ -194,17 +163,9 @@ public class TestJspParserAndRenderer extends BaseTest {
 	@Test
 	public void testParserMultipleNesting() {
 		JspPage page = parser.parse("WEB-INF/jsp/nesting.jsp");
-		MockHttpServletRequest request = new MockHttpServletRequest();
-		MockHttpServletResponse response = new MockHttpServletResponse();
-		ByteArrayOutputStream baos = response.getBaos();
-		RenderSession session = new RenderSession();
-		session.request = new ServletRequestWrapper(request);
-		session.renderer = renderer;
-		session.elEvaluation = elEvaluation;
-		session.response = new ServletResponseWrapper(response, response.getBaos());
 
 		renderer.render(page, session);
-		String text = sanitize(text(baos));
+		String text = getPrettyContent(response);
 		assertEquals(text,
 				"level0-a-opens\n <a value=\"level1\">\nlevel1-b-opens\n <b value=\"level2\">\nlevel2-a-opens\n <a value=\"level3\">\nlevel3-b-opens\n <b value=\"level4\">\nlevel4-inner\n</b>\nlevel3-b-closed\n</a>\nlevel2-a-closed\n</b>\nlevel1-b-closed\n</a>\nlevel0-a-closed",
 				text);
