@@ -29,11 +29,17 @@ public class ServletRequestWrapper extends javax.servlet.ServletRequestWrapper{
 
 	@Override
 	public void setAttribute(String name, Object o) {
-		attributes.put(name, o);
+		if (o==null)
+			removeAttribute(name);
+		else
+			attributes.put(name, o);
 	}
 
 	public void overwriteAttribute(String name, Object o){
-		setAttribute(name, o);
+		if (o==null)
+			removeAttribute(name);
+		else
+			setAttribute(name, o);
 		super.setAttribute(name, o);
 		ServletRequest innerRequest = getRequest();
 		if (innerRequest instanceof ServletRequestWrapper){
@@ -56,7 +62,11 @@ public class ServletRequestWrapper extends javax.servlet.ServletRequestWrapper{
 	
 	@Override
 	public Enumeration<String> getAttributeNames() {
-		return Collections.enumeration(attributes.keySet());
+		Enumeration<String> attributeNamesFromInnerRequest = getRequest().getAttributeNames();
+		Set<String> attributeNames = new HashSet<>(attributes.keySet());
+		while (attributeNamesFromInnerRequest.hasMoreElements())
+			attributeNames.add(attributeNamesFromInnerRequest.nextElement());
+		return Collections.enumeration(attributeNames);
 	}
 	
 	@Override
