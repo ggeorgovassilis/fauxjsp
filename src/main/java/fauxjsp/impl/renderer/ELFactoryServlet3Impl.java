@@ -32,7 +32,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 
 /**
- * Looks up expression factories and ElContexts from an EL 3.0 {@link ELManager} in a typical server environment.
+ * Looks up expression factories and ElContexts from an EL 3.0 {@link ELManager}
+ * in a typical server environment.
  * 
  * @author George Georgovassilis
  *
@@ -40,20 +41,18 @@ import org.w3c.dom.Element;
 public class ELFactoryServlet3Impl implements ELFactory {
 
 	protected Logger log = Logging.getLogger(ELFactoryServlet3Impl.class);
-	protected Pattern pMethodSignature = Pattern
-			.compile("(.+)\\s+(.+)\\((.*)\\)");
+	protected Pattern pMethodSignature = Pattern.compile("(.+)\\s+(.+)\\((.*)\\)");
 	protected Map<String, List<Method>> prefixToFunctions = new HashMap<>();
 
 	protected void setupFunctions(ELContext context) {
 		for (String prefix : prefixToFunctions.keySet()) {
 			for (Method method : prefixToFunctions.get(prefix))
-				context.getFunctionMapper().mapFunction(prefix,
-						method.getName(), method);
+				context.getFunctionMapper().mapFunction(prefix, method.getName(), method);
 		}
 	}
 
-	protected void registerTaglib(DocumentBuilder dBuilder,
-			ServletConfig config, String uri, String location) throws Exception {
+	protected void registerTaglib(DocumentBuilder dBuilder, ServletConfig config, String uri, String location)
+			throws Exception {
 		log.debug("Loading taglib " + uri + " from " + location);
 		InputStream in = null;
 		try {
@@ -64,46 +63,42 @@ public class ELFactoryServlet3Impl implements ELFactory {
 			in = getClass().getClassLoader().getResourceAsStream(location);
 		}
 		if (in == null) {
-			log.warn("Taglib location '"
-					+ location
-					+ "' can't be resolved to either a server- nor classpath location.");
+			log.warn(
+					"Taglib location '" + location + "' can't be resolved to either a server- nor classpath location.");
 			return;
 		}
-		Document doc = dBuilder.parse(in);
-		doc.getDocumentElement().normalize();
-
-		registerFunctions(doc);
-
-		Utils.close(in);
-
+		try {
+			Document doc = dBuilder.parse(in);
+			doc.getDocumentElement().normalize();
+			registerFunctions(doc);
+		} finally {
+			Utils.close(in);
+		}
 	}
-	
+
 	public void configure(ServletConfig config) {
 		try {
 			log.debug("Scanning for taglibs...");
-			DocumentBuilderFactory dbFactory = DocumentBuilderFactory
-					.newInstance();
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 
 			try {
 				// try to find the default function taglib
-				registerTaglib(
-						dBuilder,
-						config,
-						"http://java.sun.com/jsp/jstl/functions",
-						"META-INF/fn.tld");
+				registerTaglib(dBuilder, config, "http://java.sun.com/jsp/jstl/functions", "META-INF/fn.tld");
 			} catch (Exception e) {
-				log.warn("Couldn't find or problem reading META-INF/fn.tld. Either a dependency (jstl.jar ?) is missing, or you should declare one with a jsp-config element in web.xml");
+				log.warn(
+						"Couldn't find or problem reading META-INF/fn.tld. Either a dependency (jstl.jar ?) is missing, or you should declare one with a jsp-config element in web.xml");
 			}
-			JspConfigDescriptor jspConfig = config.getServletContext()
-					.getJspConfigDescriptor();
+			JspConfigDescriptor jspConfig = config.getServletContext().getJspConfigDescriptor();
 			if (jspConfig != null) {
 				Collection<TaglibDescriptor> taglibs = jspConfig.getTaglibs();
 				if (taglibs != null)
-					for (TaglibDescriptor taglib : taglibs) {
-						registerTaglib(dBuilder, config, taglib.getTaglibURI(),
-								taglib.getTaglibLocation());
-					}
+					for (TaglibDescriptor taglib : taglibs)
+						try {
+							registerTaglib(dBuilder, config, taglib.getTaglibURI(), taglib.getTaglibLocation());
+						} catch (Exception e) {
+							log.error("Failed registering taglib "+taglib.getTaglibLocation()+", expect subsequent failures.", e);
+						}
 			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -111,8 +106,7 @@ public class ELFactoryServlet3Impl implements ELFactory {
 	}
 
 	protected void registerFunctions(Document doc) throws Exception {
-		String shortName = doc.getElementsByTagName("short-name").item(0)
-				.getTextContent();
+		String shortName = doc.getElementsByTagName("short-name").item(0).getTextContent();
 		NodeList lFunction = doc.getElementsByTagName("function");
 		for (int i = 0; i < lFunction.getLength(); i++) {
 			Node nFunction = lFunction.item(i);
@@ -150,18 +144,12 @@ public class ELFactoryServlet3Impl implements ELFactory {
 		return c;
 	}
 
-	protected void registerFunction(String shortName, Node nFunction)
-			throws Exception {
-		String fnClass = ((Element) nFunction)
-				.getElementsByTagName("function-class").item(0)
-				.getTextContent();
-		String fnSignature = ((Element) nFunction)
-				.getElementsByTagName("function-signature").item(0)
-				.getTextContent();
+	protected void registerFunction(String shortName, Node nFunction) throws Exception {
+		String fnClass = ((Element) nFunction).getElementsByTagName("function-class").item(0).getTextContent();
+		String fnSignature = ((Element) nFunction).getElementsByTagName("function-signature").item(0).getTextContent();
 		Matcher m = pMethodSignature.matcher(fnSignature);
 		if (!m.matches()) {
-			log.error("Can't parse taglib function method signature "
-					+ fnSignature);
+			log.error("Can't parse taglib function method signature " + fnSignature);
 			return;
 		}
 		String returnType = m.group(1);
@@ -174,10 +162,8 @@ public class ELFactoryServlet3Impl implements ELFactory {
 				cArgs.add(getType(arg));
 		}
 
-		log.debug("Registering taglib method " + returnType + " " + methodName
-				+ "(" + arguments + ")");
-		Method method = Class.forName(fnClass).getMethod(methodName,
-				cArgs.toArray(new Class[0]));
+		log.debug("Registering taglib method " + returnType + " " + methodName + "(" + arguments + ")");
+		Method method = Class.forName(fnClass).getMethod(methodName, cArgs.toArray(new Class[0]));
 		List<Method> functions = prefixToFunctions.get(shortName);
 		if (functions == null) {
 			functions = new ArrayList<Method>();
