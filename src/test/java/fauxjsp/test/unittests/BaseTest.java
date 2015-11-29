@@ -17,12 +17,17 @@ import fauxjsp.api.parser.ResourceResolver;
 import fauxjsp.api.renderer.ELEvaluation;
 import fauxjsp.api.renderer.JspRenderer;
 import fauxjsp.api.renderer.JspRendererFactory;
+import fauxjsp.api.renderer.RenderSession;
 import fauxjsp.impl.Utils;
 import fauxjsp.impl.parser.DefaultJspParserFactoryImpl;
 import fauxjsp.impl.renderer.ELEvaluationImpl;
 import fauxjsp.impl.renderer.ELFactoryServlet3Impl;
 import fauxjsp.impl.renderer.JspRendererFactoryImpl;
+import fauxjsp.servlet.ServletRequestWrapper;
+import fauxjsp.servlet.ServletResponseWrapper;
 import fauxjsp.test.support.FileResolver;
+import fauxjsp.test.support.MockHttpServletRequest;
+import fauxjsp.test.support.MockHttpServletResponse;
 import fauxjsp.test.support.MockServletContext;
 
 /**
@@ -38,6 +43,10 @@ public abstract class BaseTest {
 	protected JspRenderer renderer;
 	protected ELEvaluation elEvaluation;
 	protected JspRendererFactory rendererFactory;
+	protected MockHttpServletRequest request;
+	protected MockHttpServletResponse response;
+	protected RenderSession session;
+
 
 	protected String sanitize(String s) {
 		String old = "";
@@ -70,6 +79,26 @@ public abstract class BaseTest {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	protected String getContent(MockHttpServletResponse response){
+		return text(response.getBaos());
+	}
+	
+	protected String getPrettyContent(MockHttpServletResponse response){
+		return sanitize(getContent(response));
+	}
+
+	protected String read(String resource) {
+		try {
+			InputStream in = getClass().getResourceAsStream(resource);
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			Utils.copy(in, baos);
+			in.close();
+			return new String(baos.toByteArray(), "UTF-8");
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 	@Before
 	public void setupBaseTest() {
@@ -78,6 +107,9 @@ public abstract class BaseTest {
 		parser = newParser();
 		rendererFactory = new JspRendererFactoryImpl();
 		renderer = rendererFactory.create();
+		request = new MockHttpServletRequest();
+		response = new MockHttpServletResponse();
+
 		ELFactoryServlet3Impl elFactory = new ELFactoryServlet3Impl();
 		elFactory.configure(new ServletConfig() {
 
@@ -102,18 +134,11 @@ public abstract class BaseTest {
 			}
 		});
 		elEvaluation = new ELEvaluationImpl(elFactory);
-	}
-
-	protected String read(String resource) {
-		try {
-			InputStream in = getClass().getResourceAsStream(resource);
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			Utils.copy(in, baos);
-			in.close();
-			return new String(baos.toByteArray(), "UTF-8");
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+		session = new RenderSession();
+		session.request = new ServletRequestWrapper(request);
+		session.renderer = renderer;
+		session.elEvaluation = elEvaluation;
+		session.response = new ServletResponseWrapper(response, response.getBaos());
 	}
 
 }

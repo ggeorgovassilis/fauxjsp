@@ -24,19 +24,11 @@ public class TestScopeIsolation extends BaseTest{
 	@Test
 	public void test_scope_isolation(){
 		JspPage page = parser.parse("WEB-INF/jsp/scope_isolation.jsp");
-		MockHttpServletRequest request = new MockHttpServletRequest();
-		MockHttpServletResponse response = new MockHttpServletResponse();
-		ByteArrayOutputStream baos = response.getBaos();
-		RenderSession session = new RenderSession();
-		session.request = new ServletRequestWrapper(request);
-		session.renderer = renderer;
-		session.elEvaluation = elEvaluation;
-		session.response = new ServletResponseWrapper(response, response.getBaos());
 
 		session.request.setAttribute("a", "0");
 		
 		renderer.render(page, session);
-		String text = sanitize(text(baos));
+		String text = getPrettyContent(response);
 		assertEquals(text,"0=0\n1=1\na=2\n1=1\na=3\na=4\n4=4", text);
 	}
 }
