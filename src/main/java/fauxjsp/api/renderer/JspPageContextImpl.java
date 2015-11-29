@@ -2,6 +2,8 @@ package fauxjsp.api.renderer;
 
 import java.io.IOException;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.el.ELContext;
 import javax.servlet.Servlet;
@@ -68,27 +70,31 @@ public class JspPageContextImpl extends PageContext{
 
 	@Override
 	public ServletConfig getServletConfig() {
-		throw new RuntimeException("Not implemented");
+		try {
+			return getServletContext().getServlet("JspServlet").getServletConfig();
+		} catch (ServletException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
 	public ServletContext getServletContext() {
-		throw new RuntimeException("Not implemented");
+		return request.getServletContext();
 	}
 
 	@Override
 	public void forward(String relativeUrlPath) throws ServletException, IOException {
-		throw new RuntimeException("Not implemented");
+		getServletContext().getRequestDispatcher(relativeUrlPath).forward(request, response);
 	}
 
 	@Override
 	public void include(String relativeUrlPath) throws ServletException, IOException {
-		throw new RuntimeException("Not implemented");
+		getServletContext().getRequestDispatcher(relativeUrlPath).forward(request, response);
 	}
 
 	@Override
 	public void include(String relativeUrlPath, boolean flush) throws ServletException, IOException {
-		throw new RuntimeException("Not implemented");
+		getServletContext().getRequestDispatcher(relativeUrlPath).include(request, response);
 	}
 
 	@Override
@@ -103,7 +109,7 @@ public class JspPageContextImpl extends PageContext{
 
 	@Override
 	public void setAttribute(String name, Object value) {
-		throw new RuntimeException("Not implemented");
+		request.setAttribute(name, value);
 	}
 
 	@Override
@@ -123,12 +129,12 @@ public class JspPageContextImpl extends PageContext{
 
 	@Override
 	public Object findAttribute(String name) {
-		throw new RuntimeException("Not implemented");
+		return getAttribute(name);
 	}
 
 	@Override
 	public void removeAttribute(String name) {
-		throw new RuntimeException("Not implemented");
+		request.removeAttribute(name);
 	}
 
 	@Override
