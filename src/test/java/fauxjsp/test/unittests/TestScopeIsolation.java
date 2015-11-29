@@ -36,7 +36,7 @@ public class TestScopeIsolation extends BaseTest{
 		session.request.setAttribute("a", "0");
 		
 		renderer.render(page, session);
-		String text = text(baos);
-		assertEquals(text,"\n\n0=0\n\n1=1\n\n\na=2\n\n1=1\n\n\na=3\n\na=4\n4=4", text);
+		String text = sanitize(text(baos));
+		assertEquals(text,"0=0\n1=1\na=2\n1=1\na=3\na=4\n4=4", text);
 	}
 }
