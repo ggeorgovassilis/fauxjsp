@@ -34,7 +34,6 @@ public class TestScriptlet extends BaseTest {
 
 	@Test
 	public void test_scriptlet_with_syntax_error() {
-		final String expected = "N0,Headline 0,DESCRIPTION 0,true\nN1,Headline 1,DESCRIPTION 1,false\nN2,Headline 2,DESCRIPTION 2,true";
 		JspPage page = parser.parse("WEB-INF/jsp/scriptlet_syntax_error.jsp");
 		List<News> news = new ArrayList<>();
 		for (int i = 0; i < 3; i++)

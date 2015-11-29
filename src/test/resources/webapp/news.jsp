@@ -12,6 +12,6 @@ The content of this box (with the dashed border) will change as you navigate aro
 Also, the navigation box (top) will stay but its content will change.
 </p>
 <t:news listOfNews="${listOfNews}"/>
-<t:stocks listOfStocks="${listOfStocks}"/>
+<t:stocks listOfStocks="${listOfStocks}" message="Get stale market stocks at FauxJSP"/>
 <p>The current date is ${date.year+1900}-${date.month+1}-${date.date}</p>
 </t:structure>

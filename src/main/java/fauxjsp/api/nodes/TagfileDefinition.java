@@ -35,13 +35,7 @@ public class TagfileDefinition extends TaglibDefinition {
 			throw new RuntimeException(e);
 		}
 	}
-	
-	@Override
-	protected void checkInvocation(RenderSession session,
-			JspTaglibInvocation invocation) {
-		if (!invocation.getName().equals(getName()))
-			error("Attempted to render a '"+invocation.getName()+"' with a '"+getName()+"' definition", invocation);
-	}
+
 
 	@Override
 	protected void renderNode(RenderSession session, JspTaglibInvocation invocation) {

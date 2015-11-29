@@ -57,7 +57,7 @@ public class TestErrors extends BaseTest{
 	}
 
 	@Test
-	public void test_taglib_missing_argument() {
+	public void test_taglib_missing_argument() throws Exception{
 		JspPage page = parser.parse("WEB-INF/jsp/error_taglib_missing_argument.jsperr");
 		try {
 			renderer.render(page, session);
@@ -67,8 +67,8 @@ public class TestErrors extends BaseTest{
 			assertTrue(
 					explanation,
 					explanation
-							.contains("for attribute navigation on t:navigation but got null"));
-			assertTrue(explanation, explanation.contains("Line 8"));
+							.contains("Attribute listOfStocks is mandatory for taglib t:stocks"));
+			assertTrue(explanation, explanation.contains("Line 3"));
 		}
 	}
 

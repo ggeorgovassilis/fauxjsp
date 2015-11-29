@@ -72,10 +72,10 @@ public class IntegrationTest extends BaseTest{
 		connection.setDoInput(true);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		Utils.copy(connection.getInputStream(), baos);
-		String actualNewsPage = new String(baos.toByteArray()).replace("\r", "");
+		String actualNewsPage = sanitize(new String(baos.toByteArray()));
 		connection.disconnect();
 
-		String expected = read("/expected/newspage3.html");
+		String expected = sanitize(read("/expected/newspage3.html"));
 		assertEquals(expected, actualNewsPage);
 	}
 }

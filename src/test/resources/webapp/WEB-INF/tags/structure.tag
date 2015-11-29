@@ -7,7 +7,7 @@
 <body>
 <t:navigation navigation="${navigation}"/>
 <div class=menu>
-	<t:stocks listOfStocks="${listOfStocks}"/>
+	<t:stocks listOfStocks="${listOfStocks}" message="Get stale market stocks at FauxJSP"/>
 	<t:news listOfNews="${listOfNews}"/>
 </div>
 <div class=main>

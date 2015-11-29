@@ -121,9 +121,30 @@ public abstract class TaglibDefinition {
 		return true;
 	}
 	
-	protected void checkInvocation(RenderSession session, JspTaglibInvocation invocation){
-		if (!invocation.getTaglib().equals(getName()))
-			error("Internal error: attempted to render an '"+invocation.getTaglib()+"' taglib with the taglib definition of "+getName(), invocation);
+	protected boolean isAttributeSpecifiedAsChild(String attributeName, JspTaglibInvocation invocation){
+		for (JspNode node:invocation.getChildren()){
+			if (node instanceof JspNodeWithChildren){
+				JspNodeWithChildren nwc = (JspNodeWithChildren)node;
+				if ("jsp:attribute".equals(nwc.getName())){
+					String name = nwc.getAttributes().get("name");
+					if (attributeName.equals(name))
+						return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	protected void checkInvocation(RenderSession session,
+			JspTaglibInvocation invocation) {
+		//check that required attributes are there
+		TaglibDefinition definition = invocation.getDefinition();
+		for (String attribute:definition.getAttributes().keySet()){
+			boolean isRequired = definition.getAttributes().get(attribute).isRequired();
+			boolean isUsedInInvocation = invocation.getAttributes().containsKey(attribute);
+			if (isRequired && (!isUsedInInvocation && !isAttributeSpecifiedAsChild(attribute, invocation)))
+				error("Attribute "+attribute+" is mandatory for taglib "+invocation.getDefinition().getName()+" but wasn't specified", invocation);
+		}
 	}
 
 	public void render(RenderSession session, JspTaglibInvocation invocation) {
