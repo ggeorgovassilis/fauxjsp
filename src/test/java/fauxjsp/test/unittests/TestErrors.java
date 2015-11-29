@@ -1,6 +1,7 @@
 package fauxjsp.test.unittests;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import org.junit.Test;
 
@@ -68,6 +69,23 @@ public class TestErrors extends BaseTest{
 					explanation,
 					explanation
 							.contains("Attribute listOfStocks is mandatory for taglib t:stocks"));
+			assertTrue(explanation, explanation.contains("Line 3"));
+		}
+	}
+
+	@Test
+	public void test_taglib_wrong_argument_type() throws Exception{
+		JspPage page = parser.parse("WEB-INF/jsp/error_taglib_wrong_argument_type.jsperr");
+		try {
+			request.setAttribute("listOfStocks", new Date());
+			renderer.render(page, session);
+			fail("expected a JspParsingException");
+		} catch (JspRenderException e) {
+			String explanation = renderer.explain(e);
+			assertTrue(
+					explanation,
+					explanation
+							.contains("Can't cast class java.util.Date to interface java.util.List"));
 			assertTrue(explanation, explanation.contains("Line 3"));
 		}
 	}

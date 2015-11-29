@@ -115,7 +115,7 @@ public class TestFmt extends BaseTest {
 		"#7 023%\n" +
 		"#8 120E3\n" +
 		"#9 $120,000.23";
-
+		
 		assertEquals(expected, text);
 	}
 
