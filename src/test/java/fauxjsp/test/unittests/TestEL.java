@@ -4,7 +4,6 @@ import javax.el.ExpressionFactory;
 import javax.el.StandardELContext;
 import javax.el.ValueExpression;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import fauxjsp.api.nodes.JspPage;

@@ -2,9 +2,6 @@ package fauxjsp.api.renderer;
 
 import java.io.IOException;
 import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.el.ELContext;
 import javax.servlet.Servlet;
 import javax.servlet.ServletConfig;

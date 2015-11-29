@@ -7,12 +7,6 @@ import org.junit.Test;
 import fauxjsp.api.nodes.JspPage;
 import fauxjsp.api.parser.JspParsingException;
 import fauxjsp.api.renderer.JspRenderException;
-import fauxjsp.api.renderer.RenderSession;
-import fauxjsp.servlet.ServletRequestWrapper;
-import fauxjsp.servlet.ServletResponseWrapper;
-import fauxjsp.test.support.MockHttpServletRequest;
-import fauxjsp.test.support.MockHttpServletResponse;
-
 import static org.junit.Assert.*;
 
 /**

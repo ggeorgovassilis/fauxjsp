@@ -23,7 +23,6 @@ import fauxjsp.impl.renderer.ELEvaluationImpl;
 import fauxjsp.impl.renderer.ELFactory;
 import fauxjsp.impl.renderer.ELFactoryServlet3Impl;
 import fauxjsp.impl.renderer.JspRendererFactoryImpl;
-import fauxjsp.impl.renderer.JspRendererImpl;
 
 /**
  * Servlet that will open the requested file and render it as JSP. This implementation has been tested only with Tomcat 8.

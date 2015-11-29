@@ -2,7 +2,6 @@ package fauxjsp.impl.simulatedtaglibs.fmt;
 
 import fauxjsp.api.nodes.JspTaglibInvocation;
 import fauxjsp.api.nodes.TaglibDefinition;
-import fauxjsp.api.renderer.JspRenderException;
 import fauxjsp.api.renderer.RenderSession;
 
 /**

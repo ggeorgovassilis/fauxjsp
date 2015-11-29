@@ -1,6 +1,5 @@
 package fauxjsp.test.unittests;
 
-import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -15,10 +14,6 @@ import fauxjsp.api.nodes.JspTaglibInvocation;
 import fauxjsp.api.nodes.JspText;
 import fauxjsp.api.renderer.RenderSession;
 import fauxjsp.impl.parser.JspParserImpl;
-import fauxjsp.servlet.ServletRequestWrapper;
-import fauxjsp.servlet.ServletResponseWrapper;
-import fauxjsp.test.support.MockHttpServletRequest;
-import fauxjsp.test.support.MockHttpServletResponse;
 import fauxjsp.test.webapp.dto.NavigationItem;
 import fauxjsp.test.webapp.dto.News;
 import fauxjsp.test.webapp.dto.Stock;

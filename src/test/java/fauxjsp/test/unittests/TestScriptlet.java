@@ -2,18 +2,12 @@ package fauxjsp.test.unittests;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
 
 import fauxjsp.api.nodes.JspPage;
-import fauxjsp.api.renderer.RenderSession;
-import fauxjsp.servlet.ServletRequestWrapper;
-import fauxjsp.servlet.ServletResponseWrapper;
-import fauxjsp.test.support.MockHttpServletRequest;
-import fauxjsp.test.support.MockHttpServletResponse;
 import fauxjsp.test.webapp.dto.News;
 
 /**

@@ -2,7 +2,6 @@ package fauxjsp.test.unittests;
 
 import static org.junit.Assert.*;
 
-import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -14,10 +13,6 @@ import fauxjsp.api.nodes.JspPage;
 import fauxjsp.api.renderer.JspRenderException;
 import fauxjsp.api.renderer.RenderSession;
 import fauxjsp.impl.simulatedtaglibs.fmt.JstlFmtMessage;
-import fauxjsp.servlet.ServletRequestWrapper;
-import fauxjsp.servlet.ServletResponseWrapper;
-import fauxjsp.test.support.MockHttpServletRequest;
-import fauxjsp.test.support.MockHttpServletResponse;
 
 /**
  * Tests the FMT taglib implementation
