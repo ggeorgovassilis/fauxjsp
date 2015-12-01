@@ -70,7 +70,7 @@ public class TestJspParserAndRenderer extends BaseTest {
 	public void testJspRenderer() throws Exception {
 		JspPage page = parser.parse("WEB-INF/jsp/homepage.jsp");
 
-		session.request.setAttribute(RenderSession.ATTR_TIMEZONE, TimeZone.getTimeZone("UTC"));
+		request.setAttribute(RenderSession.ATTR_TIMEZONE, TimeZone.getTimeZone("UTC"));
 
 		request.setAttribute("navigation",
 				Arrays.asList(new NavigationItem("path 1", "label 1"), new NavigationItem("path 2", "label 2")));
