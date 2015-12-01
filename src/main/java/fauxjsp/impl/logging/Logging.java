@@ -15,8 +15,7 @@ public class Logging {
 	
 	protected static boolean classExists(String fullName){
 		try {
-			Class.forName(fullName);
-			return true;
+			return null!=Class.forName(fullName);
 		} catch (ClassNotFoundException e) {
 			return false;
 		}
