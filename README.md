@@ -1,41 +1,42 @@
 fauxjsp
 =======
 
-JSP replacement implementation aimed at speeding up developing JSP-heavy web pages. It features fast page reloads by relying on an interpreter rather than a compiler.
+Alternative JSP implementation for development use: it interprets (instead of compiling) JSP which leads to fast application startup, fast page reloads when JSPs change and eliminates the need for server restarts. Best used when developing, probably of limited use in production because of poor performance.
+
 
 ## Another JSP implementation?
 
-In short:
-a. there aren't that many (I only know of one)
-b. it's much faster for development and reduces application start times compared to the standard implementation
-c. no memory leaks, more robust, more precise and helpful error messages for syntax- and runtime errors
-d. extensible
+Yes. In short:
+- a. there aren't that many (I only know of two, [Oracle JSP](https://docs.oracle.com/cd/B10501_01/java.920/a96657/orajspov.htm) and [Jasper](https://tomcat.apache.org/tomcat-6.0-doc/jasper-howto.html))
+- b. it's much faster for development and reduces application start times compared to other implementations because it interprets JSP rather than compiling it to byte code
+- c. no memory leaks, more robust, more precise and helpful error messages for syntax- and runtime errors
+- d. extensible
 
 For most of you cool dudes JSP is horribly out of fashion, but I like using it for prototyping and [tagfiles](http://docs.oracle.com/javaee/1.4/tutorial/doc/JSPTags5.html). Sadly and surprisingly, not many people know about tagfiles despite them being a well-supported and mature technique for creating reusable web UI components.
 
-Starting a JSP-heavy application is slow because the widely used JSP implementation Jasper will first compile JSP and tagfiles to java source code, then to byte code and then to machine code. Also, when making changes to JSP files, the entire process has to be repeated which slows down development. At some point you'll even get unexplainable compile errors, class loading errors, run out of memory and the likes, you'll know you've had enough and you'll restart the servlet container.
+Starting a JSP-heavy application is slow because other JSP implementations will first compile JSP and tagfiles to java source code, then to byte code and then to machine code. Also, when making changes to JSP files, the entire process has to be repeated which slows down development. At some point you'll even get unexplainable compile errors, class loading errors, run out of memory and the likes, you'll know you've had enough and you'll restart the servlet container.
 
-Fauxjsp implements a JSP interpreter and a servlet which reads JSP files and interprets them on the fly, skipping compilation altogether. This brings the benefit of instant page reloads, fast application start times and robustness (no classloader fiddling!) but, obviously, the generated JSP pages are slower under load than the standard implementation and thus fauxjsp shouldn't be used for production.
+Fauxjsp implements a JSP interpreter and a [JSP servlet](https://github.com/ggeorgovassilis/fauxjsp/blob/master/src/main/java/fauxjsp/servlet/JspServlet.java) which reads JSP files and interprets them on the fly, skipping compilation altogether. This brings the benefit of instant page reloads, fast application start times and robustness (no classloader fiddling!) but, obviously, the generated JSP pages are slower under load than the standard implementation and thus fauxjsp shouldn't be used for production.
 
 Currently implemented features:
 
-* Reads JSP pages
-* Reads tagfiles
-* Supports some core JSTL taglibs
-* Scriptlets
+* Renders JSP pages
+* Renders tagfiles
+* Supports most core JSTL taglibs
+* Supports scriptlets
 * Is modular and extensible
 
 Constraints and missing features:
 
-* Out-of-the-box only core taglibs are supported. You have to provide your own implementations of taglibs other than the core taglibs. This means that c:out will work but
-  you can't use third party taglibs such as [displaytag](http://www.displaytag.org) (unless you re-implement it for fauxjsp).
+* Out-of-the-box only core taglibs are supported. This means that core taglibs like c:out will work but
+  third party taglibs such as [displaytag](http://www.displaytag.org) won't, unless you re-implement them for fauxjsp.
 * Not all core taglibs are supported and not all features of the supported ones are implemented.
 * I didn't read up on JSP/JSTL/servlet specifications. This implementation is "steer by sight" (aka "works for me").
 * Your servlet container needs to provide some EL 3.0 implementation (i.e. works with Tomcat 8, not with Tomcat 7)
-* Variable scoping is arbitrary
+* I didn't read up on variable scoping; scopes work pretty much like variable scopes in Java blocks.
 * Encodings are pinned to UTF-8
 * Not all JSP implicit objects are available
-* Newline handling in output is not strict
+* Newline handling in output may differ a bit from how standard JSP does it
 * Scriptlets are implemented via [beanshell](http://www.beanshell.org) which means that there might be deviations from how scriptlets are handled normally.
 * The JSP language ecosystem is rather complex; HTML, JSTL, EL and scriptlets are frequently mixed in the same file which is hard to parse. Fauxjsp uses very simple parsers which means that it's likely to get confused by delimiters used in code, e.g.
 "<" or ">" as strings in scriptlets, "{" or "}" as strings in EL etc.
