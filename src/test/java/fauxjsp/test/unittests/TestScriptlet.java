@@ -34,7 +34,7 @@ public class TestScriptlet extends BaseTest {
 
 	@Test
 	public void test_scriptlet_with_syntax_error() {
-		JspPage page = parser.parse("WEB-INF/jsp/scriptlet_syntax_error.jsp");
+		JspPage page = parser.parse("WEB-INF/jsp/scriptlet_syntax_error.jsperr");
 		List<News> news = new ArrayList<>();
 		for (int i = 0; i < 3; i++)
 			news.add(new News("N" + i, "Headline " + i, "Description " + i, "Fulltext " + i, i % 2 == 0));
