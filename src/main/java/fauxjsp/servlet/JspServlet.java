@@ -1,5 +1,8 @@
 package fauxjsp.servlet;
 
+import java.io.IOError;
+import java.io.IOException;
+
 import javax.el.ELContext;
 import javax.el.ELManager;
 import javax.el.ExpressionFactory;
@@ -108,7 +111,7 @@ public class JspServlet extends HttpServlet {
 	}
 
 	@Override
-	protected void service(HttpServletRequest req, HttpServletResponse resp) {
+	protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String servletPath = req.getServletPath();
 		JspParser parser = jspParserFactory.create();
 		JspRenderer renderer = jspRendererFactory.create();
@@ -126,12 +129,12 @@ public class JspServlet extends HttpServlet {
 			renderer.render(page, session);
 		} catch (JspParsingException pe) {
 			String explanation = parser.explain(pe);
-			throw new RuntimeException("Error while parsing "+servletPath+"\n"+explanation, pe);
+			throw new ServletException("Error while parsing "+servletPath+"\n"+explanation, pe);
 		} catch (JspRenderException re){
 			String explanation = renderer.explain(re);
-			throw new RuntimeException("Error while rendering "+servletPath+"\n"+explanation, re);
+			throw new ServletException("Error while rendering "+servletPath+"\n"+explanation, re);
 		} catch (Exception e){
-			throw new RuntimeException(e);
+			throw new ServletException(e);
 		}
 	}
 }
