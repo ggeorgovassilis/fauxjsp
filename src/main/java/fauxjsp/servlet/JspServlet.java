@@ -1,6 +1,5 @@
 package fauxjsp.servlet;
 
-import java.io.IOError;
 import java.io.IOException;
 
 import javax.el.ELContext;

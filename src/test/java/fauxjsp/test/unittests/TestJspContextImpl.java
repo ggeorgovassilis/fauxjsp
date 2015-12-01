@@ -9,7 +9,6 @@ import fauxjsp.test.support.MockHttpServletResponse;
 
 import static org.junit.Assert.*;
 
-import javax.el.ELContext;
 import javax.servlet.Servlet;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
