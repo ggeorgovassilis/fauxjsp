@@ -60,7 +60,7 @@ public class TagfileDefinition extends TaglibDefinition {
 						+ argument + " on " + invocation.getName(), invocation);
 			Class<?> attributeType = getClass(def.getType());
 			finalValue = Utils.cast(newValue, attributeType);
-			if (finalValue == null) {
+			if (finalValue == null && newValue!=null) {
 				// Value can't be cast to expected class.
 				throw new ClassCastException("Expected type " + def.getType()
 						+ " for attribute " + argument + " on "
