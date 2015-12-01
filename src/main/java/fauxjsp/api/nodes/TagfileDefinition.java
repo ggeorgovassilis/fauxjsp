@@ -55,9 +55,6 @@ public class TagfileDefinition extends TaglibDefinition {
 						session);
 			else
 				newValue = valueExpression;
-			if (def.isRequired() && !invocation.getAttributes().containsKey(def.getName()))
-				error("Missing required attribute "
-						+ argument + " on " + invocation.getName(), invocation);
 			Class<?> attributeType = getClass(def.getType());
 			finalValue = Utils.cast(newValue, attributeType);
 			if (finalValue == null && newValue!=null) {
