@@ -60,6 +60,7 @@ public class ServletRequestWrapper extends javax.servlet.ServletRequestWrapper{
 		return o;
 	}
 	
+	//TODO: I know from experiments with "TestPerformance" that caching attribute names greatly speeds up the benchmark (x2)
 	@Override
 	public Enumeration<String> getAttributeNames() {
 		Enumeration<String> attributeNamesFromInnerRequest = getRequest().getAttributeNames();
