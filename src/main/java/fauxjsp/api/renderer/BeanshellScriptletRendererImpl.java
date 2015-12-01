@@ -54,7 +54,6 @@ public class BeanshellScriptletRendererImpl implements JspScriptletRenderer {
 				writer.flush();
 			}
 		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
 			throw new JspRenderException(e.getMessage()+"\n\nScriptlet code was:\n "+scriptlet.getSourceCode(), scriptlet);
 		}
 
