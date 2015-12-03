@@ -142,7 +142,7 @@ public abstract class TaglibDefinition {
 		for (String attribute:definition.getAttributes().keySet()){
 			boolean isRequired = definition.getAttributes().get(attribute).isRequired();
 			boolean isUsedInInvocation = invocation.getAttributes().containsKey(attribute);
-			if (isRequired && (!isUsedInInvocation && !isAttributeSpecifiedAsChild(attribute, invocation)))
+			if (isRequired && !isUsedInInvocation && !isAttributeSpecifiedAsChild(attribute, invocation))
 				error("Attribute "+attribute+" is mandatory for taglib "+invocation.getDefinition().getName()+" but wasn't specified", invocation);
 		}
 	}
