@@ -41,8 +41,7 @@ public class TestFmt extends BaseTest {
 		session.request.setAttribute(JstlFmtMessage.ATTR_RESOURCE_BUNDLE, "messages");
 
 		renderer.render(page, session);
-		String text = getPrettyContent(response)
-				;
+		String text = getPrettyContent(response);
 		assertEquals("The name of the game is the same", text);
 	}
 

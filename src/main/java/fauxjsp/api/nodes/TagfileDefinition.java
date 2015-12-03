@@ -57,6 +57,8 @@ public class TagfileDefinition extends TaglibDefinition {
 				newValue = valueExpression;
 			Class<?> attributeType = getClass(def.getType());
 			finalValue = Utils.cast(newValue, attributeType);
+			//TODO: it looks like this check is never performed; there is a unit test that
+			//tries to provoke this error but it's handled earlier in checkInvocation.
 			if (finalValue == null && newValue!=null) {
 				// Value can't be cast to expected class.
 				throw new ClassCastException("Expected type " + def.getType()

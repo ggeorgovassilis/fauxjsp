@@ -110,13 +110,20 @@ public abstract class TaglibDefinition {
 		return (result instanceof Boolean) ? (((Boolean) result).booleanValue()) : result != null;
 	}
 
+	/**
+	 * Should render(...) create a new variable scope? Implementations extending
+	 * this class can decide on their own by overriding this method
+	 * 
+	 * @return
+	 */
 	protected boolean shouldUseNewVariableScope() {
 		return true;
 	}
 
 	// TODO: this implementation is invoked for every attribute on every node
 	// and is quite expensive; we should consider caching the result or at least
-	// the information whether there is a jsp:attribute at all for this node
+	// the information whether there is a jsp:attribute at all for this node.
+	// Alternative idea: the parser already picks up jsp:attribute and links it in JspTaglibInvocation
 	protected boolean isAttributeSpecifiedAsChild(String attributeName, JspTaglibInvocation invocation) {
 		for (JspNode node : invocation.getChildren()) {
 			if (node instanceof JspNodeWithChildren) {
@@ -131,6 +138,7 @@ public abstract class TaglibDefinition {
 		return false;
 	}
 
+	// TODO: cache this result
 	protected void checkInvocation(RenderSession session, JspTaglibInvocation invocation) {
 		// check that required attributes are there
 		TaglibDefinition definition = invocation.getDefinition();

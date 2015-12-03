@@ -3,6 +3,7 @@ package fauxjsp.impl.simulatedtaglibs.core;
 import fauxjsp.api.nodes.JspNode;
 import fauxjsp.api.nodes.JspTaglibInvocation;
 import fauxjsp.api.nodes.TaglibDefinition;
+import fauxjsp.api.renderer.JspRenderException;
 import fauxjsp.api.renderer.RenderSession;
 
 /**
@@ -36,7 +37,7 @@ public class JstlCoreTaglibChoose extends TaglibDefinition {
 					}
 				} else if (taglib.getTaglib().equals("otherwise")) {
 					render(taglib.getChildren(), session);
-				}
+				} else throw new JspRenderException("Invalid child "+taglib.getName()+" of "+invocation.getName(), taglib);
 			}
 		}
 	}
@@ -44,7 +45,7 @@ public class JstlCoreTaglibChoose extends TaglibDefinition {
 	@Override
 	protected void checkInvocation(RenderSession session,
 			JspTaglibInvocation invocation) {
-		if (!invocation.getTaglib().equals("choose")&&!invocation.getTaglib().equals("othewise"))
+		if (!invocation.getTaglib().equals("choose")&&!invocation.getTaglib().equals("otherwise"))
 			error("Internal error: attempted to render an '"+invocation.getTaglib()+"' taglib with the taglib definition of "+getName(), invocation);
 	}
 

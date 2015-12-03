@@ -127,4 +127,34 @@ public class TestErrors extends BaseTest{
 		parser.parse("WEB-INF/jsp/error_missing_tagfile.jsperr");
 	}
 
+	@Test
+	public void test_taglib_declaration_missing_namespace() {
+		try {
+			parser.parse("WEB-INF/jsp/error_taglib_missing_namespace.jsperr");
+			fail("expected a JspParsingException");
+		} catch (JspParsingException e) {
+			String explanation = parser.explain(e);
+			assertTrue(
+					explanation,
+					explanation
+							.contains("Missing prefix attribute"));
+			assertTrue(explanation, explanation.contains("Line 1"));
+		}
+	}
+
+	@Test
+	public void test_taglib_declaration_duplicate_namespace() {
+		try {
+			parser.parse("WEB-INF/jsp/error_taglib_duplicate_namespace.jsperr");
+			fail("expected a JspParsingException");
+		} catch (JspParsingException e) {
+			String explanation = parser.explain(e);
+			assertTrue(
+					explanation,
+					explanation
+							.contains("Taglib prefix 't' already used"));
+			assertTrue(explanation, explanation.contains("Line 2"));
+		}
+	}
+
 }
