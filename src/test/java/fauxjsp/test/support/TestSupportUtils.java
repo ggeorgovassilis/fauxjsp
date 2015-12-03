@@ -6,7 +6,7 @@ package fauxjsp.test.support;
  *
  */
 
-public class TestUtils {
+public class TestSupportUtils {
 
 	public static String MD5(String text) {
 		try {
