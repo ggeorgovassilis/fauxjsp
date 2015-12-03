@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import fauxjsp.api.renderer.JspPageContextImpl;
+import fauxjsp.servlet.JspServlet;
 import fauxjsp.test.support.MockHttpServletRequest;
 import fauxjsp.test.support.MockHttpServletResponse;
 
@@ -41,8 +42,7 @@ public class TestJspContextImpl {
 	public void setup() throws Exception{
 		jsp = new JspPageContextImpl();
 		
-		servlet = new HttpServlet() {
-		};
+		servlet = new JspServlet();
 		
 		request = new MockHttpServletRequest();
 		request.setAttribute(testAttribute, testAttributeValue);

@@ -10,8 +10,6 @@ import java.util.Set;
 
 import javax.servlet.ServletRequest;
 
-import fauxjsp.impl.Utils;
-
 /**
  * Wrapper around a servlet request; mostly used to isolate attribute scopes
  * @author George Georgovassilis

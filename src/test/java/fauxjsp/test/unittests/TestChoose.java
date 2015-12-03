@@ -4,7 +4,6 @@ import org.junit.Test;
 
 import fauxjsp.api.nodes.JspPage;
 import fauxjsp.api.renderer.JspRenderException;
-import fauxjsp.impl.simulatedtaglibs.fmt.JstlFmtMessage;
 
 import static org.junit.Assert.*;
 
