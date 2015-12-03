@@ -57,7 +57,6 @@ public class Utils {
 		try {
 			c.close();
 		} catch (Exception e) {
-			throw new RuntimeException(e);
 		}
 	}
 
@@ -68,19 +67,6 @@ public class Utils {
 	 */
 	public static boolean isEmpty(String s) {
 		return s == null || s.isEmpty();
-	}
-
-	/**
-	 * return a copy of all attributes in {@link ServletRequest}
-	 * @param request
-	 * @return
-	 */
-	public static Map<String, Object> getCopyOfAttributes(ServletRequest request) {
-		Map<String, Object> attributes = new HashMap<String, Object>();
-		for (String attr : Collections.list(request.getAttributeNames())) {
-			attributes.put(attr, request.getAttribute(attr));
-		}
-		return attributes;
 	}
 
 	/**
