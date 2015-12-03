@@ -85,7 +85,19 @@ public class TestErrors extends BaseTest{
 			assertTrue(
 					explanation,
 					explanation
-							.contains("Can't cast class java.util.Date to interface java.util.List"));
+							.contains("Expected type java.util.List"));
+			assertTrue(
+					explanation,
+					explanation
+							.contains("for attribute listOfStocks"));
+			assertTrue(
+					explanation,
+					explanation
+							.contains("t:stocks"));
+			assertTrue(
+					explanation,
+					explanation
+							.contains("argument was class java.util.Date"));
 			assertTrue(explanation, explanation.contains("Line 3"));
 		}
 	}

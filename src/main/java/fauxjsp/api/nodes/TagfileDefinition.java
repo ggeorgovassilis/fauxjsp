@@ -56,15 +56,20 @@ public class TagfileDefinition extends TaglibDefinition {
 			else
 				newValue = valueExpression;
 			Class<?> attributeType = getClass(def.getType());
+			boolean castingError = false;
+			try{
 			finalValue = Utils.cast(newValue, attributeType);
+			} catch (ClassCastException e){
+				castingError=true;
+			}
 			//TODO: it looks like this check is never performed; there is a unit test that
 			//tries to provoke this error but it's handled earlier in checkInvocation.
-			if (finalValue == null && newValue!=null) {
+			if (castingError || (finalValue == null && newValue!=null)) {
 				// Value can't be cast to expected class.
-				throw new ClassCastException("Expected type " + def.getType()
-						+ " for attribute " + argument + " on "
-						+ invocation.getName() + " but got "
-						+ Utils.getClassOf(newValue));
+				error("Expected type " + def.getType()
+				+ " for attribute " + argument + " on "
+				+ invocation.getName() + " but supplied argument was "
+				+ Utils.getClassOf(newValue), invocation);
 			}
 			session.request.setAttribute(argument, finalValue);
 		}
