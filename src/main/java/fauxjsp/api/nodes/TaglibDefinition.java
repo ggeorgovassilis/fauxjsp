@@ -115,7 +115,8 @@ public abstract class TaglibDefinition {
 	}
 
 	// TODO: this implementation is invoked for every attribute on every node
-	// and is quite expensive; we should consider caching the result
+	// and is quite expensive; we should consider caching the result or at least
+	// the information whether there is a jsp:attribute at all for this node
 	protected boolean isAttributeSpecifiedAsChild(String attributeName, JspTaglibInvocation invocation) {
 		for (JspNode node : invocation.getChildren()) {
 			if (node instanceof JspNodeWithChildren) {
