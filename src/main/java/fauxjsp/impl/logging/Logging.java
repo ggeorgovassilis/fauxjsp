@@ -36,12 +36,6 @@ public class Logging {
 		logFactory = new JavaLoggingFactory();
 	}
 	
-	public static Logger getLogger(String name){
-		if (logFactory == null)
-			setupLogging();
-		return logFactory.getLogger(name);
-	}
-
 	public static Logger getLogger(Class<?> c){
 		if (logFactory == null)
 			setupLogging();
