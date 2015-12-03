@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.servlet.Servlet;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -18,11 +19,12 @@ import fauxjsp.api.nodes.JspPage;
 import fauxjsp.api.renderer.RenderSession;
 import fauxjsp.impl.parser.JspParserImpl;
 import fauxjsp.impl.renderer.JspRendererImpl;
+import fauxjsp.servlet.JspServlet;
 import fauxjsp.servlet.ServletRequestWrapper;
 import fauxjsp.servlet.ServletResponseWrapper;
 import fauxjsp.test.support.MockHttpServletRequest;
 import fauxjsp.test.support.MockHttpServletResponse;
-import fauxjsp.test.support.TestUtils;
+import fauxjsp.test.support.TestSupportUtils;
 import fauxjsp.test.webapp.dto.Item;
 
 import static org.junit.Assert.*;
@@ -116,6 +118,7 @@ public class TestPerformance extends BaseTest {
 		final Item tree = makeTree(root, 0, 5, 10);
 		final int COMPARE_EVERY_SO_MANY_TURNS = 100;
 		final AtomicInteger turn = new AtomicInteger(-1);
+		final Servlet servlet = new JspServlet();
 		Runnable r = new Runnable() {
 
 			@Override
@@ -129,15 +132,16 @@ public class TestPerformance extends BaseTest {
 				session.elEvaluation = elEvaluation;
 				session.response = new ServletResponseWrapper(response,
 						response.getBaos());
-
 				session.request.setAttribute("tree", tree);
+				session.servlet = servlet;
+
 				session.renderer.render(page, session);
 				String text = text(baos);
 				int t = turn.incrementAndGet();
-				if (t % COMPARE_EVERY_SO_MANY_TURNS == 0){
+				if ((t-1) % COMPARE_EVERY_SO_MANY_TURNS == 0){
 					compare(text, tree);
 					assertEquals(text, "796c9c440c4f44e223852d272c18cd0f",
-							TestUtils.MD5(text));
+							TestSupportUtils.MD5(text));
 				}
 			}
 		};

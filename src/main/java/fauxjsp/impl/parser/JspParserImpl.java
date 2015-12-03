@@ -35,7 +35,7 @@ import fauxjsp.impl.tagparser.TagParser;
  */
 public class JspParserImpl implements JspParser {
 
-	// TODO: our impl doesn't work with < or > in attributes, i.e. <when
+	// TODO: our impl doesn't work with < or > in attributes, e.g. <when
 	// test="${a<b}"> breaks. Fix that.
 	protected final String OPEN_INSTRUCTION = "<%@";
 	protected final String OPEN_SCRIPTLET = "<%";

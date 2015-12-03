@@ -1,5 +1,6 @@
 package fauxjsp.impl.renderer;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -8,12 +9,14 @@ import javax.el.ELContext;
 import javax.el.ExpressionFactory;
 import javax.el.ValueExpression;
 import javax.el.VariableMapper;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import fauxjsp.api.renderer.ELEvaluation;
+import fauxjsp.api.renderer.JspPageContextImpl;
 import fauxjsp.api.renderer.RenderSession;
 import fauxjsp.impl.Utils;
 
@@ -52,8 +55,20 @@ public class ELEvaluationImpl implements ELEvaluation {
 		variables.setVariable("application", expressionFactory
 				.createValueExpression(session.request.getServletContext(),
 						ServletContext.class));
-		// TODO: set servlet config page attribute
-		// TODO: set pagecontext page attribute
+		
+		JspPageContextImpl pageContext = new JspPageContextImpl();
+		try {
+			pageContext.initialize(session.servlet, session.request, session.response, null, false, 0, false);
+			variables.setVariable("pageContext", expressionFactory
+					.createValueExpression(pageContext,
+							JspPageContextImpl.class));
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		//TODO: check that servletConfig is spelled correctly
+		variables.setVariable("servletConfig", expressionFactory
+				.createValueExpression(session.servlet.getServletConfig(),
+						ServletConfig.class));
 		// TODO: set page page attribute
 		// TODO: set exception page attribute
 

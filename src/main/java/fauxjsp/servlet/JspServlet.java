@@ -125,6 +125,7 @@ public class JspServlet extends HttpServlet {
 			session.elEvaluation = new ELEvaluationImpl(elFactory);
 			session.request = new ServletRequestWrapper(req);
 			session.response = new ServletResponseWrapper(resp, resp.getOutputStream());
+			session.servlet = this;
 			renderer.render(page, session);
 		} catch (JspParsingException pe) {
 			String explanation = parser.explain(pe);

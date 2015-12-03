@@ -1,5 +1,7 @@
 package fauxjsp.api.renderer;
 
+import javax.servlet.Servlet;
+
 import fauxjsp.api.nodes.JspPage;
 import fauxjsp.servlet.ServletRequestWrapper;
 import fauxjsp.servlet.ServletResponseWrapper;
@@ -16,5 +18,6 @@ public class RenderSession {
 	public ServletRequestWrapper request;
 	public ServletResponseWrapper response;
 	public ELEvaluation elEvaluation;
+	public Servlet servlet;
 
 }
