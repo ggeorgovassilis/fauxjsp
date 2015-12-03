@@ -25,8 +25,7 @@ public abstract class TaglibDefinition {
 		protected final boolean rtExpression;
 		protected final boolean required;
 
-		public AttributeDefinition(String name, String type,
-				boolean rtExpression, boolean required) {
+		public AttributeDefinition(String name, String type, boolean rtExpression, boolean required) {
 			this.name = name;
 			this.type = type;
 			this.rtExpression = rtExpression;
@@ -57,19 +56,18 @@ public abstract class TaglibDefinition {
 		this.name = name;
 	}
 
-	protected void error(String message, JspNode invocation) throws JspRenderException{
+	protected void error(String message, JspNode invocation) throws JspRenderException {
 		throw new JspRenderException(message, invocation);
 	}
 
-	protected void error(Exception cause, JspNode invocation) throws JspRenderException{
+	protected void error(Exception cause, JspNode invocation) throws JspRenderException {
 		throw new JspRenderException(invocation, cause);
 	}
 
 	protected String getAttribute(String name, JspTaglibInvocation invocation) {
 		AttributeDefinition def = attributes.get(name);
 		if (def == null)
-			throw new JspRenderException("Accessing undeclared attibute '"
-					+ name + "'", invocation);
+			throw new JspRenderException("Accessing undeclared attibute '" + name + "'", invocation);
 		String value = invocation.getAttributes().get(name);
 		return value;
 	}
@@ -81,18 +79,14 @@ public abstract class TaglibDefinition {
 
 	protected void write(String content, RenderSession session) {
 		try {
-			session.response.getOutputStream()
-					.write((content).getBytes(session.response
-							.getCharacterEncoding()));
+			session.response.getOutputStream().write((content).getBytes(session.response.getCharacterEncoding()));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	protected void declareAttribute(String name, String classType,
-			boolean rtExpression, boolean required) {
-		attributes.put(name, new AttributeDefinition(name, classType,
-				rtExpression, required));
+	protected void declareAttribute(String name, String classType, boolean rtExpression, boolean required) {
+		attributes.put(name, new AttributeDefinition(name, classType, rtExpression, required));
 	}
 
 	protected void render(List<JspNode> nodes, RenderSession session) {
@@ -113,19 +107,20 @@ public abstract class TaglibDefinition {
 	}
 
 	protected boolean toBoolean(Object result) {
-		return (result instanceof Boolean) ? (((Boolean) result).booleanValue())
-				: result != null;
+		return (result instanceof Boolean) ? (((Boolean) result).booleanValue()) : result != null;
 	}
-	
-	protected boolean shouldUseNewVariableScope(){
+
+	protected boolean shouldUseNewVariableScope() {
 		return true;
 	}
-	
-	protected boolean isAttributeSpecifiedAsChild(String attributeName, JspTaglibInvocation invocation){
-		for (JspNode node:invocation.getChildren()){
-			if (node instanceof JspNodeWithChildren){
-				JspNodeWithChildren nwc = (JspNodeWithChildren)node;
-				if ("jsp:attribute".equals(nwc.getName())){
+
+	// TODO: this implementation is invoked for every attribute on every node
+	// and is quite expensive; we should consider caching the result
+	protected boolean isAttributeSpecifiedAsChild(String attributeName, JspTaglibInvocation invocation) {
+		for (JspNode node : invocation.getChildren()) {
+			if (node instanceof JspNodeWithChildren) {
+				JspNodeWithChildren nwc = (JspNodeWithChildren) node;
+				if ("jsp:attribute".equals(nwc.getName())) {
 					String name = nwc.getAttributes().get("name");
 					if (attributeName.equals(name))
 						return true;
@@ -134,21 +129,21 @@ public abstract class TaglibDefinition {
 		}
 		return false;
 	}
-	
-	protected void checkInvocation(RenderSession session,
-			JspTaglibInvocation invocation) {
-		//check that required attributes are there
+
+	protected void checkInvocation(RenderSession session, JspTaglibInvocation invocation) {
+		// check that required attributes are there
 		TaglibDefinition definition = invocation.getDefinition();
-		for (String attribute:definition.getAttributes().keySet()){
+		for (String attribute : definition.getAttributes().keySet()) {
 			boolean isRequired = definition.getAttributes().get(attribute).isRequired();
 			boolean isUsedInInvocation = invocation.getAttributes().containsKey(attribute);
 			if (isRequired && !isUsedInInvocation && !isAttributeSpecifiedAsChild(attribute, invocation))
-				error("Attribute "+attribute+" is mandatory for taglib "+invocation.getDefinition().getName()+" but wasn't specified", invocation);
+				error("Attribute " + attribute + " is mandatory for taglib " + invocation.getDefinition().getName()
+						+ " but wasn't specified", invocation);
 		}
 	}
 
 	public void render(RenderSession session, JspTaglibInvocation invocation) {
-		//open a new variable scope
+		// open a new variable scope
 		ServletRequestWrapper oldRequest = session.request;
 		try {
 			if (shouldUseNewVariableScope())
@@ -156,12 +151,11 @@ public abstract class TaglibDefinition {
 			checkInvocation(session, invocation);
 			renderNode(session, invocation);
 		} finally {
-			//restore old variable scope
+			// restore old variable scope
 			session.request = oldRequest;
 		}
 	}
 
-	protected abstract void renderNode(RenderSession session,
-			JspTaglibInvocation invocation);
+	protected abstract void renderNode(RenderSession session, JspTaglibInvocation invocation);
 
 }
