@@ -23,6 +23,7 @@ import fauxjsp.impl.parser.DefaultJspParserFactoryImpl;
 import fauxjsp.impl.renderer.ELEvaluationImpl;
 import fauxjsp.impl.renderer.ELFactoryServlet3Impl;
 import fauxjsp.impl.renderer.JspRendererFactoryImpl;
+import fauxjsp.servlet.JspServlet;
 import fauxjsp.servlet.ServletRequestWrapper;
 import fauxjsp.servlet.ServletResponseWrapper;
 import fauxjsp.test.support.FileResolver;
@@ -66,11 +67,6 @@ public abstract class BaseTest {
 
 	protected JspParser newParser() {
 		return parser = parserFactory.create();
-	}
-
-	protected JspRenderer newRenderer() {
-		renderer = rendererFactory.create();
-		return renderer;
 	}
 
 	protected String text(ByteArrayOutputStream baos) {
@@ -140,6 +136,7 @@ public abstract class BaseTest {
 		session.renderer = renderer;
 		session.elEvaluation = elEvaluation;
 		session.response = new ServletResponseWrapper(response, response.getBaos());
+		session.servlet = new JspServlet();
 	}
 
 }
