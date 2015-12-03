@@ -2,6 +2,7 @@ package fauxjsp.servlet;
 
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
@@ -24,37 +25,35 @@ public class ServletRequestWrapper extends javax.servlet.ServletRequestWrapper{
 	
 	public ServletRequestWrapper(ServletRequest request) {
 		super(request);
-		attributes = Utils.getCopyOfAttributes(request);
 	}
 
 	@Override
 	public void setAttribute(String name, Object o) {
-		if (o==null)
-			removeAttribute(name);
-		else
-			attributes.put(name, o);
+		if (attributes==null)
+			attributes=new HashMap<>();
+		attributes.put(name, o);
 	}
 
 	public void overwriteAttribute(String name, Object o){
-		if (o==null)
-			removeAttribute(name);
-		else
-			setAttribute(name, o);
-		super.setAttribute(name, o);
+		removeAttribute(name);
 		ServletRequest innerRequest = getRequest();
 		if (innerRequest instanceof ServletRequestWrapper){
 			((ServletRequestWrapper)innerRequest).overwriteAttribute(name, o);
-		}
+		} else
+		super.setAttribute(name, o);
 	}
 	
 	@Override
 	public void removeAttribute(String name) {
-		attributes.remove(name);
+		if (attributes!=null)
+			attributes.remove(name);
 	}
 	
 	@Override
 	public Object getAttribute(String name) {
-		Object o = attributes.get(name);
+		Object o = null;
+		if (attributes!=null)
+			o=attributes.get(name);
 		if (o==null)
 			o = super.getAttribute(name);
 		return o;
@@ -63,6 +62,8 @@ public class ServletRequestWrapper extends javax.servlet.ServletRequestWrapper{
 	//TODO: I know from experiments with "TestPerformance" that caching attribute names greatly speeds up the benchmark (x2)
 	@Override
 	public Enumeration<String> getAttributeNames() {
+		if (attributes==null)
+			return super.getAttributeNames();
 		Enumeration<String> attributeNamesFromInnerRequest = getRequest().getAttributeNames();
 		Set<String> attributeNames = new HashSet<>(attributes.keySet());
 		while (attributeNamesFromInnerRequest.hasMoreElements())

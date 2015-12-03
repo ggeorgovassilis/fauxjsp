@@ -35,7 +35,7 @@ public class JspRendererImpl implements JspRenderer {
 
 	@Override
 	public void render(JspNode page, RenderSession session) {
-		if (session.request.getAttribute(RenderSession.ATTR_TIMEZONE)==null)
+		if (session.request.getAttribute(RenderSession.ATTR_TIMEZONE) == null)
 			session.request.setAttribute(RenderSession.ATTR_TIMEZONE, TimeZone.getDefault());
 		renderNode(page, session);
 	}
@@ -48,24 +48,37 @@ public class JspRendererImpl implements JspRenderer {
 		}
 	}
 
+	protected void renderTextNode(JspText node, RenderSession session) throws IOException{
+		String content = node.getContentAsString();
+		content = (String) session.elEvaluation.evaluate(content, session);
+		write(session.response.getOutputStream(), content.getBytes(session.response.getCharacterEncoding()));
+	}
+
+	protected void renderTaglib(JspTaglibInvocation taglibInvocation, RenderSession session) {
+		taglibInvocation.getDefinition().render(session, taglibInvocation);
+	}
+
+	protected void renderScriptlet(JspScriptlet scriptlet, RenderSession session) {
+		scriptletRenderer.render(scriptlet, session);
+	}
+
+	protected void renderComplexNode(JspNodeWithChildren nodeWithChildren, RenderSession session) {
+		for (JspNode childNode : nodeWithChildren.getChildren())
+			renderNode(childNode, session);
+	}
+
 	protected void renderNode(JspNode node, RenderSession session) {
 		logger.trace("Rendering " + node.debugLabel());
+		//need this try/catch for exception translation
 		try {
 			if (node instanceof JspText) {
-				JspText textNode = (JspText) node;
-				String content = textNode.getContentAsString();
-				content = (String) session.elEvaluation.evaluate(content, session);
-				write(session.response.getOutputStream(), content.getBytes(session.response.getCharacterEncoding()));
+				renderTextNode((JspText) node, session);
 			} else if (node instanceof JspTaglibInvocation) {
-				JspTaglibInvocation taglibInvocation = (JspTaglibInvocation) node;
-				taglibInvocation.getDefinition().render(session, taglibInvocation);
+				renderTaglib((JspTaglibInvocation) node, session);
 			} else if (node instanceof JspScriptlet) {
-				JspScriptlet scriptlet = (JspScriptlet)node;
-				scriptletRenderer.render(scriptlet, session);
+				renderScriptlet((JspScriptlet) node, session);
 			} else if (node instanceof JspNodeWithChildren) {
-				JspNodeWithChildren nodeWithChildren = (JspNodeWithChildren) node;
-				for (JspNode childNode : nodeWithChildren.getChildren())
-					renderNode(childNode, session);
+				renderComplexNode((JspNodeWithChildren) node, session);
 			}
 		} catch (Exception e) {
 			throw new JspRenderException(node, e);
