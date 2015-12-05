@@ -1,5 +1,6 @@
 package fauxjsp.test.unittests;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -167,6 +168,11 @@ public class TestErrors extends BaseTest{
 							.contains("Taglib prefix 't' already used"));
 			assertTrue(explanation, explanation.contains("Line 2"));
 		}
+	}
+	
+	@Test(expected=Exception.class)
+	public void test_parse_nonexistent_file(){
+		parser.parse("WEB-INF/jsp/doesntexist.jsp");
 	}
 
 }

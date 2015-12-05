@@ -7,8 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
-
 import fauxjsp.api.logging.Logger;
 import fauxjsp.api.nodes.JspInstruction;
 import fauxjsp.api.nodes.JspNode;
@@ -30,6 +28,7 @@ import fauxjsp.impl.tagparser.TagParser;
 
 /**
  * Implementation of {@link JspParser}
+ * 
  * @author George Georgovassilis
  *
  */
@@ -127,16 +126,15 @@ public class JspParserImpl implements JspParser {
 
 	protected JspTaglibInvocation pullNode(String fullyQualifiedTaglib) {
 		if (nodeStack.isEmpty())
-			parsingError("Found closing " + fullyQualifiedTaglib
-					+ " but don't remember opening any");
+			parsingError("Found closing " + fullyQualifiedTaglib + " but don't remember opening any");
 		JspNode node = getCurrentNode();
 		if (!(node instanceof JspTaglibInvocation))
-			parsingError("Trying to close " + fullyQualifiedTaglib
-					+ " but the current open node is not a taglib but " + node);
+			parsingError("Trying to close " + fullyQualifiedTaglib + " but the current open node is not a taglib but "
+					+ node);
 		JspTaglibInvocation latestOpenedTaglib = (JspTaglibInvocation) node;
 		if (!latestOpenedTaglib.getName().equals(fullyQualifiedTaglib))
-			parsingError("Found closing " + fullyQualifiedTaglib
-					+ " but expected closing " + latestOpenedTaglib.getName());
+			parsingError(
+					"Found closing " + fullyQualifiedTaglib + " but expected closing " + latestOpenedTaglib.getName());
 		nodeStack.remove(nodeStack.size() - 1);
 		return latestOpenedTaglib;
 	}
@@ -144,8 +142,7 @@ public class JspParserImpl implements JspParser {
 	protected void advanceToNext(String what) {
 		int offset = jsp.indexOf(what, index);
 		if (offset == -1)
-			parsingError("Expected to find '" + what + "' after offset "
-					+ offset);
+			parsingError("Expected to find '" + what + "' after offset " + offset);
 		advance(offset - index);
 	}
 
@@ -174,10 +171,8 @@ public class JspParserImpl implements JspParser {
 		}
 	}
 
-	protected TaglibDefinition getOrLoadDefinition(
-			JspTaglibInvocation invocation) {
-		logger.trace("Looking for implementation of taglib "
-				+ invocation.getName());
+	protected TaglibDefinition getOrLoadDefinition(JspTaglibInvocation invocation) {
+		logger.trace("Looking for implementation of taglib " + invocation.getName());
 		String fullQuallifiedName = invocation.getName();
 		String namespace = invocation.getNamespace();
 		String path = taglibNamespaces.get(namespace);
@@ -191,17 +186,16 @@ public class JspParserImpl implements JspParser {
 		TaglibDefinition definition = taglibDefinitions.getDefinition(fullPath);
 		if (definition == null) {
 			if (path.startsWith("http:")) {
-				parsingError("Unknown taglib "
-						+ fullPath
+				parsingError("Unknown taglib " + fullPath
 						+ ". Either you misspelled the uri or you need to write an emulation for this taglib.");
 			} else {
-				logger.debug(invocation.getName()
-						+ " is a tagfile, running parser");
+				logger.debug(invocation.getName() + " is a tagfile, running parser");
 				JspParser tagfileParser = parserFactory.create(this);
 				TagfileDefinition tagfileDefinition = new TagfileDefinition(path);
 				definition = tagfileDefinition;
-				//need to add a marker into cache that the tagfile is known, otherwise a recursive call
-				//will lead to a stack overflow
+				// need to add a marker into cache that the tagfile is known,
+				// otherwise a recursive call
+				// will lead to a stack overflow
 				definition.setName(fullQuallifiedName);
 				taglibDefinitions.setDefinition(fullPath, definition);
 
@@ -211,23 +205,16 @@ public class JspParserImpl implements JspParser {
 					if (child instanceof JspInstruction) {
 						JspInstruction instruction = (JspInstruction) child;
 						if (instruction.getName().equals("attribute")) {
-							String attributeName = instruction.getAttributes()
-									.get("name");
-							String sAttributeRequired = instruction
-									.getAttributes().get("required");
-							String sType = instruction.getAttributes().get(
-									"type");
+							String attributeName = instruction.getAttributes().get("name");
+							String sAttributeRequired = instruction.getAttributes().get("required");
+							String sType = instruction.getAttributes().get("type");
 							if (Utils.isEmpty(sType))
 								sType = String.class.getCanonicalName();
-							String sRTValue = instruction.getAttributes().get(
-									"rtexprvalue");
+							String sRTValue = instruction.getAttributes().get("rtexprvalue");
 
 							TaglibDefinition.AttributeDefinition attributeDefinition = new TaglibDefinition.AttributeDefinition(
-									attributeName, sType,
-									toBool(sRTValue, true), toBool(
-											sAttributeRequired, true));
-							tagfileDefinition.getAttributes().put(
-									attributeName, attributeDefinition);
+									attributeName, sType, toBool(sRTValue, true), toBool(sAttributeRequired, true));
+							tagfileDefinition.getAttributes().put(attributeName, attributeDefinition);
 						}
 					}
 			}
@@ -238,13 +225,12 @@ public class JspParserImpl implements JspParser {
 
 	protected JspInstruction processInstruction() {
 		if (!isNext(OPEN_INSTRUCTION))
-			parsingError("Expected open instruction "+OPEN_INSTRUCTION);
+			parsingError("Expected open instruction " + OPEN_INSTRUCTION);
 		int closingIndex = nextIndexOf(CLOSE_INSTRUCTION);
 		if (closingIndex <= index)
-			parsingError("Expected closing instruction "+CLOSE_INSTRUCTION);
+			parsingError("Expected closing instruction " + CLOSE_INSTRUCTION);
 
-		StringBuilder sInstruction = new StringBuilder(
-				substring(CLOSE_INSTRUCTION.length() + closingIndex - index));
+		StringBuilder sInstruction = new StringBuilder(substring(CLOSE_INSTRUCTION.length() + closingIndex - index));
 
 		int indexOfAt = sInstruction.indexOf("@");
 		sInstruction.deleteCharAt(indexOfAt);
@@ -262,24 +248,22 @@ public class JspParserImpl implements JspParser {
 		 */
 		sInstruction = Utils.replace(sInstruction, "< ", "<");
 		sInstruction = Utils.replace(sInstruction, "<", "<__:");
-		TagParser.Tag tag = tagParser.parse(sInstruction.toString(),
-				getCurrentLocation());
+		TagParser.Tag tag = tagParser.parse(sInstruction.toString(), getCurrentLocation());
 		if (tag == null)
 			parsingError("Can't parse instruction from " + sInstruction);
-		JspInstruction instruction = new JspInstruction(tag.taglib.getTaglib(),
-				getCurrentLocation());
+		JspInstruction instruction = new JspInstruction(tag.taglib.getTaglib(), getCurrentLocation());
 		instruction.getAttributes().putAll(tag.taglib.getAttributes());
 		advanceAfterNext(CLOSE_INSTRUCTION);
 		return instruction;
 	}
-	
-	protected JspScriptlet processScriptlet(){
+
+	protected JspScriptlet processScriptlet() {
 		if (!isNext(OPEN_SCRIPTLET))
 			parsingError("Expected scriptlet open tag <% or <%=");
 		int closingIndex = nextIndexOf(CLOSE_INSTRUCTION);
 		if (closingIndex <= index)
-			parsingError("Expected closing instruction "+CLOSE_INSTRUCTION);
-		String sourceCode = jsp.substring(index+OPEN_INSTRUCTION.length(), closingIndex);
+			parsingError("Expected closing instruction " + CLOSE_INSTRUCTION);
+		String sourceCode = jsp.substring(index + OPEN_INSTRUCTION.length(), closingIndex);
 		boolean returnsStatement = isNext(OPEN_SCRIPTLET_RETURN_VALUE);
 		JspScriptlet node = new JspScriptlet(getCurrentLocation(), sourceCode, returnsStatement);
 		advanceAfterNext(CLOSE_INSTRUCTION);
@@ -317,8 +301,7 @@ public class JspParserImpl implements JspParser {
 	protected void processCloseTaglib(JspTaglibInvocation taglib) {
 		logger.trace("Closing " + taglib.getName());
 		if (nodeStack.isEmpty())
-			parsingError("Tag " + taglib + " closing at offset " + index
-					+ " without prior opening");
+			parsingError("Tag " + taglib + " closing at offset " + index + " without prior opening");
 		flushText();
 		JspTaglibInvocation jspTaglib = pullNode(taglib.getName());
 		JspNodeWithChildren currentNode = getCurrentNode();
@@ -326,9 +309,8 @@ public class JspParserImpl implements JspParser {
 		advance(taglib.getName());
 		advanceAfterNext(">");
 	}
-	
-	protected void processOpenCloseTaglib(JspTaglibInvocation taglib)
-			throws Exception {
+
+	protected void processOpenCloseTaglib(JspTaglibInvocation taglib){
 		flushText();
 		logger.trace("Open-Closing " + taglib.getName());
 		advanceAfterNext("/>");
@@ -338,15 +320,14 @@ public class JspParserImpl implements JspParser {
 		pushNode(taglib);
 		taglib = pullNode(taglib.getName());
 		if (nodeStack.isEmpty())
-			throw new IllegalArgumentException("Tag " + taglib
-					+ " closing at offset " + index + " without prior opening");
+			throw new IllegalArgumentException(
+					"Tag " + taglib + " closing at offset " + index + " without prior opening");
 		flushText();
 		JspNodeWithChildren currentNode = getCurrentNode();
 		currentNode.getChildren().add(taglib);
 	}
 
-	protected void processOpenTaglib(JspTaglibInvocation taglib)
-			throws Exception {
+	protected void processOpenTaglib(JspTaglibInvocation taglib){
 		flushText();
 		logger.trace("Opening " + taglib.getName());
 		taglib.setDefinition(getOrLoadDefinition(taglib));
@@ -354,79 +335,88 @@ public class JspParserImpl implements JspParser {
 		pushNode(taglib);
 	}
 
-	protected void maybeIncludeContent(JspInstruction instruction, JspNodeWithChildren parent){
-		if ("include".equals(instruction.getName())){
+	protected void maybeIncludeContent(JspInstruction instruction, JspNodeWithChildren parent) {
+		if ("include".equals(instruction.getName())) {
 			String path = instruction.getAttributes().get("file");
 			String resolvedPath = path;
 			if (Utils.isEmpty(path))
 				parsingError("Missing 'file' attribute");
-			
-			if (!path.startsWith("/")){
-				//relative path needs translation
+
+			if (!path.startsWith("/")) {
+				// relative path needs translation
 				File currentJsp = new File(pagePath);
 				File includedFile = new File(currentJsp.getParentFile(), path);
 				resolvedPath = includedFile.getPath();
 			}
 			byte[] content = location.getContents(resolvedPath);
 			if (content == null)
-				parsingError("Content at '"+resolvedPath+"' not found");
-			//TODO: configurable encoding
+				parsingError("Content at '" + resolvedPath + "' not found");
+			// TODO: configurable encoding
 			JspText text = new JspText(Utils.string(content, "UTF-8"), getCurrentLocation());
 			parent.getChildren().add(text);
 		}
+	}
+
+	protected void processOpenScriptlet(JspPage page) {
+		if (isNext(OPEN_INSTRUCTION)) {
+			flushText();
+			JspInstruction instruction = processInstruction();
+			maybeRegisterTaglib(instruction);
+			maybeIncludeContent(instruction, getCurrentNode());
+			page.getChildren().add(instruction);
+		} else if (isNext(OPEN_SCRIPTLET_RETURN_VALUE)) {
+			flushText();
+			JspScriptlet scriptlet = processScriptlet();
+			getCurrentNode().getChildren().add(scriptlet);
+		} else {
+			flushText();
+			JspScriptlet scriptlet = processScriptlet();
+			getCurrentNode().getChildren().add(scriptlet);
+		}
+	}
+	
+	protected boolean processTag(JspPage page, int index) {
+		// calling remaining() is slow, so we run a fast plausibility
+		// check first
+		TagParser.Tag tag = tagParser.mightContainDeclaration(jsp, index)
+				? tagParser.parse(remaining(), getCurrentLocation()) : null;
+		if (tag != null) {
+			switch (tag.type) {
+			case opening:
+				processOpenTaglib(tag.taglib);
+				break;
+			case openingAndClosing:
+				processOpenCloseTaglib(tag.taglib);
+				break;
+			case closing:
+				processCloseTaglib(tag.taglib);
+				break;
+			default:
+				throw new RuntimeException("Unknown tag state");
+			}
+			return true;
+		}
+		return false;
 	}
 
 	public JspPage parse(String path) {
 		try {
 			this.pagePath = path;
 			logger.debug("Parsing location " + path);
-			//TODO: configurable encoding
+			// TODO: configurable encoding
 			byte[] fileContent = location.getContents(path);
-			if (fileContent==null)
-				throw new FileNotFoundException(path);
-			this.jsp = new String(fileContent, "UTF-8");
+			if (fileContent == null)
+				throw new JspParsingException("Location '"+path+"' not found.", getCurrentLocation());
+			this.jsp = Utils.string(fileContent, "UTF-8");
 			this.index = 0;
 			JspPage page = new JspPage(path, getCurrentLocation());
 			nodeStack.add(page);
 			while (index < jsp.length()) {
 				if (isNext(OPEN_SCRIPTLET)) {
-					if (isNext(OPEN_INSTRUCTION)) {
-						flushText();
-						JspInstruction instruction = processInstruction();
-						maybeRegisterTaglib(instruction);
-						maybeIncludeContent(instruction, getCurrentNode());
-						page.getChildren().add(instruction);
-					} else if (isNext(OPEN_SCRIPTLET_RETURN_VALUE)){
-						flushText();
-						JspScriptlet scriptlet = processScriptlet();
-						getCurrentNode().getChildren().add(scriptlet);
-					} else {
-						flushText();
-						JspScriptlet scriptlet = processScriptlet();
-						getCurrentNode().getChildren().add(scriptlet);
-					}
+					processOpenScriptlet(page);
 					continue;
 				}
-				// calling remaining() is slow, so we run a fast plausibility
-				// check first
-				TagParser.Tag tag = tagParser.mightContainDeclaration(jsp,
-						index) ? tagParser.parse(remaining(),
-						getCurrentLocation()) : null;
-				if (tag != null) {
-					switch (tag.type) {
-					case opening:
-						processOpenTaglib(tag.taglib);
-						break;
-					case openingAndClosing:
-						processOpenCloseTaglib(tag.taglib);
-						break;
-					case closing:
-						processCloseTaglib(tag.taglib);
-						break;
-					default:
-						throw new RuntimeException("Unknown tag state");
-					}
-				} else {
+				if (!processTag(page, index)){
 					buffer.append(jsp.charAt(index));
 					advance(1);
 				}
@@ -435,10 +425,6 @@ public class JspParserImpl implements JspParser {
 			return page;
 		} catch (JspParsingException pe) {
 			throw new JspParsingException(pe, getCurrentLocation());
-		} catch (RuntimeException re) {
-			throw re;
-		} catch (Exception e) {
-			throw new RuntimeException(e);
 		}
 	}
 
@@ -461,22 +447,18 @@ public class JspParserImpl implements JspParser {
 	}
 
 	@Override
-	public void registerTaglibDefinition(String path,
-			TaglibDefinition definition) {
+	public void registerTaglibDefinition(String path, TaglibDefinition definition) {
 		taglibDefinitions.setDefinition(path, definition);
 	}
 
 	@Override
-	public void registerTaglibDefinition(String namespace, String path,
-			TaglibDefinition definition) {
+	public void registerTaglibDefinition(String namespace, String path, TaglibDefinition definition) {
 		taglibNamespaces.put(namespace, path);
 		taglibDefinitions.setDefinition(path, definition);
 	}
 
 	@Override
 	public String explain(JspParsingException exception) {
-		if (exception == null)
-			return "";
 		Throwable cause = exception.getCause();
 		String causeExplanation = "";
 		if (cause != null && cause != exception) {
