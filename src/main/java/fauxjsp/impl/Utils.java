@@ -161,10 +161,12 @@ public class Utils {
 	public static void copy(InputStream in, OutputStream out) {
 		if (in == null || out == null)
 			return;
-		int i;
+		byte[] buffer = new byte[1024];
 		try {
-			while (-1 != (i = in.read()))
-				out.write(i);
+			int length = 0;
+			while (-1!=(length=in.read(buffer))){
+				out.write(buffer,0,length);
+			}
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

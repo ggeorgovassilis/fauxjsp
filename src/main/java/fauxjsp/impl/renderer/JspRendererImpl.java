@@ -48,7 +48,7 @@ public class JspRendererImpl implements JspRenderer {
 		}
 	}
 
-	protected void renderTextNode(JspText node, RenderSession session) throws IOException{
+	protected void renderTextNode(JspText node, RenderSession session) throws IOException {
 		String content = node.getContentAsString();
 		content = (String) session.elEvaluation.evaluate(content, session);
 		write(session.response.getOutputStream(), content.getBytes(session.response.getCharacterEncoding()));
@@ -62,15 +62,16 @@ public class JspRendererImpl implements JspRenderer {
 		scriptletRenderer.render(scriptlet, session);
 	}
 
-	protected void renderComplexNode(JspNodeWithChildren nodeWithChildren, RenderSession session) {
+	protected void renderNodeWithChildren(JspNodeWithChildren nodeWithChildren, RenderSession session) {
 		for (JspNode childNode : nodeWithChildren.getChildren())
 			renderNode(childNode, session);
 	}
 
 	protected void renderNode(JspNode node, RenderSession session) {
-		logger.trace("Rendering " + node.debugLabel());
-		//need this try/catch for exception translation
+		// need this try/catch for exception translation
 		try {
+			// order is important here: eg. a taglib is also a node with
+			// children, but requires a different handling.
 			if (node instanceof JspText) {
 				renderTextNode((JspText) node, session);
 			} else if (node instanceof JspTaglibInvocation) {
@@ -78,8 +79,9 @@ public class JspRendererImpl implements JspRenderer {
 			} else if (node instanceof JspScriptlet) {
 				renderScriptlet((JspScriptlet) node, session);
 			} else if (node instanceof JspNodeWithChildren) {
-				renderComplexNode((JspNodeWithChildren) node, session);
-			}
+				renderNodeWithChildren((JspNodeWithChildren) node, session);
+			} else
+				logger.warn("Encountered an unknown node " + node.getClass() + " at " + node.getLocation());
 		} catch (Exception e) {
 			throw new JspRenderException(node, e);
 		}
