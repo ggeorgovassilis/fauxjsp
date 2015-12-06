@@ -9,6 +9,7 @@ import javax.servlet.Servlet;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -37,8 +38,8 @@ import static org.junit.Assert.*;
  */
 public class TestPerformance extends BaseTest {
 
-	final long WARMUP_MS = 2000;
-	final long RUNS_MS = 1000;
+	final long WARMUP_MS = 5000;
+	final long RUNS_MS = 5000;
 
 	protected int run(Runnable r, long duration) {
 		int loops = 0;
@@ -50,6 +51,7 @@ public class TestPerformance extends BaseTest {
 		return loops;
 	}
 
+	@Ignore
 	@Test
 	public void testJspParser() {
 		Runnable r = new Runnable() {
