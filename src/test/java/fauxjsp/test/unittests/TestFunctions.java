@@ -62,7 +62,7 @@ public class TestFunctions extends BaseTest {
 	@Test
 	public void test_escapeXml() {
 		// TODO: escapeXml(...) will work as advertised. however, if I <c:out
-		// value="fn:escapeXml(...)"/> this will double-encode
+		// expression="fn:escapeXml(...)"/> this will double-encode
 		// the result. verify how "standard" JSP does it.
 		session.request.setAttribute("xml", "<howdy/>");
 		renderer.render(page, session);

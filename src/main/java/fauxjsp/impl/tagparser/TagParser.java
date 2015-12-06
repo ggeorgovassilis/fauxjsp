@@ -6,6 +6,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import fauxjsp.api.nodes.JspTaglibInvocation;
+import fauxjsp.api.nodes.NodeAttributeValue;
+import fauxjsp.api.nodes.StringNodeAttributeValue;
 import fauxjsp.api.parser.CodeLocation;
 import fauxjsp.impl.tagparser.TagParser.Tag.TagType;
 
@@ -58,8 +60,8 @@ public class TagParser {
 		return null;
 	}
 
-	protected Map<String, String> getAttributes(String tagSegment) {
-		Map<String, String> attributes = new HashMap<String, String>();
+	protected Map<String, NodeAttributeValue> getAttributes(String tagSegment) {
+		Map<String, NodeAttributeValue> attributes = new HashMap<String, NodeAttributeValue>();
 		boolean inQuotes = false;
 		char typeOfQuotes = ' ';
 		String name = "";
@@ -83,7 +85,7 @@ public class TagParser {
 				if (inQuotes && typeOfQuotes == c) {
 					value = text.toString();
 					text.setLength(0);
-					attributes.put(name, value);
+					attributes.put(name, new StringNodeAttributeValue(value));
 					name = "";
 					value = "";
 					inQuotes = false;

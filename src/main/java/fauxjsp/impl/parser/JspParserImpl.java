@@ -186,12 +186,12 @@ public class JspParserImpl implements JspParser {
 			if (child instanceof JspInstruction) {
 				JspInstruction instruction = (JspInstruction) child;
 				if (instruction.getName().equals("attribute")) {
-					String attributeName = instruction.getAttributes().get("name");
-					String sAttributeRequired = instruction.getAttributes().get("required");
-					String sType = instruction.getAttributes().get("type");
+					String attributeName = Utils.attr("name",instruction.getAttributes());
+					String sAttributeRequired = Utils.attr("required",instruction.getAttributes());
+					String sType = Utils.attr("type",instruction.getAttributes());
 					if (Utils.isEmpty(sType))
 						sType = String.class.getCanonicalName();
-					String sRTValue = instruction.getAttributes().get("rtexprvalue");
+					String sRTValue = Utils.attr("rtexprvalue",instruction.getAttributes());
 
 					TaglibDefinition.AttributeDefinition attributeDefinition = new TaglibDefinition.AttributeDefinition(
 							attributeName, sType, toBool(sRTValue, true), toBool(sAttributeRequired, true));
@@ -281,16 +281,16 @@ public class JspParserImpl implements JspParser {
 
 	protected void maybeRegisterTaglib(JspInstruction instruction) {
 		if (instruction.getName().equals("taglib")) {
-			String namespace = instruction.getAttributes().get("prefix");
+			String namespace = Utils.attr("prefix",instruction.getAttributes());
 			if (Utils.isEmpty(namespace))
 				parsingError("Missing prefix attribute on taglib");
 			if (taglibNamespaces.containsKey(namespace))
 				parsingError("Taglib prefix '" + namespace + "' already used.");
 			String path = null;
 			if (instruction.getAttributes().containsKey("tagdir")) {
-				path = instruction.getAttributes().get("tagdir");
+				path = Utils.attr("tagdir", instruction.getAttributes());
 			} else if (instruction.getAttributes().containsKey("uri")) {
-				path = instruction.getAttributes().get("uri");
+				path = Utils.attr("uri",instruction.getAttributes());
 			} else
 				parsingError("Taglib declaration requires either a uri or tagdir attribute");
 			taglibNamespaces.put(namespace, path);
@@ -304,17 +304,23 @@ public class JspParserImpl implements JspParser {
 		JspTaglibInvocation jspTaglib = pullNode(taglib.getName());
 		JspNodeWithChildren currentNode = getCurrentNode();
 		currentNode.getChildren().add(jspTaglib);
+		if (taglib.getName().equals("jsp:attribute")){
+			JspNodeWithChildren parent = nodeStack.get(nodeStack.size()-1);
+			if (!(parent instanceof JspTaglibInvocation))
+				throw new JspParsingException(taglib.getName()+" must be direct child of a taglib invocation, but "+parent.getName()+" isn't one.", getCurrentLocation());
+			JspTaglibInvocation parentAsTaglib = (JspTaglibInvocation)parent;
+		}
+	}
+
+	
+	protected void processCloseTaglibAndAdvance(JspTaglibInvocation taglib) {
+		processCloseTaglib(taglib);
 		advance(taglib.getName());
 		advanceAfterNext(">");
 	}
 
 	protected void processOpenCloseTaglib(JspTaglibInvocation invocation) {
-		flushText();
-		advanceAfterNext("/>");
-		// we don't _really_ have to go through push/pull, but it's a more
-		// general approach and might come in handy later
-		invocation.setDefinition(getOrLoadDefinition(invocation));
-		pushNode(invocation);
+		processOpenTaglib(invocation);
 		invocation = pullNode(invocation.getName());
 		if (nodeStack.isEmpty())
 			throw new IllegalArgumentException(
@@ -333,7 +339,7 @@ public class JspParserImpl implements JspParser {
 
 	protected void maybeIncludeContent(JspInstruction instruction, JspNodeWithChildren parent) {
 		if ("include".equals(instruction.getName())) {
-			String path = instruction.getAttributes().get("file");
+			String path = Utils.attr("file",instruction.getAttributes());
 			String resolvedPath = path;
 			if (Utils.isEmpty(path))
 				parsingError("Missing 'file' attribute");
@@ -385,7 +391,7 @@ public class JspParserImpl implements JspParser {
 				processOpenCloseTaglib(tag.taglib);
 				break;
 			case closing:
-				processCloseTaglib(tag.taglib);
+				processCloseTaglibAndAdvance(tag.taglib);
 				break;
 			default:
 				throw new RuntimeException("Unknown tag state");

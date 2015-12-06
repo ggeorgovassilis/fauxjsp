@@ -13,6 +13,7 @@ import fauxjsp.api.nodes.JspPage;
 import fauxjsp.api.nodes.JspTaglibInvocation;
 import fauxjsp.api.nodes.JspText;
 import fauxjsp.api.renderer.RenderSession;
+import fauxjsp.impl.Utils;
 import fauxjsp.impl.parser.JspParserImpl;
 import fauxjsp.test.webapp.dto.NavigationItem;
 import fauxjsp.test.webapp.dto.News;
@@ -36,16 +37,16 @@ public class TestJspParserAndRenderer extends BaseTest {
 
 		JspInstruction j1 = (JspInstruction) page.getChildren().get(0);
 		assertEquals("taglib", j1.getName());
-		assertEquals("c", j1.getAttributes().get("prefix"));
-		assertEquals("http://java.sun.com/jsp/jstl/core", j1.getAttributes().get("uri"));
+		assertEquals("c", Utils.attr("prefix",j1.getAttributes()));
+		assertEquals("http://java.sun.com/jsp/jstl/core", Utils.attr("uri",j1.getAttributes()));
 
 		JspText j2 = (JspText) page.getChildren().get(1);
 		assertEquals("\r\n", j2.getContentAsString());
 
 		JspInstruction j3 = (JspInstruction) page.getChildren().get(2);
 		assertEquals("taglib", j3.getName());
-		assertEquals("t", j3.getAttributes().get("prefix"));
-		assertEquals("/WEB-INF/tags", j3.getAttributes().get("tagdir"));
+		assertEquals("t", Utils.attr("prefix",j3.getAttributes()));
+		assertEquals("/WEB-INF/tags", Utils.attr("tagdir",j3.getAttributes()));
 
 		JspText j4 = (JspText) page.getChildren().get(3);
 		assertTrue(j4.getContentAsString().equals("\r\n"));
@@ -62,7 +63,7 @@ public class TestJspParserAndRenderer extends BaseTest {
 		JspTaglibInvocation j5_2 = (JspTaglibInvocation) j5.getChildren().get(1);
 		assertEquals("t:news", j5_2.getName());
 		assertTrue(j5_2.getChildren().isEmpty());
-		assertEquals("${listOfNews}", j5_2.getAttributes().get("listOfNews"));
+		assertEquals("${listOfNews}", Utils.attr("listOfNews",j5_2.getAttributes()));
 
 	}
 

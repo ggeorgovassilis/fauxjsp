@@ -43,7 +43,7 @@ public class TagfileDefinition extends TaglibDefinition {
 
 			Object newValue = null;
 			Object finalValue = null;
-			String valueExpression = invocation.getAttributes().get(argument);
+			String valueExpression = Utils.attr(argument,invocation.getAttributes());
 
 			AttributeDefinition def = attributes.get(argument);
 			if (def == null)

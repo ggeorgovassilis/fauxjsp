@@ -2,6 +2,7 @@ package fauxjsp.test.unittests;
 
 import org.junit.Test;
 
+import fauxjsp.impl.Utils;
 import fauxjsp.impl.tagparser.TagParser;
 import static org.junit.Assert.*;
 
@@ -19,7 +20,7 @@ public class TestTagParser{
 		assertEquals("c", tag.taglib.getNamespace());
 		assertEquals("out", tag.taglib.getTaglib());
 
-		assertEquals("abc", tag.taglib.getAttributes().get("value"));
+		assertEquals("abc", Utils.attr("value",tag.taglib.getAttributes()));
 		assertEquals(TagParser.Tag.TagType.openingAndClosing, tag.type);
 	}
 
@@ -31,7 +32,7 @@ public class TestTagParser{
 		assertEquals("c", tag.taglib.getNamespace());
 		assertEquals("out", tag.taglib.getTaglib());
 
-		assertEquals("abc", tag.taglib.getAttributes().get("value"));
+		assertEquals("abc", Utils.attr("value",tag.taglib.getAttributes()));
 		assertEquals(TagParser.Tag.TagType.opening, tag.type);
 	}
 
@@ -43,8 +44,8 @@ public class TestTagParser{
 		assertEquals("c", tag.taglib.getNamespace());
 		assertEquals("out", tag.taglib.getTaglib());
 
-		assertEquals("abc", tag.taglib.getAttributes().get("value"));
-		assertEquals("UTF-8", tag.taglib.getAttributes().get("encoding"));
+		assertEquals("abc", Utils.attr("value",tag.taglib.getAttributes()));
+		assertEquals("UTF-8", Utils.attr("encoding",tag.taglib.getAttributes()));
 		assertEquals(TagParser.Tag.TagType.opening, tag.type);
 	}
 
@@ -56,8 +57,8 @@ public class TestTagParser{
 		assertEquals("c", tag.taglib.getNamespace());
 		assertEquals("out", tag.taglib.getTaglib());
 
-		assertEquals("abc", tag.taglib.getAttributes().get("value"));
-		assertEquals("UTF-8", tag.taglib.getAttributes().get("encoding"));
+		assertEquals("abc", Utils.attr("value",tag.taglib.getAttributes()));
+		assertEquals("UTF-8", Utils.attr("encoding",tag.taglib.getAttributes()));
 		assertEquals(TagParser.Tag.TagType.opening, tag.type);
 	}
 	
@@ -67,7 +68,7 @@ public class TestTagParser{
 		TagParser.Tag tag = parser.parse(s("<c:if test=\"${fn:containsIgnoreCase('alice had a little lamb','Alice')}\">Condition 5</c:if>"), null);
 		assertEquals("c", tag.taglib.getNamespace());
 		assertEquals("if", tag.taglib.getTaglib());
-		assertEquals("${fn:containsIgnoreCase('alice had a little lamb','Alice')}", tag.taglib.getAttributes().get("test"));
+		assertEquals("${fn:containsIgnoreCase('alice had a little lamb','Alice')}", Utils.attr("test",tag.taglib.getAttributes()));
 
 	}
 

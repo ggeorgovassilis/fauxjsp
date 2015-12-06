@@ -5,6 +5,7 @@ import fauxjsp.api.nodes.JspTaglibInvocation;
 import fauxjsp.api.nodes.TaglibDefinition;
 import fauxjsp.api.renderer.JspRenderException;
 import fauxjsp.api.renderer.RenderSession;
+import fauxjsp.impl.Utils;
 
 /**
  * Implementation of c:choose
@@ -26,7 +27,7 @@ public class JstlCoreTaglibChoose extends TaglibDefinition {
 							+ invocation.getNamespace(), child);
 				}
 				if (taglib.getTaglib().equals("when")) {
-					String testExpression = taglib.getAttributes().get("test");
+					String testExpression = Utils.attr("test",taglib.getAttributes());
 					if (testExpression == null)
 						error("Expected test argument", taglib);
 					Object result = evaluate(testExpression, session);

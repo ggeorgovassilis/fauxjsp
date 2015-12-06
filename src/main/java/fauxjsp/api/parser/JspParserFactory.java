@@ -23,7 +23,7 @@ public interface JspParserFactory {
 	
 	/**
 	 * Should parsers fail when encountering scriptlets?
-	 * @param value Default to true
+	 * @param expression Default to true
 	 */
 	void setFailOnScriptletUsage(boolean value);
 }

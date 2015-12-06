@@ -1,7 +1,7 @@
 package fauxjsp.test.webapp.dto;
 
 /**
- * DTO passed by the servlet to JSP, models a stock value in a news portal
+ * DTO passed by the servlet to JSP, models a stock expression in a news portal
  * @author George Georgovassilis
  *
  */

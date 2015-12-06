@@ -6,6 +6,7 @@ import java.util.Map;
 
 import fauxjsp.api.renderer.JspRenderException;
 import fauxjsp.api.renderer.RenderSession;
+import fauxjsp.impl.Utils;
 import fauxjsp.servlet.ServletRequestWrapper;
 
 /**
@@ -68,7 +69,7 @@ public abstract class TaglibDefinition {
 		AttributeDefinition def = attributes.get(name);
 		if (def == null)
 			throw new JspRenderException("Accessing undeclared attibute '" + name + "'", invocation);
-		String value = invocation.getAttributes().get(name);
+		String value = Utils.attr(name,invocation.getAttributes());
 		return value;
 	}
 
@@ -129,7 +130,7 @@ public abstract class TaglibDefinition {
 			if (node instanceof JspNodeWithChildren) {
 				JspNodeWithChildren nwc = (JspNodeWithChildren) node;
 				if ("jsp:attribute".equals(nwc.getName())) {
-					String name = nwc.getAttributes().get("name");
+					String name = Utils.attr("name",nwc.getAttributes());
 					if (attributeName.equals(name))
 						return true;
 				}

@@ -7,9 +7,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.Map;
 
 import org.apache.commons.lang.StringEscapeUtils;
 
+import fauxjsp.api.nodes.NodeAttributeValue;
+import fauxjsp.api.nodes.StringNodeAttributeValue;
 import fauxjsp.api.renderer.RenderSession;
 
 /**
@@ -121,11 +124,11 @@ public class Utils {
 	}
 
 	/**
-	 * Attempts to cast value to c. If that's not possible, then this method
+	 * Attempts to cast expression to c. If that's not possible, then this method
 	 * will try a few obvious conversions if C is Boolean, Integer, Long,
 	 * Double, Float, Byte, Short
 	 * 
-	 * @param value
+	 * @param expression
 	 * @param c
 	 * @return
 	 */
@@ -170,5 +173,14 @@ public class Utils {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
+	}
+	
+	public static String attr(String name, Map<String, NodeAttributeValue> attributes){
+		NodeAttributeValue attr = attributes.get(name);
+		if (attr==null)
+			return null;
+		if (!(attr instanceof StringNodeAttributeValue))
+			throw new RuntimeException("Attribute "+name+" isn't a string but a"+attr);
+		return ((StringNodeAttributeValue)attr).getValue();
 	}
 }
