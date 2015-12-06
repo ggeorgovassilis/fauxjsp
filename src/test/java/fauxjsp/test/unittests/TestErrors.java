@@ -1,6 +1,5 @@
 package fauxjsp.test.unittests;
 
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Date;
 

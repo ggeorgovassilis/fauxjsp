@@ -1,13 +1,14 @@
 package fauxjsp.impl.parser;
 
+
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import fauxjsp.api.logging.Logger;
+import fauxjsp.api.nodes.BodyNodeAttributeValue;
 import fauxjsp.api.nodes.JspInstruction;
 import fauxjsp.api.nodes.JspNode;
 import fauxjsp.api.nodes.JspNodeWithChildren;
@@ -296,6 +297,13 @@ public class JspParserImpl implements JspParser {
 			taglibNamespaces.put(namespace, path);
 		}
 	}
+	
+	protected void convertJspAttributeTagToAttributeOnParent(JspTaglibInvocation jspAttribute, JspTaglibInvocation parent){
+		String attributeName = Utils.attr("name",jspAttribute.getAttributes());
+		BodyNodeAttributeValue body = new BodyNodeAttributeValue(jspAttribute);
+		parent.getAttributes().put(attributeName, body);
+		parent.getChildren().remove(jspAttribute);
+	}
 
 	protected void processCloseTaglib(JspTaglibInvocation taglib) {
 		if (nodeStack.isEmpty())
@@ -304,11 +312,11 @@ public class JspParserImpl implements JspParser {
 		JspTaglibInvocation jspTaglib = pullNode(taglib.getName());
 		JspNodeWithChildren currentNode = getCurrentNode();
 		currentNode.getChildren().add(jspTaglib);
-		if (taglib.getName().equals("jsp:attribute")){
+		if (jspTaglib.getName().equals("jsp:attribute")){
 			JspNodeWithChildren parent = nodeStack.get(nodeStack.size()-1);
 			if (!(parent instanceof JspTaglibInvocation))
 				throw new JspParsingException(taglib.getName()+" must be direct child of a taglib invocation, but "+parent.getName()+" isn't one.", getCurrentLocation());
-			JspTaglibInvocation parentAsTaglib = (JspTaglibInvocation)parent;
+			convertJspAttributeTagToAttributeOnParent(jspTaglib, (JspTaglibInvocation)parent);
 		}
 	}
 

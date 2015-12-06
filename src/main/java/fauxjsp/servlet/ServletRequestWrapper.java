@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 /**
  * Wrapper around a servlet request; mostly used to isolate attribute scopes
@@ -79,6 +81,16 @@ public class ServletRequestWrapper extends javax.servlet.ServletRequestWrapper{
 	
 	public void setLocale(Locale locale){
 		overwriteAttribute(OVERRIDEN_LOCALE, locale);
+	}
+	
+	public HttpSession getSession(boolean create){
+		if (getRequest() instanceof HttpServletRequest){
+			return ((HttpServletRequest)getRequest()).getSession(create);
+		}
+		if (getRequest() instanceof ServletRequestWrapper){
+			return ((ServletRequestWrapper)getRequest()).getSession(create);
+		}
+		throw new RuntimeException("This type of request doesn't have an http session");
 	}
 	
 }

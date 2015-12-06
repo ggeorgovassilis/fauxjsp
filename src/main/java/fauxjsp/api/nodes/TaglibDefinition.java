@@ -121,24 +121,6 @@ public abstract class TaglibDefinition {
 		return true;
 	}
 
-	// TODO: this implementation is invoked for every attribute on every node
-	// and is quite expensive; we should consider caching the result or at least
-	// the information whether there is a jsp:attribute at all for this node.
-	// Alternative idea: the parser already picks up jsp:attribute and links it in JspTaglibInvocation
-	protected boolean isAttributeSpecifiedAsChild(String attributeName, JspTaglibInvocation invocation) {
-		for (JspNode node : invocation.getChildren()) {
-			if (node instanceof JspNodeWithChildren) {
-				JspNodeWithChildren nwc = (JspNodeWithChildren) node;
-				if ("jsp:attribute".equals(nwc.getName())) {
-					String name = Utils.attr("name",nwc.getAttributes());
-					if (attributeName.equals(name))
-						return true;
-				}
-			}
-		}
-		return false;
-	}
-
 	// TODO: cache this result
 	protected void checkInvocation(RenderSession session, JspTaglibInvocation invocation) {
 		// check that required attributes are there
@@ -146,7 +128,7 @@ public abstract class TaglibDefinition {
 		for (String attribute : definition.getAttributes().keySet()) {
 			boolean isRequired = definition.getAttributes().get(attribute).isRequired();
 			boolean isUsedInInvocation = invocation.getAttributes().containsKey(attribute);
-			if (isRequired && !isUsedInInvocation && !isAttributeSpecifiedAsChild(attribute, invocation))
+			if (isRequired && !isUsedInInvocation)
 				error("Attribute " + attribute + " is mandatory for taglib " + invocation.getDefinition().getName()
 						+ " but wasn't specified", invocation);
 		}

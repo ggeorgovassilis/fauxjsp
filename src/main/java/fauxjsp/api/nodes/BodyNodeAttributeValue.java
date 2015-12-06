@@ -5,7 +5,7 @@ package fauxjsp.api.nodes;
  * @author george georgovassilis
  *
  */
-public class BodyNodeAttributeValue {
+public class BodyNodeAttributeValue extends NodeAttributeValue{
 	
 	protected JspTaglibInvocation jspAttribute;
 

@@ -12,7 +12,6 @@ import fauxjsp.impl.Utils;
 
 public class TagfileDefinition extends TaglibDefinition {
 
-
 	public static String BODY_ATTRIBUTE = "__fauxjsp_body";
 	protected JspPage body;
 
@@ -36,56 +35,61 @@ public class TagfileDefinition extends TaglibDefinition {
 		}
 	}
 
-
 	@Override
 	protected void renderNode(RenderSession session, JspTaglibInvocation invocation) {
 		for (String argument : invocation.getAttributes().keySet()) {
 
 			Object newValue = null;
 			Object finalValue = null;
-			String valueExpression = Utils.attr(argument,invocation.getAttributes());
-
+			String valueExpression = null;
+			NodeAttributeValue attributeValue = invocation.getAttributes().get(argument);
 			AttributeDefinition def = attributes.get(argument);
 			if (def == null)
-				throw new JspRenderException("Found unexpected attribute '"
-						+ argument + "' on " + invocation.getName(), invocation);
+				throw new JspRenderException("Found unexpected attribute '" + argument + "' on " + invocation.getName(),
+						invocation);
 
-			if (def.isRtExpression())
-				newValue = session.elEvaluation.evaluate(valueExpression,
-						session);
-			else
-				newValue = valueExpression;
+			if (attributeValue instanceof StringNodeAttributeValue){
+				valueExpression = ((StringNodeAttributeValue)attributeValue).getValue();
+				if (def.isRtExpression())
+					newValue = session.elEvaluation.evaluate(valueExpression, session);
+				else
+					newValue = valueExpression;
+			} else if (attributeValue instanceof BodyNodeAttributeValue){
+				BodyNodeAttributeValue bodyNode = ((BodyNodeAttributeValue)attributeValue);
+				JspTaglibInvocation attributeInvocation = bodyNode.getJspAttribute();
+				attributeInvocation.getDefinition().render(session, attributeInvocation);
+				newValue = session.request.getAttribute(argument);
+			}
+
+
 			Class<?> attributeType = getClass(def.getType());
 			boolean castingError = false;
-			try{
-			finalValue = Utils.cast(newValue, attributeType);
-			} catch (ClassCastException e){
-				castingError=true;
+			try {
+				finalValue = Utils.cast(newValue, attributeType);
+			} catch (ClassCastException e) {
+				castingError = true;
 			}
-			//TODO: it looks like this check is never performed; there is a unit test that
-			//tries to provoke this error but it's handled earlier in checkInvocation.
-			if (castingError || (finalValue == null && newValue!=null)) {
+			// TODO: it looks like this check is never performed; there is a
+			// unit test that
+			// tries to provoke this error but it's handled earlier in
+			// checkInvocation.
+			if (castingError || (finalValue == null && newValue != null)) {
 				// Value can't be cast to expected class.
-				error("Expected type " + def.getType()
-				+ " for attribute " + argument + " on "
-				+ invocation.getName() + " but supplied argument was "
-				+ Utils.getClassOf(newValue), invocation);
+				error("Expected type " + def.getType() + " for attribute " + argument + " on " + invocation.getName()
+						+ " but supplied argument was " + Utils.getClassOf(newValue), invocation);
 			}
 			session.request.setAttribute(argument, finalValue);
 		}
-		
-		
 
 		// run over attributes
 		JspNode bodyNode = invocation;
-		for (JspNode node:invocation.getChildren())
-			if (node instanceof JspNodeWithChildren){
-				JspNodeWithChildren attribute = (JspNodeWithChildren)node;
-				if ("jsp:attribute".equals(attribute.getName())){
-					//JspBuiltinTagAttribute renders attributes
+		for (JspNode node : invocation.getChildren())
+			if (node instanceof JspNodeWithChildren) {
+				JspNodeWithChildren attribute = (JspNodeWithChildren) node;
+				if ("jsp:attribute".equals(attribute.getName())) {
+					// JspBuiltinTagAttribute renders attributes
 					session.renderer.render(attribute, session);
-				} else
-				if ("jsp:body".equals(attribute.getName())){
+				} else if ("jsp:body".equals(attribute.getName())) {
 					bodyNode = attribute;
 				}
 			}
