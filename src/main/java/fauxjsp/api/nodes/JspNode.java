@@ -26,5 +26,10 @@ public abstract class JspNode {
 	
 	public abstract String debugLabel();
 	
+	/**
+	 * This method renders the node to session.response.outputstream
+	 * @param session
+	 * @param renderer
+	 */
 	public abstract void renderSelf(RenderSession session, JspRenderer renderer) throws IOException;
 }
