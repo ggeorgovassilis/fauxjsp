@@ -100,7 +100,7 @@ public class JstlFmtFormatNumber extends TaglibDefinition {
 		if ("currency".equals(type)) {
 			format = NumberFormat.getCurrencyInstance(request.getLocale());
 		} else if ("percent".equals(type)) {
-			format = NumberFormat.getPercentInstance();
+			format = NumberFormat.getPercentInstance(request.getLocale());
 		} else
 			format = NumberFormat.getInstance(request.getLocale());
 		applyMinIntegerDigits(format, session, invocation);

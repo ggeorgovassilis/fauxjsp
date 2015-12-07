@@ -57,9 +57,9 @@ public class TestFmt extends BaseTest {
 		request.setAttribute(RenderSession.ATTR_TIMEZONE, TimeZone.getTimeZone("UTC"));
 		
 		renderer.render(page, session);
-		String text = getContent(response);
+		String text = getPrettyContent(response);
 
-		String expected = "\n\n#1: 14:27:18\n" + "#2: 23-Sep-2010\n" + "#3: 23-Sep-2010 14:27:18\n"
+		String expected = "#1: 14:27:18\n" + "#2: 23-Sep-2010\n" + "#3: 23-Sep-2010 14:27:18\n"
 				+ "#4: 23/09/10 14:27\n" + "#5: 23-Sep-2010 14:27:18\n" + "#6: 23 September 2010 14:27:18 UTC\n"
 				+ "#7: 2010-09-23\n" + "#8: 23/09/10 14:27:18 UTC";
 
@@ -103,9 +103,9 @@ public class TestFmt extends BaseTest {
 		request.setLocale(Locale.UK);
 		request.setAttribute("balance", 120000.231);
 		renderer.render(page, session);
-		String text = getContent(response);
+		String text = getPrettyContent(response);
 
-		String expected = "\n\n#1 £120,000.23\n" +
+		String expected = "#1 £120,000.23\n" +
 		"#2 000.231\n" +
 		"#3 120000.231\n" +
 		"#4 120000.231\n" +

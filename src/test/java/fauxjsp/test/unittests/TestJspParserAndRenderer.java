@@ -145,9 +145,9 @@ public class TestJspParserAndRenderer extends BaseTest {
 		
 		request.setAttribute("end", 2);
 		renderer.render(page, session);
-		String text = getContent(response);
+		String text = getPrettyContent(response);
 		assertEquals(
-				"\nNEWS SECTION 1: 012\nNEWS SECTION 2: 12\nNEWS SECTION 3: 0\nVARSTATUS: 1,0,true,false\n2,1,false,false\n3,2,false,true\n",
+				"NEWS SECTION 1: 012\nNEWS SECTION 2: 12\nNEWS SECTION 3: 0\nVARSTATUS: 1,0,true,false\n2,1,false,false\n3,2,false,true",
 				text);
 	}
 
@@ -178,9 +178,10 @@ public class TestJspParserAndRenderer extends BaseTest {
 		JspPage page = parser.parse("WEB-INF/jsp/link.jsp");
 		assertEquals(1, page.getChildren().size());
 		JspText node = (JspText) page.getChildren().get(0);
+		String result = sanitize(node.getContentAsString());
 		assertEquals(
-				"<a class=nav href=\"http://www.example.com/q?a:bbb:cccc\" id=\"some/id\"><span class=\"some class\">[...]</span>Link</a>\n",
-				node.getContentAsString());
+				"<a class=nav href=\"http://www.example.com/q?a:bbb:cccc\" id=\"some/id\"><span class=\"some class\">[...]</span>Link</a>",
+				result);
 	}
 
 }
