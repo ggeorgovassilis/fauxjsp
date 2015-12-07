@@ -1,6 +1,10 @@
 package fauxjsp.api.nodes;
 
+import java.io.IOException;
+
 import fauxjsp.api.parser.CodeLocation;
+import fauxjsp.api.renderer.JspRenderer;
+import fauxjsp.api.renderer.RenderSession;
 
 /**
  * Models the invocation of a taglib or tagfile with optional parameters and a body (nested content). 
@@ -40,6 +44,11 @@ public class JspTaglibInvocation extends JspNodeWithChildren {
 	 */
 	public String getTaglib() {
 		return getName().split(":")[1];
+	}
+
+	@Override
+	public void renderSelf(RenderSession session, JspRenderer renderer) throws IOException {
+		getDefinition().render(session, this);
 	}
 
 }

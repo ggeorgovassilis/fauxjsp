@@ -1,11 +1,14 @@
 package fauxjsp.api.nodes;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import fauxjsp.api.parser.CodeLocation;
+import fauxjsp.api.renderer.JspRenderer;
+import fauxjsp.api.renderer.RenderSession;
 
 /**
  * Base class for nodes which child nodes. These type of nodes, such as taglibs,
@@ -57,6 +60,12 @@ public abstract class JspNodeWithChildren extends JspNode{
 		}
 		sb.append("</").append(getName()).append(">");
 		return sb.toString();
+	}
+	
+	@Override
+	public void renderSelf(RenderSession session, JspRenderer renderer) throws IOException {
+		for (JspNode childNode : getChildren())
+			renderer.render(childNode, session);
 	}
 
 }

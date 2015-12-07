@@ -1,6 +1,10 @@
 package fauxjsp.api.nodes;
 
+import java.io.IOException;
+
 import fauxjsp.api.parser.CodeLocation;
+import fauxjsp.api.renderer.JspRenderer;
+import fauxjsp.api.renderer.RenderSession;
 
 /**
  * Base class for JSP nodes such as text and taglibs. The sole property for the base node
@@ -21,4 +25,6 @@ public abstract class JspNode {
 	}
 	
 	public abstract String debugLabel();
+	
+	public abstract void renderSelf(RenderSession session, JspRenderer renderer) throws IOException;
 }

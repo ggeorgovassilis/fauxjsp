@@ -12,4 +12,6 @@ public interface JspRenderer {
 	void render(JspNode node, RenderSession session);
 
 	String explain(JspRenderException exception);
+	
+	JspScriptletRenderer getScriptletRenderer();
 }

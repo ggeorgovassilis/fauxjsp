@@ -48,40 +48,10 @@ public class JspRendererImpl implements JspRenderer {
 		}
 	}
 
-	protected void renderTextNode(JspText node, RenderSession session) throws IOException {
-		String content = node.getContentAsString();
-		content = (String) session.elEvaluation.evaluate(content, session);
-		write(session.response.getOutputStream(), content.getBytes(session.response.getCharacterEncoding()));
-	}
-
-	protected void renderTaglib(JspTaglibInvocation taglibInvocation, RenderSession session) {
-		taglibInvocation.getDefinition().render(session, taglibInvocation);
-	}
-
-	protected void renderScriptlet(JspScriptlet scriptlet, RenderSession session) {
-		scriptletRenderer.render(scriptlet, session);
-	}
-
-	protected void renderNodeWithChildren(JspNodeWithChildren nodeWithChildren, RenderSession session) {
-		for (JspNode childNode : nodeWithChildren.getChildren())
-			renderNode(childNode, session);
-	}
-
 	protected void renderNode(JspNode node, RenderSession session) {
 		// need this try/catch for exception translation
 		try {
-			// order is important here: eg. a taglib is also a node with
-			// children, but requires a different handling.
-			if (node instanceof JspText) {
-				renderTextNode((JspText) node, session);
-			} else if (node instanceof JspTaglibInvocation) {
-				renderTaglib((JspTaglibInvocation) node, session);
-			} else if (node instanceof JspScriptlet) {
-				renderScriptlet((JspScriptlet) node, session);
-			} else if (node instanceof JspNodeWithChildren) {
-				renderNodeWithChildren((JspNodeWithChildren) node, session);
-			} else
-				logger.warn("Encountered an unknown node " + node.getClass() + " at " + node.getLocation());
+			node.renderSelf(session, this);
 		} catch (Exception e) {
 			throw new JspRenderException(node, e);
 		}
@@ -100,5 +70,10 @@ public class JspRendererImpl implements JspRenderer {
 				causeExplanation = cause.getMessage();
 		}
 		return causeExplanation + "\n" + exception.getNode().getLocation();
+	}
+
+	@Override
+	public JspScriptletRenderer getScriptletRenderer() {
+		return scriptletRenderer;
 	}
 }
