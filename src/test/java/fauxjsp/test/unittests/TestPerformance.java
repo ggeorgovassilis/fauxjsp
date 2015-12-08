@@ -51,7 +51,6 @@ public class TestPerformance extends BaseTest {
 		return loops;
 	}
 
-	@Ignore
 	@Test
 	public void testJspParser() {
 		Runnable r = new Runnable() {
