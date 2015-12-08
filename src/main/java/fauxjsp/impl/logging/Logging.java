@@ -2,6 +2,7 @@ package fauxjsp.impl.logging;
 
 import fauxjsp.api.logging.LogFactory;
 import fauxjsp.api.logging.Logger;
+import fauxjsp.impl.Utils;
 import fauxjsp.impl.logging.java.JavaLoggingFactory;
 
 /**
@@ -19,7 +20,7 @@ public class Logging {
 
 	protected static boolean classExists(String fullName) {
 		try {
-			return null != Class.forName(fullName);
+			return null != Utils.getClassForName(fullName);
 		} catch (ClassNotFoundException e) {
 			return false;
 		}
@@ -27,7 +28,7 @@ public class Logging {
 
 	protected static LogFactory instantiate(String className) {
 		try {
-			return (LogFactory) (Class.forName(className).newInstance());
+			return (LogFactory) (Utils.getClassForName(className).newInstance());
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

@@ -136,11 +136,11 @@ public class ELFactoryServlet3Impl implements ELFactory {
 		if (type.contains("[]")) {
 			type = type.replaceAll("\\[", "").replaceAll("\\]", "");
 			if (c == null)
-				c = Class.forName(type);
+				c = Utils.getClassForName(type);
 			c = Array.newInstance(c, 0).getClass();
 		}
 		if (c == null)
-			c = Class.forName(type);
+			c = Utils.getClassForName(type);
 		return c;
 	}
 
@@ -163,7 +163,7 @@ public class ELFactoryServlet3Impl implements ELFactory {
 		}
 
 		log.debug("Registering taglib method " + returnType + " " + methodName + "(" + arguments + ")");
-		Method method = Class.forName(fnClass).getMethod(methodName, cArgs.toArray(new Class[0]));
+		Method method = Utils.getClassForName(fnClass).getMethod(methodName, cArgs.toArray(new Class[0]));
 		List<Method> functions = prefixToFunctions.get(shortName);
 		if (functions == null) {
 			functions = new ArrayList<Method>();

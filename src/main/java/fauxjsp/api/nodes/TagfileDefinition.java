@@ -29,7 +29,7 @@ public class TagfileDefinition extends TaglibDefinition {
 
 	protected Class<?> getClass(String type) {
 		try {
-			return Class.forName(type);
+			return Utils.getClassForName(type);
 		} catch (ClassNotFoundException e) {
 			throw new RuntimeException(e);
 		}
