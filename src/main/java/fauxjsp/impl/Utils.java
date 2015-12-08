@@ -7,7 +7,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.lang.ref.WeakReference;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 import org.apache.commons.lang.StringEscapeUtils;
 
@@ -22,6 +25,9 @@ import fauxjsp.api.renderer.RenderSession;
  *
  */
 public class Utils {
+	
+	protected static Map<String, WeakReference<Class>> cachedClasses = new HashMap<>();
+	
 
 	/**
 	 * Get class of an object or return null for a null argument
@@ -182,5 +188,17 @@ public class Utils {
 		if (!(attr instanceof StringNodeAttributeValue))
 			throw new RuntimeException("Attribute "+name+" isn't a string but a"+attr);
 		return ((StringNodeAttributeValue)attr).getValue();
+	}
+	
+	public static Class getClassForName(String className) throws ClassNotFoundException{
+		synchronized(cachedClasses){
+			WeakReference<Class> ref = cachedClasses.get(className);
+			if (ref==null){
+				Class c = Class.forName(className);
+				ref = new WeakReference<Class>(c);
+				cachedClasses.put(className, ref);
+			}
+			return ref.get();
+		}
 	}
 }

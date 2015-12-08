@@ -5,6 +5,7 @@ import fauxjsp.api.logging.Logger;
 import fauxjsp.api.renderer.BeanshellScriptletRendererImpl;
 import fauxjsp.api.renderer.JspRenderer;
 import fauxjsp.api.renderer.JspRendererFactory;
+import fauxjsp.impl.Utils;
 import fauxjsp.impl.logging.Logging;
 
 /**
@@ -21,7 +22,7 @@ public class JspRendererFactoryImpl implements JspRendererFactory{
 	public JspRenderer create() {
 		JspRendererImpl renderer = new JspRendererImpl();
 		try{
-			Class.forName("bsh.Interpreter");
+			Utils.getClassForName("bsh.Interpreter");
 			renderer.setScriptletRenderer(new BeanshellScriptletRendererImpl());
 		}
 		catch (ClassNotFoundException e){

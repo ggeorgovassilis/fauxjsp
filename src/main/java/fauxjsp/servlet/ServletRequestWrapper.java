@@ -22,6 +22,7 @@ public class ServletRequestWrapper extends javax.servlet.ServletRequestWrapper{
 	public final static String OVERRIDEN_LOCALE="__fauxjsp_locale";
 	
 	protected Map<String, Object> attributes;
+	protected Set<String> attributeNamesCache=null;
 	
 	public ServletRequestWrapper(ServletRequest request) {
 		super(request);
@@ -29,6 +30,8 @@ public class ServletRequestWrapper extends javax.servlet.ServletRequestWrapper{
 
 	@Override
 	public void setAttribute(String name, Object o) {
+		if (attributeNamesCache!=null)
+			attributeNamesCache.add(name);
 		if (attributes==null)
 			attributes=new HashMap<>();
 		attributes.put(name, o);
@@ -36,6 +39,8 @@ public class ServletRequestWrapper extends javax.servlet.ServletRequestWrapper{
 
 	public void overwriteAttribute(String name, Object o){
 		removeAttribute(name);
+		if (attributeNamesCache!=null)
+			attributeNamesCache.add(name);
 		ServletRequest innerRequest = getRequest();
 		if (innerRequest instanceof ServletRequestWrapper){
 			((ServletRequestWrapper)innerRequest).overwriteAttribute(name, o);
@@ -45,6 +50,8 @@ public class ServletRequestWrapper extends javax.servlet.ServletRequestWrapper{
 	
 	@Override
 	public void removeAttribute(String name) {
+		if (attributeNamesCache!=null)
+			attributeNamesCache.remove(name);
 		if (attributes!=null)
 			attributes.remove(name);
 	}
@@ -59,16 +66,17 @@ public class ServletRequestWrapper extends javax.servlet.ServletRequestWrapper{
 		return o;
 	}
 	
-	//TODO: I know from experiments with "TestPerformance" that caching attribute names greatly speeds up the benchmark (x2)
 	@Override
 	public Enumeration<String> getAttributeNames() {
-		if (attributes==null)
+		if (attributes==null||attributes.isEmpty())
 			return super.getAttributeNames();
+		if (attributeNamesCache!=null)
+			return Collections.enumeration(attributeNamesCache);
 		Enumeration<String> attributeNamesFromInnerRequest = getRequest().getAttributeNames();
-		Set<String> attributeNames = new HashSet<>(attributes.keySet());
+		attributeNamesCache = new HashSet<>(attributes.keySet());
 		while (attributeNamesFromInnerRequest.hasMoreElements())
-			attributeNames.add(attributeNamesFromInnerRequest.nextElement());
-		return Collections.enumeration(attributeNames);
+			attributeNamesCache.add(attributeNamesFromInnerRequest.nextElement());
+		return Collections.enumeration(attributeNamesCache);
 	}
 	
 	@Override
