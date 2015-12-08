@@ -44,7 +44,8 @@ public abstract class BaseTest {
 	protected JspRenderer renderer;
 	protected ELEvaluation elEvaluation;
 	protected JspRendererFactory rendererFactory;
-	protected MockHttpServletRequest request;
+	protected MockHttpServletRequest originalRequest;
+	protected ServletRequestWrapper request;
 	protected MockHttpServletResponse response;
 	protected RenderSession session;
 
@@ -104,7 +105,7 @@ public abstract class BaseTest {
 		parser = newParser();
 		rendererFactory = new JspRendererFactoryImpl();
 		renderer = rendererFactory.create();
-		request = new MockHttpServletRequest();
+		originalRequest = new MockHttpServletRequest();
 		response = new MockHttpServletResponse();
 
 		ELFactoryServlet3Impl elFactory = new ELFactoryServlet3Impl();
@@ -132,7 +133,7 @@ public abstract class BaseTest {
 		});
 		elEvaluation = new ELEvaluationImpl(elFactory);
 		session = new RenderSession();
-		session.request = new ServletRequestWrapper(request);
+		request=session.request = new ServletRequestWrapper(originalRequest);
 		session.renderer = renderer;
 		session.elEvaluation = elEvaluation;
 		session.response = new ServletResponseWrapper(response, response.getBaos());

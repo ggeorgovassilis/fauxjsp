@@ -82,7 +82,7 @@ public abstract class TaglibDefinition {
 		try {
 			session.response.getOutputStream().write((content).getBytes(session.response.getCharacterEncoding()));
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			throw Utils.translate(e);
 		}
 	}
 

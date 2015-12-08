@@ -30,7 +30,7 @@ public class Logging {
 		try {
 			return (LogFactory) (Utils.getClassForName(className).newInstance());
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			throw Utils.translate(e);
 		}
 	}
 

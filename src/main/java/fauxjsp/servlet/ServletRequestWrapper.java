@@ -14,91 +14,82 @@ import javax.servlet.http.HttpSession;
 
 /**
  * Wrapper around a servlet request; mostly used to isolate attribute scopes
+ * 
  * @author George Georgovassilis
  *
  */
-public class ServletRequestWrapper extends javax.servlet.ServletRequestWrapper{
+public class ServletRequestWrapper extends javax.servlet.ServletRequestWrapper {
 
-	public final static String OVERRIDEN_LOCALE="__fauxjsp_locale";
-	
+	public final static String OVERRIDEN_LOCALE = "__fauxjsp_locale";
+
 	protected Map<String, Object> attributes;
-	protected Set<String> attributeNamesCache=null;
-	
+
 	public ServletRequestWrapper(ServletRequest request) {
 		super(request);
+		attributes = new HashMap<>();
+		for (Enumeration<String> e = request.getAttributeNames(); e.hasMoreElements();) {
+			String attribute = e.nextElement();
+			attributes.put(attribute, request.getAttribute(attribute));
+		}
+	}
+
+	public ServletRequestWrapper(ServletRequestWrapper request) {
+		super(request);
+		attributes = new HashMap<>(request.getAttributes());
+	}
+
+	protected Map<String, Object> getAttributes(){
+		return attributes;
 	}
 
 	@Override
 	public void setAttribute(String name, Object o) {
-		if (attributeNamesCache!=null)
-			attributeNamesCache.add(name);
-		if (attributes==null)
-			attributes=new HashMap<>();
 		attributes.put(name, o);
 	}
 
-	public void overwriteAttribute(String name, Object o){
-		removeAttribute(name);
-		if (attributeNamesCache!=null)
-			attributeNamesCache.add(name);
-		ServletRequest innerRequest = getRequest();
-		if (innerRequest instanceof ServletRequestWrapper){
-			((ServletRequestWrapper)innerRequest).overwriteAttribute(name, o);
-		} else
-		super.setAttribute(name, o);
+	public void overwriteAttribute(String name, Object o) {
+		setAttribute(name, o);
+		if (super.getRequest() instanceof ServletRequestWrapper)
+			((ServletRequestWrapper) super.getRequest()).overwriteAttribute(name, o);
+		else
+			super.setAttribute(name, o);
 	}
-	
+
 	@Override
 	public void removeAttribute(String name) {
-		if (attributeNamesCache!=null)
-			attributeNamesCache.remove(name);
-		if (attributes!=null)
-			attributes.remove(name);
+		attributes.remove(name);
 	}
-	
+
 	@Override
 	public Object getAttribute(String name) {
-		Object o = null;
-		if (attributes!=null)
-			o=attributes.get(name);
-		if (o==null)
-			o = super.getAttribute(name);
-		return o;
+		return attributes.get(name);
 	}
-	
+
 	@Override
 	public Enumeration<String> getAttributeNames() {
-		if (attributes==null||attributes.isEmpty())
-			return super.getAttributeNames();
-		if (attributeNamesCache!=null)
-			return Collections.enumeration(attributeNamesCache);
-		Enumeration<String> attributeNamesFromInnerRequest = getRequest().getAttributeNames();
-		attributeNamesCache = new HashSet<>(attributes.keySet());
-		while (attributeNamesFromInnerRequest.hasMoreElements())
-			attributeNamesCache.add(attributeNamesFromInnerRequest.nextElement());
-		return Collections.enumeration(attributeNamesCache);
+		return Collections.enumeration(attributes.keySet());
 	}
-	
+
 	@Override
 	public Locale getLocale() {
-		Locale locale = (Locale)getAttribute(OVERRIDEN_LOCALE);
-		if (locale!=null)
+		Locale locale = (Locale) getAttribute(OVERRIDEN_LOCALE);
+		if (locale != null)
 			return locale;
 		return super.getLocale();
 	}
-	
-	public void setLocale(Locale locale){
+
+	public void setLocale(Locale locale) {
 		overwriteAttribute(OVERRIDEN_LOCALE, locale);
 	}
-	
-	public HttpSession getSession(boolean create){
-		if (getRequest() instanceof HttpServletRequest){
-			return ((HttpServletRequest)getRequest()).getSession(create);
+
+	public HttpSession getSession(boolean create) {
+		if (getRequest() instanceof HttpServletRequest) {
+			return ((HttpServletRequest) getRequest()).getSession(create);
 		}
-		if (getRequest() instanceof ServletRequestWrapper){
-			return ((ServletRequestWrapper)getRequest()).getSession(create);
+		if (getRequest() instanceof ServletRequestWrapper) {
+			return ((ServletRequestWrapper) getRequest()).getSession(create);
 		}
 		throw new RuntimeException("This type of request doesn't have an http session");
 	}
-	
+
 }

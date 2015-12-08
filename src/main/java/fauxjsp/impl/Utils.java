@@ -201,4 +201,10 @@ public class Utils {
 			return ref.get();
 		}
 	}
+	
+	public static RuntimeException translate(Exception e){
+		if (e instanceof RuntimeException)
+			return (RuntimeException)e;
+		return new RuntimeException(e);
+	}
 }
