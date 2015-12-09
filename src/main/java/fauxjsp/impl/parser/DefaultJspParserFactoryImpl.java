@@ -26,7 +26,6 @@ import fauxjsp.impl.simulatedtaglibs.fmt.JstlFmtSetLocale;
 public class DefaultJspParserFactoryImpl implements JspParserFactory {
 
 	protected ResourceResolver location;
-	protected boolean errorOnScriptlets = true;
 
 	protected void setup(JspParserImpl parser) {
 		parser.registerTaglibDefinition(
@@ -64,7 +63,6 @@ public class DefaultJspParserFactoryImpl implements JspParserFactory {
 		parser.registerTaglibDefinition("http://java.sun.com/jsp/jstl/fmt/formatDate", new JstlFmtFormatDate());
 		parser.registerTaglibDefinition("http://java.sun.com/jsp/jstl/fmt/formatNumber", new JstlFmtFormatNumber());
 		parser.registerTaglibDefinition("http://java.sun.com/jsp/jstl/fmt/setLocale", new JstlFmtSetLocale());
-		parser.setErrorOnScriptlets(errorOnScriptlets);
 	}
 
 	public DefaultJspParserFactoryImpl(ResourceResolver location) {
@@ -83,11 +81,6 @@ public class DefaultJspParserFactoryImpl implements JspParserFactory {
 		JspParserImpl parser = new JspParserImpl(this, parent);
 		setup(parser);
 		return parser;
-	}
-
-	@Override
-	public void setFailOnScriptletUsage(boolean value) {
-		this.errorOnScriptlets = value;
 	}
 
 }

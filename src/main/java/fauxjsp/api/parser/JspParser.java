@@ -45,6 +45,11 @@ public interface JspParser {
 	 */
 	JspPage parse(String path);
 	
+	/**
+	 * Explain an exception in understandable terms
+	 * @param exception
+	 * @return
+	 */
 	String explain(JspParsingException exception);
 
 }

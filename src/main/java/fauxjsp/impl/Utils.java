@@ -10,7 +10,6 @@ import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.WeakHashMap;
 
 import org.apache.commons.lang.StringEscapeUtils;
 
@@ -26,7 +25,7 @@ import fauxjsp.api.renderer.RenderSession;
  */
 public class Utils {
 	
-	protected static Map<String, WeakReference<Class>> cachedClasses = new HashMap<>();
+	protected static Map<String, WeakReference<Class<?>>> cachedClasses = new HashMap<>();
 	
 
 	/**
@@ -190,12 +189,12 @@ public class Utils {
 		return ((StringNodeAttributeValue)attr).getValue();
 	}
 	
-	public static Class getClassForName(String className) throws ClassNotFoundException{
+	public static Class<?> getClassForName(String className) throws ClassNotFoundException{
 		synchronized(cachedClasses){
-			WeakReference<Class> ref = cachedClasses.get(className);
+			WeakReference<Class<?>> ref = cachedClasses.get(className);
 			if (ref==null){
-				Class c = Class.forName(className);
-				ref = new WeakReference<Class>(c);
+				Class<?> c = Class.forName(className);
+				ref = new WeakReference<Class<?>>(c);
 				cachedClasses.put(className, ref);
 			}
 			return ref.get();

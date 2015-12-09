@@ -21,9 +21,4 @@ public interface JspParserFactory {
 	 */
 	JspParser create(JspParser parent);
 	
-	/**
-	 * Should parsers fail when encountering scriptlets?
-	 * @param expression Default to true
-	 */
-	void setFailOnScriptletUsage(boolean value);
 }

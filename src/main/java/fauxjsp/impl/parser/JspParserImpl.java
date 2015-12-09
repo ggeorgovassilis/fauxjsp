@@ -56,7 +56,6 @@ public class JspParserImpl implements JspParser {
 	protected TagParser tagParser = new TagParser();
 	protected int line = 0;
 	protected int column = 0;
-	protected boolean errorOnScriptlets = true;
 
 	// TODO: speed: keep a running pointer instead of recomputing the location
 	// every
@@ -233,7 +232,7 @@ public class JspParserImpl implements JspParser {
 		StringBuilder sInstruction = new StringBuilder(substring(CLOSE_INSTRUCTION.length() + closingIndex - index));
 
 		int indexOfAt = sInstruction.indexOf("@");
-		sInstruction.deleteCharAt(indexOfAt);
+		sInstruction.deleteCharAt(indexOfAt); 
 
 		int indexOfPercent = sInstruction.indexOf("%");
 		sInstruction.deleteCharAt(indexOfPercent);
@@ -435,14 +434,6 @@ public class JspParserImpl implements JspParser {
 		} catch (JspParsingException pe) {
 			throw new JspParsingException(pe, getCurrentLocation());
 		}
-	}
-
-	public boolean isErrorOnScriptlets() {
-		return errorOnScriptlets;
-	}
-
-	public void setErrorOnScriptlets(boolean errorOnScriptlets) {
-		this.errorOnScriptlets = errorOnScriptlets;
 	}
 
 	@Override

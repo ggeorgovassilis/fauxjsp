@@ -9,6 +9,7 @@ import fauxjsp.api.nodes.JspTaglibInvocation;
 import fauxjsp.api.nodes.NodeAttributeValue;
 import fauxjsp.api.nodes.StringNodeAttributeValue;
 import fauxjsp.api.parser.CodeLocation;
+import fauxjsp.api.parser.JspParsingException;
 import fauxjsp.impl.tagparser.TagParser.Tag.TagType;
 
 /**
@@ -31,12 +32,10 @@ public class TagParser {
 		public JspTaglibInvocation taglib;
 	}
 
-	protected final static Pattern namespaceAndTagPattern = Pattern.compile(
-			"<\\s*([_a-zA-Z0-9\\-]+):([_a-zA-Z0-9\\-]+)\\s*(.*)\\/{0,1}>",
+	protected final static Pattern namespaceAndTagPattern = Pattern
+			.compile("<\\s*([_a-zA-Z0-9\\-]+):([_a-zA-Z0-9\\-]+)\\s*(.*)\\/{0,1}>", Pattern.DOTALL | Pattern.MULTILINE);
+	protected final static Pattern tagPattern = Pattern.compile("<\\s*([_a-zA-Z0-9\\-]+)\\s*(.*)\\/{0,1}>",
 			Pattern.DOTALL | Pattern.MULTILINE);
-	protected final static Pattern tagPattern = Pattern.compile(
-			"<\\s*([_a-zA-Z0-9\\-]+)\\s*(.*)\\/{0,1}>", Pattern.DOTALL
-					| Pattern.MULTILINE);
 
 	protected final static Pattern colonPattern = Pattern.compile("\\:");
 
@@ -60,7 +59,7 @@ public class TagParser {
 		return null;
 	}
 
-	protected Map<String, NodeAttributeValue> getAttributes(String tagSegment) {
+	protected Map<String, NodeAttributeValue> parseAttributes(String tagSegment, CodeLocation location) {
 		Map<String, NodeAttributeValue> attributes = new HashMap<String, NodeAttributeValue>();
 		boolean inQuotes = false;
 		char typeOfQuotes = ' ';
@@ -100,6 +99,8 @@ public class TagParser {
 				text.append(c);
 			}
 		}
+		if (!text.toString().trim().isEmpty())
+			throw new JspParsingException("While parsing attributes there was a leftover text that couldn't be converted to an attribute: '"+text+"'", location);
 		return attributes;
 	}
 
@@ -122,15 +123,17 @@ public class TagParser {
 			tag = m.group(1);
 			attributesSegment = m.group(2);
 		}
-		JspTaglibInvocation taglib = new JspTaglibInvocation(namespace, tag,
-				location);
+		JspTaglibInvocation taglib = new JspTaglibInvocation(namespace, tag, location);
 
 		Tag result = new Tag();
 		result.taglib = taglib;
 		result.type = Tag.TagType.opening;
-		if (segment.endsWith("/>"))
+		if (segment.endsWith("/>")){
 			result.type = Tag.TagType.openingAndClosing;
-		taglib.getAttributes().putAll(getAttributes(attributesSegment));
+			//strip the / from /> because of confuses parseAttributes
+			attributesSegment = attributesSegment.substring(0, attributesSegment.length()-1);
+		}
+		taglib.getAttributes().putAll(parseAttributes(attributesSegment, location));
 		return result;
 	}
 
@@ -142,8 +145,7 @@ public class TagParser {
 		String[] parts = colonPattern.split(name);
 		if (parts.length != 2)
 			return null;
-		JspTaglibInvocation inv = new JspTaglibInvocation(parts[0], parts[1],
-				location);
+		JspTaglibInvocation inv = new JspTaglibInvocation(parts[0], parts[1], location);
 		Tag tag = new Tag();
 		tag.taglib = inv;
 		tag.type = TagType.closing;
@@ -189,8 +191,7 @@ public class TagParser {
 			return parseClosingTag(text, location);
 		int indexOfColon = text.indexOf(":");
 		int indexOfForbiddenStrings = getEarliest(text, "'", "\"", "<");
-		if (c1 == '<' && indexOfColon > 0 && indexOfColon < text.indexOf(">")
-				&& indexOfColon < indexOfForbiddenStrings)
+		if (c1 == '<' && indexOfColon > 0 && indexOfColon < text.indexOf(">") && indexOfColon < indexOfForbiddenStrings)
 			return parseOpeningTag(text, location);
 		return null;
 	}
