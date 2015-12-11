@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpSession;
 
 /**
@@ -16,15 +16,14 @@ import javax.servlet.http.HttpSession;
  * @author George Georgovassilis
  *
  */
-public class ServletRequestWrapper extends javax.servlet.ServletRequestWrapper {
+public class ServletRequestWrapper extends HttpServletRequestWrapper implements HttpServletRequest{
 
 	public final static String OVERRIDEN_LOCALE = "__fauxjsp_locale";
 
-	protected Map<String, Object> attributes;
+	protected final Map<String, Object> attributes=new HashMap<>();
 
-	public ServletRequestWrapper(ServletRequest request) {
+	public ServletRequestWrapper(HttpServletRequest request) {
 		super(request);
-		attributes = new HashMap<>();
 		for (Enumeration<String> e = request.getAttributeNames(); e.hasMoreElements();) {
 			String attribute = e.nextElement();
 			attributes.put(attribute, request.getAttribute(attribute));
@@ -33,7 +32,7 @@ public class ServletRequestWrapper extends javax.servlet.ServletRequestWrapper {
 
 	public ServletRequestWrapper(ServletRequestWrapper request) {
 		super(request);
-		attributes = new HashMap<>(request.getAttributes());
+		attributes.putAll(request.getAttributes());
 	}
 
 	protected Map<String, Object> getAttributes(){
@@ -81,13 +80,14 @@ public class ServletRequestWrapper extends javax.servlet.ServletRequestWrapper {
 	}
 
 	public HttpSession getSession(boolean create) {
-		if (getRequest() instanceof HttpServletRequest) {
-			return ((HttpServletRequest) getRequest()).getSession(create);
-		}
-		if (getRequest() instanceof ServletRequestWrapper) {
-			return ((ServletRequestWrapper) getRequest()).getSession(create);
-		}
-		throw new RuntimeException("This type of request doesn't have an http session");
+		return ((HttpServletRequest)getRequest()).getSession(create);
+//		if (getRequest() instanceof HttpServletRequest) {
+//			return ((HttpServletRequest) getRequest()).getSession(create);
+//		}
+//		if (getRequest() instanceof ServletRequestWrapper) {
+//			return ((ServletRequestWrapper) getRequest()).getSession(create);
+//		}
+//		throw new RuntimeException("This type of request doesn't have an http session");
 	}
 
 }

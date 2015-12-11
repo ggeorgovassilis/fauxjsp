@@ -14,7 +14,7 @@ import fauxjsp.api.renderer.RenderSession;
  */
 public abstract class JspNode {
 
-	protected CodeLocation location;
+	protected final CodeLocation location;
 	
 	protected JspNode(CodeLocation location){
 		this.location = location;

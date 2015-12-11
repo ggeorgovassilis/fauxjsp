@@ -173,11 +173,10 @@ public class JspParserImpl implements JspParser {
 
 	protected TagfileDefinition loadTagfileDefinition(String fullQualifiedName, String path, String fullPath) {
 		JspParser tagfileParser = parserFactory.create(this);
-		TagfileDefinition tagfileDefinition = new TagfileDefinition(path);
+		TagfileDefinition tagfileDefinition = new TagfileDefinition(fullQualifiedName);
 		// need to add a marker into cache that the tagfile is known,
 		// otherwise a recursive call
 		// will lead to a stack overflow
-		tagfileDefinition.setName(fullQualifiedName);
 		taglibDefinitions.setDefinition(fullPath, tagfileDefinition);
 
 		JspPage page = tagfileParser.parse(fullPath);

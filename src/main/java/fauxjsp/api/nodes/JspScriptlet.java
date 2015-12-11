@@ -15,8 +15,8 @@ import fauxjsp.api.renderer.RenderSession;
 
 public class JspScriptlet extends JspNode {
 
-	protected String sourceCode;
-	protected boolean returnsStatement;
+	protected final String sourceCode;
+	protected final boolean returnsStatement;
 
 	public boolean isReturnsStatement() {
 		return returnsStatement;

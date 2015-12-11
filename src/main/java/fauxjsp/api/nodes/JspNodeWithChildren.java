@@ -19,9 +19,9 @@ import fauxjsp.api.renderer.RenderSession;
  */
 public abstract class JspNodeWithChildren extends JspNode{
 
-	protected List<JspNode> children = new ArrayList<JspNode>();
+	protected final List<JspNode> children = new ArrayList<JspNode>();
 	protected final Map<String, NodeAttributeValue> attributes = new HashMap<String, NodeAttributeValue>();
-	protected String fullQualifiedName;
+	protected final String fullQualifiedName;
 
 	public JspNodeWithChildren(String fullQualifiedName, CodeLocation location){
 		super(location);

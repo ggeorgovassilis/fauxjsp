@@ -13,7 +13,7 @@ import fauxjsp.api.renderer.RenderSession;
  *
  */
 public class JspText extends JspNode {
-	protected String content;
+	protected final String content;
 	
 	@Override
 	public String debugLabel() {

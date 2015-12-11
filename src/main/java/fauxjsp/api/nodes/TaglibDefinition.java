@@ -50,8 +50,8 @@ public abstract class TaglibDefinition {
 		}
 	}
 
-	protected String name;
-	protected Map<String, AttributeDefinition> attributes = new HashMap<String, TaglibDefinition.AttributeDefinition>();
+	protected final String name;
+	protected final Map<String, AttributeDefinition> attributes = new HashMap<String, TaglibDefinition.AttributeDefinition>();
 
 	protected TaglibDefinition(String name) {
 		this.name = name;
@@ -97,10 +97,6 @@ public abstract class TaglibDefinition {
 
 	public String getName() {
 		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	public Map<String, AttributeDefinition> getAttributes() {

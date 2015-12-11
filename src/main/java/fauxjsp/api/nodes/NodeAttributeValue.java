@@ -1,10 +1,10 @@
 package fauxjsp.api.nodes;
 
 /**
- * A node attribute
+ * Marker interface for node attribute
  * @author george georgovassilis
  *
  */
-public abstract class NodeAttributeValue {
+public interface NodeAttributeValue {
 
 }

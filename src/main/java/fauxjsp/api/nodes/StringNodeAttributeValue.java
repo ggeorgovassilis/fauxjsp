@@ -5,14 +5,13 @@ package fauxjsp.api.nodes;
  * @author george georgovassilis
  *
  */
-public class StringNodeAttributeValue extends NodeAttributeValue{
+public class StringNodeAttributeValue implements NodeAttributeValue{
+	protected final String value;
 
 	public StringNodeAttributeValue(String value){
 		this.value = value;
 	}
 	
-	protected String value;
-
 	public String getValue() {
 		return value;
 	}
