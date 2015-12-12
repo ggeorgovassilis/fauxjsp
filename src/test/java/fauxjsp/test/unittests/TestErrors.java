@@ -22,7 +22,7 @@ public class TestErrors extends BaseTest {
 	@Test
 	public void test_taglib_declaration_missing_prefix() {
 		try {
-			parser.parse("WEB-INF/jsp/error_taglib_missing_prefix.jsperr");
+			parser.parseJsp("WEB-INF/jsp/error_taglib_missing_prefix.jsperr");
 			fail("expected a JspParsingException");
 		} catch (JspParsingException e) {
 			String explanation = parser.explain(e);
@@ -34,7 +34,7 @@ public class TestErrors extends BaseTest {
 	@Test
 	public void test_malformed_instruction() {
 		try {
-			parser.parse("WEB-INF/jsp/error_malformed_instruction_1.jsperr");
+			parser.parseJsp("WEB-INF/jsp/error_malformed_instruction_1.jsperr");
 			fail("expected a JspParsingException");
 		} catch (JspParsingException e) {
 			String explanation = parser.explain(e);
@@ -46,7 +46,7 @@ public class TestErrors extends BaseTest {
 	@Test
 	public void test_taglib_declaration_missing_uri() {
 		try {
-			parser.parse("WEB-INF/jsp/error_taglib_missing_uri.jsperr");
+			parser.parseJsp("WEB-INF/jsp/error_taglib_missing_uri.jsperr");
 			fail("expected a JspParsingException");
 		} catch (JspParsingException e) {
 			String explanation = parser.explain(e);
@@ -57,7 +57,7 @@ public class TestErrors extends BaseTest {
 
 	@Test
 	public void test_taglib_missing_argument() throws Exception {
-		JspPage page = parser.parse("WEB-INF/jsp/error_taglib_missing_argument.jsperr");
+		JspPage page = parser.parseJsp("WEB-INF/jsp/error_taglib_missing_argument.jsperr");
 		try {
 			renderer.render(page, session);
 			fail("expected a JspParsingException");
@@ -70,7 +70,7 @@ public class TestErrors extends BaseTest {
 
 	@Test
 	public void test_taglib_wrong_argument_type() throws Exception {
-		JspPage page = parser.parse("WEB-INF/jsp/error_taglib_wrong_argument_type.jsperr");
+		JspPage page = parser.parseJsp("WEB-INF/jsp/error_taglib_wrong_argument_type.jsperr");
 		try {
 			request.setAttribute("listOfStocks", new Date());
 			renderer.render(page, session);
@@ -88,7 +88,7 @@ public class TestErrors extends BaseTest {
 	@Test
 	public void test_taglib_undeclared_argument() throws Exception {
 		try {
-			JspPage page = parser.parse("WEB-INF/jsp/error_taglib_undeclared_argument.jsperr");
+			JspPage page = parser.parseJsp("WEB-INF/jsp/error_taglib_undeclared_argument.jsperr");
 			session.request.setAttribute("navigation", new ArrayList<Object>());
 			session.request.setAttribute("listOfStocks", new ArrayList<Object>());
 			session.request.setAttribute("listOfNews", new ArrayList<Object>());
@@ -104,7 +104,7 @@ public class TestErrors extends BaseTest {
 	@Test
 	public void test_taglib_unbalanced() {
 		try {
-			parser.parse("WEB-INF/jsp/error_taglib_unbalanced.jsperr");
+			parser.parseJsp("WEB-INF/jsp/error_taglib_unbalanced.jsperr");
 			fail("expected a JspParsingException");
 		} catch (JspParsingException e) {
 			String explanation = parser.explain(e);
@@ -115,13 +115,13 @@ public class TestErrors extends BaseTest {
 
 	@Test(expected = Exception.class)
 	public void test_missing_tagfile() {
-		parser.parse("WEB-INF/jsp/error_missing_tagfile.jsperr");
+		parser.parseJsp("WEB-INF/jsp/error_missing_tagfile.jsperr");
 	}
 
 	@Test
 	public void test_taglib_declaration_missing_namespace() {
 		try {
-			parser.parse("WEB-INF/jsp/error_taglib_missing_namespace.jsperr");
+			parser.parseJsp("WEB-INF/jsp/error_taglib_missing_namespace.jsperr");
 			fail("expected a JspParsingException");
 		} catch (JspParsingException e) {
 			String explanation = parser.explain(e);
@@ -133,7 +133,7 @@ public class TestErrors extends BaseTest {
 	@Test
 	public void test_taglib_declaration_duplicate_namespace() {
 		try {
-			parser.parse("WEB-INF/jsp/error_taglib_duplicate_namespace.jsperr");
+			parser.parseJsp("WEB-INF/jsp/error_taglib_duplicate_namespace.jsperr");
 			fail("expected a JspParsingException");
 		} catch (JspParsingException e) {
 			String explanation = parser.explain(e);
@@ -144,13 +144,13 @@ public class TestErrors extends BaseTest {
 
 	@Test(expected = Exception.class)
 	public void test_parse_nonexistent_file() {
-		parser.parse("WEB-INF/jsp/doesntexist.jsp");
+		parser.parseJsp("WEB-INF/jsp/doesntexist.jsp");
 	}
 
 	@Test
 	public void test_error_missing_namespace() {
 		try {
-			parser.parse("WEB-INF/jsp/error_missing_namespace.jsperr");
+			parser.parseJsp("WEB-INF/jsp/error_missing_namespace.jsperr");
 		} catch (JspParsingException e) {
 			String explanation = parser.explain(e);
 			assertTrue(explanation.contains("Trying to close c:choose"));
@@ -161,7 +161,7 @@ public class TestErrors extends BaseTest {
 	@Test
 	public void test_error() {
 		try {
-			parser.parse("WEB-INF/jsp/error.jsperr");
+			parser.parseJsp("WEB-INF/jsp/error.jsperr");
 		} catch (JspParsingException e) {
 			String explanation = parser.explain(e);
 			assertTrue(explanation.contains("leftover text"));

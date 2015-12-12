@@ -23,7 +23,7 @@ public class TestFunctions extends BaseTest {
 
 	@Before
 	public void setup() {
-		page = parser.parse("WEB-INF/jsp/functions.jsp");
+		page = parser.parseJsp("WEB-INF/jsp/functions.jsp");
 		request.setAttribute("s1", "The rain in Spain falls on the plain");
 		request.setAttribute("s2", "The");
 		request.setAttribute("s3", "rain");

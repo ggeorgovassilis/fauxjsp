@@ -25,7 +25,7 @@ public class TestFmt extends BaseTest {
 
 	@Test
 	public void test_fmt_message() {
-		JspPage page = parser.parse("WEB-INF/jsp/fmt_message.jsp");
+		JspPage page = parser.parseJsp("WEB-INF/jsp/fmt_message.jsp");
 
 		session.request.setAttribute(JstlFmtMessage.ATTR_RESOURCE_BUNDLE, "messages");
 
@@ -36,7 +36,7 @@ public class TestFmt extends BaseTest {
 
 	@Test
 	public void test_fmt_set_bundle() {
-		JspPage page = parser.parse("WEB-INF/jsp/fmt_set_bundle.jsp");
+		JspPage page = parser.parseJsp("WEB-INF/jsp/fmt_set_bundle.jsp");
 
 		session.request.setAttribute(JstlFmtMessage.ATTR_RESOURCE_BUNDLE, "messages");
 
@@ -47,7 +47,7 @@ public class TestFmt extends BaseTest {
 
 	@Test
 	public void test_fmt_formatdate() throws Exception{
-		JspPage page = parser.parse("WEB-INF/jsp/fmt_format_date.jsp");
+		JspPage page = parser.parseJsp("WEB-INF/jsp/fmt_format_date.jsp");
 		request.setLocale(Locale.UK);
 
 		SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
@@ -68,7 +68,7 @@ public class TestFmt extends BaseTest {
 
 	@Test
 	public void test_fmt_formatdate_value_is_null() {
-		JspPage page = parser.parse("WEB-INF/jsp/fmt_format_date.jsp");
+		JspPage page = parser.parseJsp("WEB-INF/jsp/fmt_format_date.jsp");
 		request.setLocale(Locale.UK);
 		Date date = null;
 		request.setAttribute("now", date);
@@ -83,7 +83,7 @@ public class TestFmt extends BaseTest {
 
 	@Test
 	public void test_fmt_formatdate_value_is_not_a_date() {
-		JspPage page = parser.parse("WEB-INF/jsp/fmt_format_date.jsp");
+		JspPage page = parser.parseJsp("WEB-INF/jsp/fmt_format_date.jsp");
 		request.setLocale(Locale.UK);
 		String date = "01-02-2013";
 		request.setAttribute("now", date);
@@ -99,7 +99,7 @@ public class TestFmt extends BaseTest {
 
 	@Test
 	public void test_fmt_formatNumber() {
-		JspPage page = parser.parse("WEB-INF/jsp/fmt_format_number.jsp");
+		JspPage page = parser.parseJsp("WEB-INF/jsp/fmt_format_number.jsp");
 		request.setLocale(Locale.UK);
 		request.setAttribute("balance", 120000.231);
 		renderer.render(page, session);

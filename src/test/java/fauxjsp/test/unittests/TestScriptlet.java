@@ -22,7 +22,7 @@ public class TestScriptlet extends BaseTest {
 	@Test
 	public void testScriptlets() {
 		final String expected = "N0,Headline 0,DESCRIPTION 0,true\nN1,Headline 1,DESCRIPTION 1,false\nN2,Headline 2,DESCRIPTION 2,true";
-		JspPage page = parser.parse("WEB-INF/jsp/scriptlet.jsp");
+		JspPage page = parser.parseJspFragment("WEB-INF/jsp/scriptlet.jsp");
 		List<News> news = new ArrayList<>();
 		for (int i = 0; i < 3; i++)
 			news.add(new News("N" + i, "Headline " + i, "Description " + i, "Fulltext " + i, i % 2 == 0));
@@ -34,7 +34,7 @@ public class TestScriptlet extends BaseTest {
 
 	@Test
 	public void test_scriptlet_with_syntax_error() {
-		JspPage page = parser.parse("WEB-INF/jsp/scriptlet_syntax_error.jsperr");
+		JspPage page = parser.parseJspFragment("WEB-INF/jsp/scriptlet_syntax_error.jsperr");
 		List<News> news = new ArrayList<>();
 		for (int i = 0; i < 3; i++)
 			news.add(new News("N" + i, "Headline " + i, "Description " + i, "Fulltext " + i, i % 2 == 0));

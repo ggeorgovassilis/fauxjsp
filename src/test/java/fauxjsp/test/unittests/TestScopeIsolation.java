@@ -16,7 +16,7 @@ public class TestScopeIsolation extends BaseTest{
 	
 	@Test
 	public void test_scope_isolation(){
-		JspPage page = parser.parse("WEB-INF/jsp/scope_isolation.jsp");
+		JspPage page = parser.parseJspFragment("WEB-INF/jsp/scope_isolation.jsp");
 
 		session.request.setAttribute("a", "0");
 		

@@ -37,7 +37,7 @@ import static org.junit.Assert.*;
  */
 public class TestPerformance extends BaseTest {
 
-	final long WARMUP_MS = 5000;
+	final long WARMUP_MS = 2000;
 	final long RUNS_MS = 5000;
 
 	protected int run(Runnable r, long duration) {
@@ -56,7 +56,7 @@ public class TestPerformance extends BaseTest {
 
 			@Override
 			public void run() {
-				newParser().parse("WEB-INF/jsp/big.jsp");
+				newParser().parseJspFragment("WEB-INF/jsp/big.jsp");
 			}
 		};
 		run(r, WARMUP_MS);
@@ -111,7 +111,7 @@ public class TestPerformance extends BaseTest {
 
 	@Test
 	public void testJspRenderer() {
-		final JspPage page = newParser().parse("WEB-INF/jsp/big.jsp");
+		final JspPage page = newParser().parseJsp("WEB-INF/jsp/big.jsp");
 		Item root = new Item();
 		root.setId("0");
 		final Item tree = makeTree(root, 0, 5, 10);

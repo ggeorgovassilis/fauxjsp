@@ -16,7 +16,7 @@ public class TestJspAttribute extends BaseTest{
 	
 	@Test
 	public void jsp_attibute(){
-		JspPage page = parser.parse("WEB-INF/jsp/jsp_attribute.jsp");
+		JspPage page = parser.parseJsp("WEB-INF/jsp/jsp_attribute.jsp");
 		
 		renderer.render(page, session);
 		String text = getPrettyContent(response);

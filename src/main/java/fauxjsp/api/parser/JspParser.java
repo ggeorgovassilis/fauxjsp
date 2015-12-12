@@ -38,13 +38,20 @@ public interface JspParser {
 	void registerTaglibDefinition(String namespace, String path, TaglibDefinition definition);
 	
 	/**
-	 * Parse the JSP at the given path. The parser's location resolver (see {@link #getLocationResolver()} will be asked to
-	 * return the JSP file for that path
+	 * Parse the JSP (or fragment) at the given path. The parser's location resolver (see {@link #getLocationResolver()} will be asked to
+	 * return the JSP file for that path.
 	 * @param path
 	 * @return
 	 */
-	JspPage parse(String path);
-	
+	JspPage parseJspFragment(String path);
+
+	/**
+	 * Parse the JSP at the given path.
+	 * @param path
+	 * @return
+	 */
+	JspPage parseJsp(String path);
+
 	/**
 	 * Explain an exception in understandable terms
 	 * @param exception

@@ -20,10 +20,11 @@ public class ServletRequestWrapper extends HttpServletRequestWrapper implements 
 
 	public final static String OVERRIDEN_LOCALE = "__fauxjsp_locale";
 
-	protected final Map<String, Object> attributes=new HashMap<>();
+	protected final Map<String, Object> attributes;
 
 	public ServletRequestWrapper(HttpServletRequest request) {
 		super(request);
+		attributes = new HashMap<>(10);
 		for (Enumeration<String> e = request.getAttributeNames(); e.hasMoreElements();) {
 			String attribute = e.nextElement();
 			attributes.put(attribute, request.getAttribute(attribute));
@@ -32,7 +33,7 @@ public class ServletRequestWrapper extends HttpServletRequestWrapper implements 
 
 	public ServletRequestWrapper(ServletRequestWrapper request) {
 		super(request);
-		attributes.putAll(request.getAttributes());
+		attributes=new HashMap<String,Object>(request.getAttributes());
 	}
 
 	protected Map<String, Object> getAttributes(){
@@ -81,13 +82,6 @@ public class ServletRequestWrapper extends HttpServletRequestWrapper implements 
 
 	public HttpSession getSession(boolean create) {
 		return ((HttpServletRequest)getRequest()).getSession(create);
-//		if (getRequest() instanceof HttpServletRequest) {
-//			return ((HttpServletRequest) getRequest()).getSession(create);
-//		}
-//		if (getRequest() instanceof ServletRequestWrapper) {
-//			return ((ServletRequestWrapper) getRequest()).getSession(create);
-//		}
-//		throw new RuntimeException("This type of request doesn't have an http session");
 	}
 
 }

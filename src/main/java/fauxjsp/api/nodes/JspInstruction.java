@@ -1,6 +1,10 @@
 package fauxjsp.api.nodes;
 
+import java.io.IOException;
+
 import fauxjsp.api.parser.CodeLocation;
+import fauxjsp.api.renderer.JspRenderer;
+import fauxjsp.api.renderer.RenderSession;
 
 /**
  * Models a JSP instruction (the &lt;%@ ... %&gt; tags)
@@ -8,10 +12,14 @@ import fauxjsp.api.parser.CodeLocation;
  *
  */
 
-public class JspInstruction extends JspNodeWithChildren {
+public class JspInstruction extends JspNodeWithAttributes {
 
 	public JspInstruction(String name, CodeLocation location){
 		super(name, location);
+	}
+	
+	@Override
+	public void renderSelf(RenderSession session, JspRenderer renderer) throws IOException {
 	}
 
 }

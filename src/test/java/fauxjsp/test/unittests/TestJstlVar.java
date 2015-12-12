@@ -16,7 +16,7 @@ public class TestJstlVar extends BaseTest{
 	
 	@Test
 	public void test_var(){
-		JspPage page = parser.parse("WEB-INF/jsp/var.jsp");
+		JspPage page = parser.parseJspFragment("WEB-INF/jsp/var.jsp");
 		session.request.setAttribute("x", "test");
 
 		renderer.render(page, session);

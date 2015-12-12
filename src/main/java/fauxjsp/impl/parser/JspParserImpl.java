@@ -1,9 +1,9 @@
 package fauxjsp.impl.parser;
 
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -179,18 +179,18 @@ public class JspParserImpl implements JspParser {
 		// will lead to a stack overflow
 		taglibDefinitions.setDefinition(fullPath, tagfileDefinition);
 
-		JspPage page = tagfileParser.parse(fullPath);
+		JspPage page = tagfileParser.parseJspFragment(fullPath);
 		tagfileDefinition.setBody(page);
 		for (JspNode child : page.getChildren())
 			if (child instanceof JspInstruction) {
 				JspInstruction instruction = (JspInstruction) child;
 				if (instruction.getName().equals("attribute")) {
-					String attributeName = Utils.attr("name",instruction.getAttributes());
-					String sAttributeRequired = Utils.attr("required",instruction.getAttributes());
-					String sType = Utils.attr("type",instruction.getAttributes());
+					String attributeName = Utils.attr("name", instruction.getAttributes());
+					String sAttributeRequired = Utils.attr("required", instruction.getAttributes());
+					String sType = Utils.attr("type", instruction.getAttributes());
 					if (Utils.isEmpty(sType))
 						sType = String.class.getCanonicalName();
-					String sRTValue = Utils.attr("rtexprvalue",instruction.getAttributes());
+					String sRTValue = Utils.attr("rtexprvalue", instruction.getAttributes());
 
 					TaglibDefinition.AttributeDefinition attributeDefinition = new TaglibDefinition.AttributeDefinition(
 							attributeName, sType, toBool(sRTValue, true), toBool(sAttributeRequired, true));
@@ -231,7 +231,7 @@ public class JspParserImpl implements JspParser {
 		StringBuilder sInstruction = new StringBuilder(substring(CLOSE_INSTRUCTION.length() + closingIndex - index));
 
 		int indexOfAt = sInstruction.indexOf("@");
-		sInstruction.deleteCharAt(indexOfAt); 
+		sInstruction.deleteCharAt(indexOfAt);
 
 		int indexOfPercent = sInstruction.indexOf("%");
 		sInstruction.deleteCharAt(indexOfPercent);
@@ -280,7 +280,7 @@ public class JspParserImpl implements JspParser {
 
 	protected void maybeRegisterTaglib(JspInstruction instruction) {
 		if (instruction.getName().equals("taglib")) {
-			String namespace = Utils.attr("prefix",instruction.getAttributes());
+			String namespace = Utils.attr("prefix", instruction.getAttributes());
 			if (Utils.isEmpty(namespace))
 				parsingError("Missing prefix attribute on taglib");
 			if (taglibNamespaces.containsKey(namespace))
@@ -289,15 +289,16 @@ public class JspParserImpl implements JspParser {
 			if (instruction.getAttributes().containsKey("tagdir")) {
 				path = Utils.attr("tagdir", instruction.getAttributes());
 			} else if (instruction.getAttributes().containsKey("uri")) {
-				path = Utils.attr("uri",instruction.getAttributes());
+				path = Utils.attr("uri", instruction.getAttributes());
 			} else
 				parsingError("Taglib declaration requires either a uri or tagdir attribute");
 			taglibNamespaces.put(namespace, path);
 		}
 	}
-	
-	protected void convertJspAttributeTagToAttributeOnParent(JspTaglibInvocation jspAttribute, JspTaglibInvocation parent){
-		String attributeName = Utils.attr("name",jspAttribute.getAttributes());
+
+	protected void convertJspAttributeTagToAttributeOnParent(JspTaglibInvocation jspAttribute,
+			JspTaglibInvocation parent) {
+		String attributeName = Utils.attr("name", jspAttribute.getAttributes());
 		BodyNodeAttributeValue body = new BodyNodeAttributeValue(jspAttribute);
 		parent.getAttributes().put(attributeName, body);
 		parent.getChildren().remove(jspAttribute);
@@ -310,15 +311,15 @@ public class JspParserImpl implements JspParser {
 		JspTaglibInvocation jspTaglib = pullNode(taglib.getName());
 		JspNodeWithChildren currentNode = getCurrentNode();
 		currentNode.getChildren().add(jspTaglib);
-		if (jspTaglib.getName().equals("jsp:attribute")){
-			JspNodeWithChildren parent = nodeStack.get(nodeStack.size()-1);
+		if (jspTaglib.getName().equals("jsp:attribute")) {
+			JspNodeWithChildren parent = nodeStack.get(nodeStack.size() - 1);
 			if (!(parent instanceof JspTaglibInvocation))
-				throw new JspParsingException(taglib.getName()+" must be direct child of a taglib invocation, but "+parent.getName()+" isn't one.", getCurrentLocation());
-			convertJspAttributeTagToAttributeOnParent(jspTaglib, (JspTaglibInvocation)parent);
+				throw new JspParsingException(taglib.getName() + " must be direct child of a taglib invocation, but "
+						+ parent.getName() + " isn't one.", getCurrentLocation());
+			convertJspAttributeTagToAttributeOnParent(jspTaglib, (JspTaglibInvocation) parent);
 		}
 	}
 
-	
 	protected void processCloseTaglibAndAdvance(JspTaglibInvocation taglib) {
 		processCloseTaglib(taglib);
 		advance(taglib.getName());
@@ -345,7 +346,7 @@ public class JspParserImpl implements JspParser {
 
 	protected void maybeIncludeContent(JspInstruction instruction, JspNodeWithChildren parent) {
 		if ("include".equals(instruction.getName())) {
-			String path = Utils.attr("file",instruction.getAttributes());
+			String path = Utils.attr("file", instruction.getAttributes());
 			String resolvedPath = path;
 			if (Utils.isEmpty(path))
 				parsingError("Missing 'file' attribute");
@@ -407,7 +408,12 @@ public class JspParserImpl implements JspParser {
 		return false;
 	}
 
-	public JspPage parse(String path) {
+	/**
+	 * General contract of {@link JspParser#parseJspFragment(String)} holds. This method, in addition, parses also
+	 * tagfiles.
+	 */
+	@Override
+	public JspPage parseJspFragment(String path) {
 		try {
 			this.pagePath = path;
 			// TODO: configurable encoding
@@ -468,6 +474,29 @@ public class JspParserImpl implements JspParser {
 		} else
 			causeExplanation = exception.getMessage();
 		return causeExplanation + "\n" + exception.getCodeLocation();
+	}
+
+	/**
+	 * Removes instructions from a node and children since the parser already constructed all definitions.
+	 * Removing instruction nodes slims down the page.
+	 * @param node
+	 */
+	//TODO: nodes should probably be removed during parsing already / not constructed at all?
+	protected void stripInstructions(JspNodeWithChildren node) {
+		for (Iterator<JspNode> ite = node.getChildren().iterator(); ite.hasNext();) {
+			JspNode child = ite.next();
+			if (child instanceof JspNodeWithChildren)
+				stripInstructions((JspNodeWithChildren) child);
+			else if (child instanceof JspInstruction)
+				ite.remove();
+		}
+	}
+
+	@Override
+	public JspPage parseJsp(String path) {
+		JspPage page = parseJspFragment(path);
+		stripInstructions(page);
+		return page;
 	}
 
 }

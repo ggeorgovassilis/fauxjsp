@@ -32,7 +32,7 @@ public class TestJspParserAndRenderer extends BaseTest {
 
 	@Test
 	public void testParser() throws Exception {
-		JspPage page = parser.parse("WEB-INF/jsp/homepage.jsp");
+		JspPage page = parser.parseJspFragment("WEB-INF/jsp/homepage.jsp");
 		assertEquals(5, page.getChildren().size());
 
 		JspInstruction j1 = (JspInstruction) page.getChildren().get(0);
@@ -69,7 +69,7 @@ public class TestJspParserAndRenderer extends BaseTest {
 
 	@Test
 	public void testJspRenderer() throws Exception {
-		JspPage page = parser.parse("WEB-INF/jsp/homepage.jsp");
+		JspPage page = parser.parseJsp("WEB-INF/jsp/homepage.jsp");
 
 		request.setAttribute(RenderSession.ATTR_TIMEZONE, TimeZone.getTimeZone("UTC"));
 
@@ -92,7 +92,7 @@ public class TestJspParserAndRenderer extends BaseTest {
 	@Test
 	public void testJspParserNews() throws Exception {
 		String expected = sanitize(read("/expected/newspage2.html"));
-		JspPage page = parser.parse("news.jsp");
+		JspPage page = parser.parseJsp("news.jsp");
 
 		SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 		isoFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -116,7 +116,7 @@ public class TestJspParserAndRenderer extends BaseTest {
 
 	@Test
 	public void testHtmlEscape() throws Exception {
-		JspPage page = parser.parse("news.jsp");
+		JspPage page = parser.parseJsp("news.jsp");
 		request.setAttribute("navigation",
 				Arrays.asList(new NavigationItem("path 1", "label 1"), new NavigationItem("path 2", "label 2")));
 		request.setAttribute("listOfStocks", Arrays.asList(new Stock("S1", "Stock one", 25000, 1),
@@ -136,7 +136,7 @@ public class TestJspParserAndRenderer extends BaseTest {
 
 	@Test
 	public void testRendererForEach() {
-		JspPage page = parser.parse("WEB-INF/jsp/foreach.jsp");
+		JspPage page = parser.parseJsp("WEB-INF/jsp/foreach.jsp");
 
 		request.setAttribute("listOfNews",
 				Arrays.asList(new News("0", "headline 0", "description 0", "full text of news 0", false),
@@ -158,12 +158,12 @@ public class TestJspParserAndRenderer extends BaseTest {
 	// nested tags
 	@Test
 	public void testParserMultipleNesting() {
-		JspPage page = parser.parse("WEB-INF/jsp/nesting.jsp");
+		JspPage page = parser.parseJsp("WEB-INF/jsp/nesting.jsp");
 
 		renderer.render(page, session);
 		String text = getPrettyContent(response);
 		assertEquals(text,
-				"level0-a-opens\n <a value=\"level1\">\nlevel1-b-opens\n <b value=\"level2\">\nlevel2-a-opens\n <a value=\"level3\">\nlevel3-b-opens\n <b value=\"level4\">\nlevel4-inner\n</b>\nlevel3-b-closed\n</a>\nlevel2-a-closed\n</b>\nlevel1-b-closed\n</a>\nlevel0-a-closed",
+				"level0-a-opens\n<a value=\"level1\">\nlevel1-b-opens\n<b value=\"level2\">\nlevel2-a-opens\n<a value=\"level3\">\nlevel3-b-opens\n<b value=\"level4\">\nlevel4-inner\n</b>\nlevel3-b-closed\n</a>\nlevel2-a-closed\n</b>\nlevel1-b-closed\n</a>\nlevel0-a-closed",
 				text);
 	}
 
@@ -175,7 +175,7 @@ public class TestJspParserAndRenderer extends BaseTest {
 	 */
 	@Test
 	public void testTrickyColonInAttribute() {
-		JspPage page = parser.parse("WEB-INF/jsp/link.jsp");
+		JspPage page = parser.parseJsp("WEB-INF/jsp/link.jsp");
 		assertEquals(1, page.getChildren().size());
 		JspText node = (JspText) page.getChildren().get(0);
 		String result = sanitize(node.getContentAsString());

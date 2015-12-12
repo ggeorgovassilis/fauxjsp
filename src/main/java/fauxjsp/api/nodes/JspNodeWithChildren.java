@@ -2,9 +2,7 @@ package fauxjsp.api.nodes;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import fauxjsp.api.parser.CodeLocation;
 import fauxjsp.api.renderer.JspRenderer;
@@ -17,32 +15,16 @@ import fauxjsp.api.renderer.RenderSession;
  * @author George Georgovassilis
  *
  */
-public abstract class JspNodeWithChildren extends JspNode{
+public abstract class JspNodeWithChildren extends JspNodeWithAttributes{
 
 	protected final List<JspNode> children = new ArrayList<JspNode>();
-	protected final Map<String, NodeAttributeValue> attributes = new HashMap<String, NodeAttributeValue>();
-	protected final String fullQualifiedName;
 
 	public JspNodeWithChildren(String fullQualifiedName, CodeLocation location){
-		super(location);
-		this.fullQualifiedName = fullQualifiedName;
+		super(fullQualifiedName, location);
 	}
 	
-	@Override
-	public String debugLabel() {
-		return getName();
-	}
-
-	public String getName() {
-		return fullQualifiedName;
-	}
-
 	public List<JspNode> getChildren() {
 		return children;
-	}
-
-	public Map<String, NodeAttributeValue> getAttributes() {
-		return attributes;
 	}
 
 	@Override

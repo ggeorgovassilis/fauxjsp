@@ -46,8 +46,9 @@ public class ELFactoryServlet3Impl implements ELFactory {
 
 	protected void setupFunctions(ELContext context) {
 		for (String prefix : prefixToFunctions.keySet()) {
-			for (Method method : prefixToFunctions.get(prefix))
+			for (Method method : prefixToFunctions.get(prefix)) {
 				context.getFunctionMapper().mapFunction(prefix, method.getName(), method);
+			}
 		}
 	}
 
@@ -97,7 +98,8 @@ public class ELFactoryServlet3Impl implements ELFactory {
 						try {
 							registerTaglib(dBuilder, config, taglib.getTaglibURI(), taglib.getTaglibLocation());
 						} catch (Exception e) {
-							log.error("Failed registering taglib "+taglib.getTaglibLocation()+", expect subsequent failures.", e);
+							log.error("Failed registering taglib " + taglib.getTaglibLocation()
+									+ ", expect subsequent failures.", e);
 						}
 			}
 		} catch (Exception e) {
