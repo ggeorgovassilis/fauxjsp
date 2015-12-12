@@ -118,7 +118,7 @@ public class JspServlet extends HttpServlet {
 			if (resp.getCharacterEncoding()==null)
 				resp.setCharacterEncoding("UTF-8");
 			RenderSession session = new RenderSession();
-			JspPage page = parser.parse(servletPath);
+			JspPage page = parser.parseJsp(servletPath);
 			session.renderer = renderer;
 			session.elEvaluation = new ELEvaluationImpl(elFactory);
 			session.request = new ServletRequestWrapper(req);

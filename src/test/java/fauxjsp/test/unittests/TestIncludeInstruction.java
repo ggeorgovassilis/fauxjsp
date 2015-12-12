@@ -16,7 +16,7 @@ public class TestIncludeInstruction extends BaseTest{
 	
 	@Test
 	public void test_include() throws Exception{
-		JspPage page = parser.parse("WEB-INF/jsp/include.jsp");
+		JspPage page = parser.parseJsp("WEB-INF/jsp/include.jsp");
 
 		renderer.render(page, session);
 		String text = getContent(response);

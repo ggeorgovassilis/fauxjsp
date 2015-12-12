@@ -18,7 +18,7 @@ public class TestChoose extends BaseTest {
 	@Test
 	public void test_choose() {
 		request.setAttribute("change", -12);
-		JspPage page = parser.parse("WEB-INF/jsp/c_choose.jsp");
+		JspPage page = parser.parseJsp("WEB-INF/jsp/c_choose.jsp");
 		renderer.render(page, session);
 		String text = getPrettyContent(response);
 		assertTrue(text, text.contains("change negative"));
@@ -28,7 +28,7 @@ public class TestChoose extends BaseTest {
 	@Test
 	public void test_choose_bad_element() {
 		request.setAttribute("change", -12);
-		JspPage page = parser.parse("WEB-INF/jsp/error_c_choose_bad_element.jsperr");
+		JspPage page = parser.parseJsp("WEB-INF/jsp/error_c_choose_bad_element.jsperr");
 		try {
 			renderer.render(page, session);
 			fail("Expected to fail");
