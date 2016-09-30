@@ -16,7 +16,7 @@ public class TestNodes extends BaseTest{
 
 	@Test
 	public void test_JspNodeWithChildren_toString(){
-		String expected="<c:forEach end=${end} begin=1 items=${listOfNews} var=news><c:out value=${news.id}></c:out></c:forEach>";
+		String expected="<c:forEach begin=1 end=${end} items=${listOfNews} var=news><c:out value=${news.id}></c:out></c:forEach>";
 		JspPage page = parser.parseJspFragment("WEB-INF/jsp/foreach.jsp");
 		JspNodeWithChildren n = (JspNodeWithChildren)page.getChildren().get(4);
 		assertEquals("c:forEach", n.getName());

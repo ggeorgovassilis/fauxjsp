@@ -2,6 +2,7 @@ package fauxjsp.api.nodes;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import fauxjsp.api.parser.CodeLocation;
@@ -30,7 +31,10 @@ public abstract class JspNodeWithChildren extends JspNodeWithAttributes{
 	@Override
 	public String toString() {
 		StringBuffer sb = new StringBuffer("<").append(getName());
-		for (String key:attributes.keySet()){
+		List<String> sortedAttributes = new ArrayList<>(attributes.keySet());
+		// not important for production, but unit tests expect a fixed order
+		Collections.sort(sortedAttributes);
+		for (String key:sortedAttributes){
 			sb.append(" ");
 			sb.append(key);
 			sb.append("=");
