@@ -9,7 +9,7 @@ import fauxjsp.api.nodes.JspNode;
 
 public interface JspRenderer {
 
-	void render(JspNode node, RenderSession session);
+	Void render(JspNode node, RenderSession session);
 
 	String explain(JspRenderException exception);
 	

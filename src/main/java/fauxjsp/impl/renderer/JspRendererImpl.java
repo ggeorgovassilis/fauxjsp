@@ -30,10 +30,11 @@ public class JspRendererImpl implements JspRenderer {
 	}
 
 	@Override
-	public void render(JspNode page, RenderSession session) {
+	public Void render(JspNode page, RenderSession session) {
 		if (session.request.getAttribute(RenderSession.ATTR_TIMEZONE) == null)
 			session.request.setAttribute(RenderSession.ATTR_TIMEZONE, TimeZone.getDefault());
 		renderNode(page, session);
+		return null;
 	}
 
 	protected void write(OutputStream out, byte[] content) {
