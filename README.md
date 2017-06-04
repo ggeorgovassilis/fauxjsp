@@ -32,16 +32,23 @@ Constraints and missing features:
 
 * Out-of-the-box only core taglibs are supported. This means that core taglibs like c:out will work but
   third party taglibs such as [displaytag](http://www.displaytag.org) won't, unless you re-implement them for fauxjsp.
-* Not all core taglibs are supported and not all features of the supported ones are implemented.
+* Not all core taglibs are supported and not all features of the supported ones are implemented which is not an intentional omission. Please submit a bug report if you think something is missing.
 * I didn't read up on JSP/JSTL/servlet specifications. This implementation is "steer by sight" (aka "works for me").
 * Your servlet container needs to provide some EL 3.0 implementation (i.e. works with Tomcat 8, not with Tomcat 7)
 * I didn't read up on variable scoping; scopes work pretty much like variable scopes in Java blocks.
-* Encodings are pinned to UTF-8
-* Not all JSP implicit objects are available
-* Newline handling in output may differ a bit from how standard JSP does it
-* Scriptlets are implemented via [beanshell](http://www.beanshell.org) which means that there might be deviations from how scriptlets are handled normally.
-* The JSP language ecosystem is rather complex; HTML, JSTL, EL and scriptlets are frequently mixed in the same file which is hard to parse. Fauxjsp uses very simple parsers which means that it's likely to get confused by delimiters used in code, e.g.
+* Encodings are pinned to UTF-8.
+* Not all JSP implicit objects are available.
+* Newline handling in output may differ from main stream JSP implementations.
+* Scriptlets are implemented via [beanshell](http://www.beanshell.org) which means that there might be deviations from how scriptlets are handled in Jasper et al.
+* The JSP language ecosystem is rather complex; HTML, JSTL, EL and scriptlets are frequently mixed in the same file which is hard to parse. Fauxjsp uses a very simple parser which means that it's likely to get confused by delimiters used in code, e.g.
 "<" or ">" as strings in scriptlets, "{" or "}" as strings in EL etc.
+
+### With all these restrictions... why should you bother?
+
+Because:
+
+* JSPs and tagfiles reload instantly saving you plenty of time
+* fauxjsp is a weaker JSP implementation than Jasper; if it works in fauxjsp, it will probably work in Jasper, too.
 
 ## Getting started
 
