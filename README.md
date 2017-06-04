@@ -1,4 +1,4 @@
-<img src="https://travis-ci.org/ggeorgovassilis/fauxjsp.svg"/>
+<img src="https://travis-ci.org/ggeorgovassilis/fauxjsp.svg"/> <img src="https://coveralls.io/repos/github/ggeorgovassilis/fauxjsp/badge.svg?branch=master"/>
 
 fauxjsp
 =======
@@ -58,7 +58,7 @@ mvn install
 <dependency>
 	<groupId>com.github.ggeorgovassilis</groupId>
 	<artifactId>fauxjsp</artifactId>
-	<version>0.0.3-SNAPSHOT</version>
+	<version>0.0.4-SNAPSHOT</version>
 </dependency>
 ```
 
