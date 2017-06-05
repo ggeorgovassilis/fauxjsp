@@ -52,7 +52,7 @@ public class TagParser {
 					if (c == typeOfQuote)
 						inQuotes = false;
 				}
-				inQuotes = !inQuotes;
+				//TODO this was in an older version but doesn't seem to make sense: inQuotes = !inQuotes;
 			} else if (c == '>' && !inQuotes)
 				return text.substring(0, i + 1);
 		}

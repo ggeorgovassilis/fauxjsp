@@ -7,6 +7,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+
 import fauxjsp.api.logging.Logger;
 import fauxjsp.api.nodes.BodyNodeAttributeValue;
 import fauxjsp.api.nodes.JspInstruction;
@@ -16,6 +18,8 @@ import fauxjsp.api.nodes.JspPage;
 import fauxjsp.api.nodes.JspScriptlet;
 import fauxjsp.api.nodes.JspTaglibInvocation;
 import fauxjsp.api.nodes.JspText;
+import fauxjsp.api.nodes.NodeAttributeValue;
+import fauxjsp.api.nodes.StringNodeAttributeValue;
 import fauxjsp.api.nodes.TagfileDefinition;
 import fauxjsp.api.nodes.TaglibDefinition;
 import fauxjsp.api.parser.CodeLocation;
@@ -341,6 +345,14 @@ public class JspParserImpl implements JspParser {
 		flushText();
 		invocation.setDefinition(getOrLoadDefinition(invocation));
 		advanceAfterNext(">");
+		//if attributes contain a > then we need to advance even further
+		for (NodeAttributeValue attr:invocation.getAttributes().values())
+			if (attr instanceof StringNodeAttributeValue){
+				StringNodeAttributeValue snav = (StringNodeAttributeValue)attr;
+				int matchCount = StringUtils.countMatches(snav.getValue(), ">");
+				for (;matchCount>0;matchCount--)
+					advanceAfterNext(">");
+			}
 		pushNode(invocation);
 	}
 
