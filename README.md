@@ -34,21 +34,21 @@ Constraints and missing features:
   third party taglibs such as [displaytag](http://www.displaytag.org) won't, unless you re-implement them for fauxjsp.
 * Not all core taglibs are supported and not all features of the supported ones are implemented which is not an intentional omission. Please submit a bug report if you think something is missing.
 * I didn't read up on JSP/JSTL/servlet specifications. This implementation is "steer by sight" (aka "works for me").
-* Your servlet container needs to provide some EL 3.0 implementation (i.e. works with Tomcat 8, not with Tomcat 7)
-* I didn't read up on variable scoping; scopes work pretty much like variable scopes in Java blocks.
-* Encodings are pinned to UTF-8.
-* Not all JSP implicit objects are available.
+* Servlet containers needs to provide some EL 3.0 implementation (i.e. works with Tomcat 8, not with Tomcat 7)
+* I didn't read up on variable scoping; scopes work similarly to variable scopes in Java blocks.
+* Encoding is pinned to UTF-8.
+* Not all JSP [implicit objects](https://docs.oracle.com/cd/E19316-01/819-3669/bnaij/index.html) are available.
 * Newline handling in output may differ from main stream JSP implementations.
 * Scriptlets are implemented via [beanshell](http://www.beanshell.org) which means that there might be deviations from how scriptlets are handled in Jasper et al.
-* The JSP language ecosystem is rather complex; HTML, JSTL, EL and scriptlets are frequently mixed in the same file which is hard to parse. Fauxjsp uses a very simple parser which means that it's likely to get confused by delimiters used in code, e.g.
-"<" or ">" as strings in scriptlets, "{" or "}" as strings in EL etc.
+* The JSP language ecosystem is rather complex; HTML, JSTL, EL and scriptlets are frequently mixed in the same file which is hard to parse. Fauxjsp uses a very simple parser which means that it's likely to get confused by characters in EL expressions which have special meaning in XML, e.g.
+"<" or ">" as strings in scriptlets, "{" or "}" as strings in EL - you might have to use [named entities](https://en.wikipedia.org/wiki/List_of_XML_and_HTML_character_entity_references). Note that release 0.0.4 significantly improved handling of such characters.
 
 ### With all these restrictions... why should you bother?
 
 Because:
 
-* JSPs and tagfiles reload instantly saving you plenty of time
-* fauxjsp is a weaker JSP implementation than Jasper; if it works in fauxjsp, it will probably work in Jasper, too.
+* JSPs and tagfiles reload instantly saving you plenty of time and server restarts.
+* fauxjsp implements a subset of the JSP specification; if it works in fauxjsp, it will probably work in Jasper, too.
 
 ## Getting started
 
@@ -140,7 +140,7 @@ the parsed results. In detail:
    taglibs are read only once during each request.
 5. When the parser meets tagfile declarations, it asks the ```JspParserFactory``` for a new parser who recursively parses the tagfile.
 
-Unfortunately, currently it is not possible to load taglibs other than tagfiles. However it is possible to use missing taglibs by providing a special implementation for fauxjsp yourself. Depending on the taglib you are trying to simulate this may or not be
+Unfortunately, currently it is not possible to load taglibs other than tagfiles. However it is possible to use missing taglibs by providing a special implementation for fauxjsp yourself. Depending on the taglib you are trying to simulate this may or may not be
 a labour-intensive task. For some examples, have a look at the ```JstlCoreTaglib*``` classes. The ```DefaultJspParserFactoryImpl``` factory sets those
 up under a special namespace, one for each taglib method.
 
@@ -181,7 +181,7 @@ up under a special namespace, one for each taglib method.
 
 ```
 
-### Formatting and internationalization
+### Formatting and internationalisation
 
 ```xml
 <fmt:message key="..."/>
