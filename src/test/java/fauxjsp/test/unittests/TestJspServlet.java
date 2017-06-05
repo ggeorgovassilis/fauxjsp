@@ -6,16 +6,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.spi.RendererSupport;
 import org.junit.Test;
-
-import fauxjsp.api.nodes.JspNode;
-import fauxjsp.api.nodes.JspTaglibInvocation;
-import fauxjsp.api.parser.CodeLocation;
-import fauxjsp.api.parser.JspParsingException;
-import fauxjsp.api.renderer.JspRenderException;
-import fauxjsp.api.renderer.JspRenderer;
-import fauxjsp.api.renderer.RenderSession;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
