@@ -22,6 +22,7 @@ import javax.servlet.jsp.el.VariableResolver;
  *
  */
 
+@SuppressWarnings("deprecation")
 public class JspPageContextImpl extends PageContext{
 	
 	protected ServletRequest request;
