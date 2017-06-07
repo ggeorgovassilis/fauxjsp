@@ -135,13 +135,30 @@ public class TestJspParserAndRenderer extends BaseTest {
 	}
 
 	@Test
-	public void testRendererForEach() {
+	public void testRendererForEach_collection() {
 		JspPage page = parser.parseJsp("WEB-INF/jsp/foreach.jsp");
 
 		request.setAttribute("listOfNews",
 				Arrays.asList(new News("0", "headline 0", "description 0", "full text of news 0", false),
 						new News("1", "headline 1", "description 1", "full text of news 1", false),
 						new News("2", "headline 2", "description 2", "full text of news 2", false)));
+		
+		request.setAttribute("end", 2);
+		renderer.render(page, session);
+		String text = getPrettyContent(response);
+		assertEquals(
+				"NEWS SECTION 1: 012\nNEWS SECTION 2: 12\nNEWS SECTION 3: 0\nVARSTATUS: 1,0,true,false\n2,1,false,false\n3,2,false,true",
+				text);
+	}
+
+	@Test
+	public void testRendererForEach_array() {
+		JspPage page = parser.parseJsp("WEB-INF/jsp/foreach.jsp");
+
+		request.setAttribute("listOfNews",
+				new News[]{new News("0", "headline 0", "description 0", "full text of news 0", false),
+						new News("1", "headline 1", "description 1", "full text of news 1", false),
+						new News("2", "headline 2", "description 2", "full text of news 2", false)});
 		
 		request.setAttribute("end", 2);
 		renderer.render(page, session);

@@ -24,6 +24,21 @@ import fauxjsp.impl.renderer.ForEachIndex;
 
 public class JstlCoreTaglibForEach extends TaglibDefinition {
 
+	protected List<Object> toList(Object rawItems) {
+		@SuppressWarnings({ "rawtypes", "unchecked" })
+		List<Object> items = null;
+		if (rawItems instanceof Collection)
+			items = new ArrayList<Object>((Collection) rawItems);
+		else {
+			int length = Array.getLength(rawItems);
+			items = new ArrayList<Object>(length);
+			for (int i = 0; i < length; i++) {
+				items.add(Array.get(rawItems, i));
+			}
+		}
+		return items;
+	}
+
 	@Override
 	protected void renderNode(RenderSession session, JspTaglibInvocation invocation) {
 		String itemsExpression = getAttribute("items", invocation);
@@ -40,18 +55,8 @@ public class JstlCoreTaglibForEach extends TaglibDefinition {
 		if (rawItems == null)
 			error(itemsExpression + " is null", invocation);
 		if (!(rawItems instanceof Collection) && !(rawItems.getClass().isArray()))
-			error("items attribute is not a collection but " + rawItems, invocation);
-		@SuppressWarnings({ "rawtypes", "unchecked" })
-		List<Object> items = null;
-		if (rawItems instanceof Collection)
-			items = new ArrayList((Collection) rawItems);
-		else {
-			int length = Array.getLength(rawItems);
-			items = new ArrayList(length);
-			for (int i=0;i<length;i++){
-				items.add(Array.get(rawItems, i));
-			}
-		}
+			error("items attribute is neither a collection nor an array, but " + rawItems, invocation);
+		List<Object> items = toList(rawItems);
 		if (!Utils.isEmpty(sBegin))
 			begin = Utils.evalToInt(sBegin, session);
 		if (!Utils.isEmpty(sEnd))
