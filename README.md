@@ -7,7 +7,12 @@ Alternative JSP implementation for development use: it interprets (instead of co
 
 ## Change log
 
-0.0.4-SNAPSHOT Handling JSP comments, populating context and session attributes as JSP variables
+0.0.4-SNAPSHOT 
+- Implemented JSP comments
+- populating context and session attributes as JSP variables
+- added sessionScope, contextScope, requestScope implicit objects
+- added empty applicationScope implicit object
+- able to iterate over arrays
 
 ## Another JSP implementation?
 
@@ -347,6 +352,11 @@ Science fiction (things I have a rough idea how to implement but need to work ou
 * wrapper for using any third-party taglib
 * jsp debugger
 * running in more environments
+
+## Credits
+
+Ross Studtman for [JSP Tutorials](https://github.com/RossStudtman/JSP_Tutorials) which inspired many great
+unit tests.
 
 ## License
 

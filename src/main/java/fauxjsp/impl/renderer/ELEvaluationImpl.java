@@ -1,8 +1,11 @@
 package fauxjsp.impl.renderer;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 import javax.el.ELContext;
@@ -66,18 +69,29 @@ public class ELEvaluationImpl implements ELEvaluation {
 		// TODO: set page page attribute
 		// TODO: set exception page attribute
 
-		populateAttributes(session.request.getServletContext().getAttributeNames(), expressionFactory, variables, (attr)->session.request.getServletContext().getAttribute(attr));
-		populateAttributes(session.request.getSession().getAttributeNames(), expressionFactory, variables, (attr)->session.request.getSession().getAttribute(attr));
-		populateAttributes(session.request.getAttributeNames(), expressionFactory, variables, (attr)->session.request.getAttribute(attr));
+		populateAttributes("contextScope", session.request.getServletContext().getAttributeNames(), expressionFactory,
+				variables, (attr) -> session.request.getServletContext().getAttribute(attr));
+		if (session.request.getSession() != null)
+			populateAttributes("sessionScope", session.request.getSession().getAttributeNames(), expressionFactory,
+					variables, (attr) -> session.request.getSession().getAttribute(attr));
+		populateAttributes("requestScope", session.request.getAttributeNames(), expressionFactory, variables,
+				(attr) -> session.request.getAttribute(attr));
+		populateAttributes("applicationScope", Collections.emptyEnumeration(), expressionFactory, variables,
+				null);
 	}
 
-	protected void populateAttributes(Enumeration<String> attributes, ExpressionFactory expressionFactory, VariableMapper variables, Function<String, Object> l){
+	protected void populateAttributes(String scopeObjectName, Enumeration<String> attributes,
+			ExpressionFactory expressionFactory, VariableMapper variables, Function<String, Object> l) {
+		Map<String, Object> scopeObject = new HashMap<>();
 		while (attributes.hasMoreElements()) {
 			String attribute = attributes.nextElement();
 			Object value = l.apply(attribute);
-			if (value != null)
+			if (value != null) {
 				variables.setVariable(attribute, expressionFactory.createValueExpression(value, value.getClass()));
+				scopeObject.put(attribute, value);
+			}
 		}
+		variables.setVariable(scopeObjectName, expressionFactory.createValueExpression(scopeObject, scopeObject.getClass()));
 	}
 
 	protected Object evaluateSimpleExpression(String expression, RenderSession session) {

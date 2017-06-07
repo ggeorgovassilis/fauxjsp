@@ -1,6 +1,8 @@
 package fauxjsp.impl.simulatedtaglibs.core;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -23,8 +25,7 @@ import fauxjsp.impl.renderer.ForEachIndex;
 public class JstlCoreTaglibForEach extends TaglibDefinition {
 
 	@Override
-	protected void renderNode(RenderSession session,
-			JspTaglibInvocation invocation) {
+	protected void renderNode(RenderSession session, JspTaglibInvocation invocation) {
 		String itemsExpression = getAttribute("items", invocation);
 		String varName = getAttribute("var", invocation);
 		String sBegin = getAttribute("begin", invocation);
@@ -38,12 +39,19 @@ public class JstlCoreTaglibForEach extends TaglibDefinition {
 		Object rawItems = evaluate(itemsExpression, session);
 		if (rawItems == null)
 			error(itemsExpression + " is null", invocation);
-		if (!(rawItems instanceof Collection))
-			error("items attribute is not a collection but " + rawItems,
-					invocation);
+		if (!(rawItems instanceof Collection) && !(rawItems.getClass().isArray()))
+			error("items attribute is not a collection but " + rawItems, invocation);
 		@SuppressWarnings({ "rawtypes", "unchecked" })
-		List<?> items = new ArrayList((Collection) rawItems);
-
+		List<Object> items = null;
+		if (rawItems instanceof Collection)
+			items = new ArrayList((Collection) rawItems);
+		else {
+			int length = Array.getLength(rawItems);
+			items = new ArrayList(length);
+			for (int i=0;i<length;i++){
+				items.add(Array.get(rawItems, i));
+			}
+		}
 		if (!Utils.isEmpty(sBegin))
 			begin = Utils.evalToInt(sBegin, session);
 		if (!Utils.isEmpty(sEnd))
@@ -62,8 +70,7 @@ public class JstlCoreTaglibForEach extends TaglibDefinition {
 				Integer _step = Utils.isEmpty(sStep) ? null : step;
 				boolean isFirst = count == 1;
 				boolean isLast = i + step >= end;
-				LoopTagStatus lts = new ForEachIndex(item, i, count, _begin,
-						_end, _step, isFirst, isLast);
+				LoopTagStatus lts = new ForEachIndex(item, i, count, _begin, _end, _step, isFirst, isLast);
 				session.request.setAttribute(varStatus, lts);
 			}
 			for (JspNode child : invocation.getChildren())
