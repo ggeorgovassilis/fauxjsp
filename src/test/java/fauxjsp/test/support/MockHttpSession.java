@@ -1,6 +1,9 @@
 package fauxjsp.test.support;
 
+import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
@@ -14,6 +17,8 @@ import javax.servlet.http.HttpSessionContext;
 
 @SuppressWarnings("deprecation")
 public class MockHttpSession implements HttpSession {
+	
+	protected Map<String, Object> attributes = new HashMap<>();
 
 	@Override
 	public long getCreationTime() {
@@ -52,7 +57,7 @@ public class MockHttpSession implements HttpSession {
 
 	@Override
 	public Object getAttribute(String name) {
-		throw new RuntimeException("Not implemented");
+		return attributes.get(name);
 	}
 
 	@Override
@@ -62,7 +67,7 @@ public class MockHttpSession implements HttpSession {
 
 	@Override
 	public Enumeration<String> getAttributeNames() {
-		throw new RuntimeException("Not implemented");
+		return Collections.enumeration(attributes.keySet());
 	}
 
 	@Override
@@ -72,8 +77,7 @@ public class MockHttpSession implements HttpSession {
 
 	@Override
 	public void setAttribute(String name, Object value) {
-		throw new RuntimeException("Not implemented");
-
+		attributes.put(name, value);
 	}
 
 	@Override

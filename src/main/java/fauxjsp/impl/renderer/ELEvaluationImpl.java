@@ -3,6 +3,7 @@ package fauxjsp.impl.renderer;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.function.Function;
 
 import javax.el.ELContext;
 import javax.el.ExpressionFactory;
@@ -45,7 +46,7 @@ public class ELEvaluationImpl implements ELEvaluation {
 		// expressionFactory.createValueExpression(
 		// session.response.getWriter(), PrintWriter.class));
 		HttpSession httpSession = session.request.getSession(false);
-		if (httpSession!=null)
+		if (httpSession != null)
 			variables.setVariable("session", expressionFactory.createValueExpression(httpSession, HttpSession.class));
 
 		variables.setVariable("application",
@@ -65,13 +66,17 @@ public class ELEvaluationImpl implements ELEvaluation {
 		// TODO: set page page attribute
 		// TODO: set exception page attribute
 
-		Enumeration<String> attributes = session.request.getAttributeNames();
+		populateAttributes(session.request.getServletContext().getAttributeNames(), expressionFactory, variables, (attr)->session.request.getServletContext().getAttribute(attr));
+		populateAttributes(session.request.getSession().getAttributeNames(), expressionFactory, variables, (attr)->session.request.getSession().getAttribute(attr));
+		populateAttributes(session.request.getAttributeNames(), expressionFactory, variables, (attr)->session.request.getAttribute(attr));
+	}
+
+	protected void populateAttributes(Enumeration<String> attributes, ExpressionFactory expressionFactory, VariableMapper variables, Function<String, Object> l){
 		while (attributes.hasMoreElements()) {
 			String attribute = attributes.nextElement();
-			Object value = session.request.getAttribute(attribute);
+			Object value = l.apply(attribute);
 			if (value != null)
 				variables.setVariable(attribute, expressionFactory.createValueExpression(value, value.getClass()));
-
 		}
 	}
 

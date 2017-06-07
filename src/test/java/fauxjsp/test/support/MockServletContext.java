@@ -3,8 +3,11 @@ package fauxjsp.test.support;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.EventListener;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -29,6 +32,7 @@ import javax.servlet.descriptor.JspConfigDescriptor;
 public class MockServletContext implements ServletContext {
 
 	protected JspConfigDescriptor jspConfigDescriptor;
+	protected Map<String, Object> attributes = new HashMap<>();
 	
 	@Override
 	public String getContextPath() {
@@ -148,12 +152,12 @@ public class MockServletContext implements ServletContext {
 
 	@Override
 	public Object getAttribute(String name) {
-		throw new RuntimeException("Not implemented");
+		return attributes.get(name);
 	}
 
 	@Override
 	public Enumeration<String> getAttributeNames() {
-		throw new RuntimeException("Not implemented");
+		return Collections.enumeration(attributes.keySet());
 	}
 
 	@Override

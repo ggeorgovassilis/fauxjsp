@@ -5,6 +5,9 @@ fauxjsp
 
 Alternative JSP implementation for development use: it interprets (instead of compiling) JSP which leads to fast application startup, fast page reloads when JSPs change and eliminates the need for server restarts. Best used when developing, probably of limited use in production because of poor performance.
 
+## Change log
+
+0.0.4-SNAPSHOT Handling JSP comments, populating context and session attributes as JSP variables
 
 ## Another JSP implementation?
 
