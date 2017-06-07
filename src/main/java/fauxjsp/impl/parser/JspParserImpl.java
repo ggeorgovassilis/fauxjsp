@@ -42,6 +42,8 @@ public class JspParserImpl implements JspParser {
 	// TODO: our impl doesn't work with < or > in attributes, e.g. <when
 	// test="${a<b}"> breaks. Fix that.
 	protected final String OPEN_INSTRUCTION = "<%@";
+	protected final String OPEN_COMMENT = "<%--";
+	protected final String CLOSE_COMMENT = "--%>";
 	protected final String OPEN_SCRIPTLET = "<%";
 	protected final String OPEN_SCRIPTLET_RETURN_VALUE = "<%=";
 	protected final String CLOSE_INSTRUCTION = "%>";
@@ -105,9 +107,10 @@ public class JspParserImpl implements JspParser {
 	}
 
 	protected void advance(int length) {
-		if (length < 1)
+		if (length >= 0)
+			advanceCodeLocation(length);
+		else
 			throw new IllegalArgumentException("Length is " + length);
-		advanceCodeLocation(length);
 	}
 
 	protected void advance(String str) {
@@ -345,12 +348,12 @@ public class JspParserImpl implements JspParser {
 		flushText();
 		invocation.setDefinition(getOrLoadDefinition(invocation));
 		advanceAfterNext(">");
-		//if attributes contain a > then we need to advance even further
-		for (NodeAttributeValue attr:invocation.getAttributes().values())
-			if (attr instanceof StringNodeAttributeValue){
-				StringNodeAttributeValue snav = (StringNodeAttributeValue)attr;
+		// if attributes contain a > then we need to advance even further
+		for (NodeAttributeValue attr : invocation.getAttributes().values())
+			if (attr instanceof StringNodeAttributeValue) {
+				StringNodeAttributeValue snav = (StringNodeAttributeValue) attr;
 				int matchCount = StringUtils.countMatches(snav.getValue(), ">");
-				for (;matchCount>0;matchCount--)
+				for (; matchCount > 0; matchCount--)
 					advanceAfterNext(">");
 			}
 		pushNode(invocation);
@@ -379,7 +382,10 @@ public class JspParserImpl implements JspParser {
 	}
 
 	protected void processOpenScriptlet(JspPage page) {
-		if (isNext(OPEN_INSTRUCTION)) {
+		if (isNext(OPEN_COMMENT)) {
+			flushText();
+			advanceAfterNext(CLOSE_COMMENT);
+		} else if (isNext(OPEN_INSTRUCTION)) {
 			flushText();
 			JspInstruction instruction = processInstruction();
 			maybeRegisterTaglib(instruction);
@@ -421,8 +427,8 @@ public class JspParserImpl implements JspParser {
 	}
 
 	/**
-	 * General contract of {@link JspParser#parseJspFragment(String)} holds. This method, in addition, parses also
-	 * tagfiles.
+	 * General contract of {@link JspParser#parseJspFragment(String)} holds.
+	 * This method, in addition, parses also tagfiles.
 	 */
 	@Override
 	public JspPage parseJspFragment(String path) {
@@ -489,11 +495,14 @@ public class JspParserImpl implements JspParser {
 	}
 
 	/**
-	 * Removes instructions from a node and children since the parser already constructed all definitions.
-	 * Removing instruction nodes slims down the page.
+	 * Removes instructions from a node and children since the parser already
+	 * constructed all definitions. Removing instruction nodes slims down the
+	 * page.
+	 * 
 	 * @param node
 	 */
-	//TODO: nodes should probably be removed during parsing already / not constructed at all?
+	// TODO: nodes should probably be removed during parsing already / not
+	// constructed at all?
 	protected void stripInstructions(JspNodeWithChildren node) {
 		for (Iterator<JspNode> ite = node.getChildren().iterator(); ite.hasNext();) {
 			JspNode child = ite.next();
