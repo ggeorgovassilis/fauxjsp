@@ -1,4 +1,4 @@
-package fauxjsp.test.unittests;
+package fauxjsp.test.integrationtests;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -25,6 +25,7 @@ import fauxjsp.servlet.ServletResponseWrapper;
 import fauxjsp.test.support.MockHttpServletRequest;
 import fauxjsp.test.support.MockHttpServletResponse;
 import fauxjsp.test.support.TestSupportUtils;
+import fauxjsp.test.unittests.BaseTest;
 import fauxjsp.test.webapp.dto.Item;
 
 import static org.junit.Assert.*;

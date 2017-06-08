@@ -1,5 +1,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<!-- 
+		goals for full build: 
+		clean install site pmd:pmd pmd:cpd org.pitest:pitest-maven:mutationCoverage
+	-->
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.github.ggeorgovassilis</groupId>
 	<artifactId>fauxjsp</artifactId>
@@ -131,6 +135,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-pmd-plugin</artifactId>
+				<version>3.8</version>
 				<configuration>
 					<skipEmptyReport>false</skipEmptyReport>
 				</configuration>
@@ -139,6 +144,23 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-project-info-reports-plugin</artifactId>
 				<version>2.9</version>
+			</plugin>
+			<plugin>
+				<groupId>org.pitest</groupId>
+				<artifactId>pitest-maven</artifactId>
+				<version>1.2.0</version>
+				<configuration>
+					<targetClasses>
+						<param>fauxjsp*</param>
+					</targetClasses>
+					<targetTests>
+						<param>fauxjsp*</param>
+					</targetTests>
+					<excludedClasses>
+						<excludedClasse>fauxjsp.test.integrationtests*</excludedClasse>
+					</excludedClasses>
+					<threads>4</threads>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.jacoco</groupId>
@@ -164,6 +186,6 @@
 	<reports>
 		<report>maven-pmd-plugin</report>
 		<report>jacoco-maven-plugin</report>
+		<report>pitest-maven</report>
 	</reports>
-
 </project>
