@@ -49,7 +49,7 @@ public class NewsServlet extends HttpServlet{
 		cal.set(GregorianCalendar.HOUR, 0);
 		request.setAttribute("date", cal.getTime());
 		request.setAttribute(RenderSession.ATTR_TIMEZONE, TimeZone.getTimeZone("UTC"));
-		RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/news.jsp");
+		RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/WEB-INF/jsp/news.jsp");
 		dispatcher.forward(request, resp);
 	}
 }
