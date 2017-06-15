@@ -27,19 +27,25 @@ import fauxjsp.impl.renderer.ELFactoryServlet3Impl;
 import fauxjsp.impl.renderer.JspRendererFactoryImpl;
 
 /**
- * Servlet that will open the requested file and render it as JSP. This implementation has been tested only with Tomcat 8.
- * Other servlet containers which do not operate a standard {@link ELManager} will likely require custom implementations 
- * of this servlet which lookup and provide {@link ELContext} and {@link ExpressionFactory}
- * implementations.
- * There are some methods which can be overridden in custom implementations:
+ * Servlet that will open the requested file and render it as JSP. This
+ * implementation has been tested only with Tomcat 8. Other servlet containers
+ * which do not operate a standard {@link ELManager} will likely require custom
+ * implementations of this servlet which lookup and provide {@link ELContext}
+ * and {@link ExpressionFactory} implementations. There are some methods which
+ * can be overridden in custom implementations:
  * 
- * {@link #getJspBase(ServletConfig)} which determines the base location (as in servlet context location) of JSP files (etc) to look for
- * {@link #getJspParserFactory(ServletConfig)} which creates an {@link JspParserFactory} instance
- * {@link #getElFactory(ServletConfig)} which creates an {@link ELFactory} instance
- * {@link #getJspRendererFactory(ServletConfig)} which creates an {@link JspRendererFactory} instance
+ * {@link #getJspBase(ServletConfig)} which determines the base location (as in
+ * servlet context location) of JSP files (etc) to look for
+ * {@link #getJspParserFactory(ServletConfig)} which creates an
+ * {@link JspParserFactory} instance {@link #getElFactory(ServletConfig)} which
+ * creates an {@link ELFactory} instance
+ * {@link #getJspRendererFactory(ServletConfig)} which creates an
+ * {@link JspRendererFactory} instance
  * 
- * The following init parameters are recognized:
- * base-path specify the servlet path from which JSPs will be read from. JSP locations are relative to that bath. Defaults to webapp root.
+ * The following init parameters are recognized: "base-path" specifies the root
+ * path where resources (JSPs, tag files etc) will be looked for. Any resource
+ * locations will be relative to that path. Defaults to webapp root.
+ * 
  * @author George Georgovassilis
  *
  */
@@ -52,14 +58,15 @@ public class JspServlet extends HttpServlet {
 	protected JspParserFactory jspParserFactory;
 	protected ELFactory elFactory;
 	protected JspRendererFactory jspRendererFactory;
-	
+
 	/**
-	 * Finds the jsp base location from the "base-path" init parameter.
-	 * This field tells the servlet at which server location to look for JSP files.
+	 * Finds the jsp base location from the "base-path" init parameter. This
+	 * field tells the servlet at which server location to look for JSP files.
+	 * 
 	 * @param config
 	 * @return server location to look for JSP files
 	 */
-	protected String getJspBase(ServletConfig config){
+	protected String getJspBase(ServletConfig config) {
 		String jspBase = config.getInitParameter("base-path");
 		if (jspBase == null)
 			jspBase = "/";
@@ -68,35 +75,38 @@ public class JspServlet extends HttpServlet {
 
 	/**
 	 * Initializes a thread-safe {@link JspParserFactory}
+	 * 
 	 * @param config
-	 * @return 
+	 * @return
 	 */
-	protected JspParserFactory getJspParserFactory(ServletConfig config){
+	protected JspParserFactory getJspParserFactory(ServletConfig config) {
 		ResourceResolver location = new ServletResourceResolver(jspBase, getServletContext());
 		DefaultJspParserFactoryImpl factory = new DefaultJspParserFactoryImpl(location);
 		return factory;
 	}
-	
+
 	/**
 	 * Creates an {@link ELFactory} instance
+	 * 
 	 * @param config
 	 * @return
 	 */
-	protected ELFactory getElFactory(ServletConfig config){
+	protected ELFactory getElFactory(ServletConfig config) {
 		ELFactoryServlet3Impl factory = new ELFactoryServlet3Impl();
 		factory.configure(config);
 		return factory;
 	}
-	
+
 	/**
 	 * Creates an {@link JspRendererFactory} instance
+	 * 
 	 * @param config
 	 * @return
 	 */
-	protected JspRendererFactory getJspRendererFactory(ServletConfig config){
+	protected JspRendererFactory getJspRendererFactory(ServletConfig config) {
 		return new JspRendererFactoryImpl();
 	}
-	
+
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
@@ -113,9 +123,9 @@ public class JspServlet extends HttpServlet {
 		JspParser parser = jspParserFactory.create();
 		JspRenderer renderer = jspRendererFactory.create();
 		try {
-			if (resp.getContentType()==null)
+			if (resp.getContentType() == null)
 				resp.setContentType("text/html;charset=UTF-8");
-			if (resp.getCharacterEncoding()==null)
+			if (resp.getCharacterEncoding() == null)
 				resp.setCharacterEncoding("UTF-8");
 			RenderSession session = new RenderSession();
 			JspPage page = parser.parseJsp(servletPath);
@@ -127,11 +137,11 @@ public class JspServlet extends HttpServlet {
 			renderer.render(page, session);
 		} catch (JspParsingException pe) {
 			String explanation = parser.explain(pe);
-			throw new ServletException("Error while parsing "+servletPath+"\n"+explanation, pe);
-		} catch (JspRenderException re){
+			throw new ServletException("Error while parsing " + servletPath + "\n" + explanation, pe);
+		} catch (JspRenderException re) {
 			String explanation = renderer.explain(re);
-			throw new ServletException("Error while rendering "+servletPath+"\n"+explanation, re);
-		} catch (Exception e){
+			throw new ServletException("Error while rendering " + servletPath + "\n" + explanation, re);
+		} catch (Exception e) {
 			throw new ServletException(e);
 		}
 	}

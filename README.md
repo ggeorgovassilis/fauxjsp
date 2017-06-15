@@ -83,6 +83,12 @@ mvn install
 <servlet>
         <servlet-name>FauxJsp</servlet-name>
         <servlet-class>fauxjsp.servlet.JspServlet</servlet-class>
+<!-- optionally specify a root for resource lookup, defaults to "/"
+		<init-param>
+			<param-name>base-path</param-name>
+			<param-value>/WEB-INF/jsp/</param-value>
+		</init-param>
+-->
 </servlet>
 
 <servlet-mapping>
