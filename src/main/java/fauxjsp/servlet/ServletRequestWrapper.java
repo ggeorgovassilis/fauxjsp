@@ -80,6 +80,7 @@ public class ServletRequestWrapper extends HttpServletRequestWrapper implements 
 		overwriteAttribute(OVERRIDEN_LOCALE, locale);
 	}
 
+	@Override
 	public HttpSession getSession(boolean create) {
 		return ((HttpServletRequest)getRequest()).getSession(create);
 	}
