@@ -103,11 +103,15 @@ public abstract class BaseTest {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	protected ResourceResolver getResourceResolver() {
+		ResourceResolver location = new FileResolver(new File("src/test/resources/webapp"));
+		return location;
+	}
 
 	@Before
 	public void setupBaseTest() {
-		ResourceResolver location = new FileResolver(new File("src/test/resources/webapp"));
-		parserFactory = new DefaultJspParserFactoryImpl(location);
+		parserFactory = new DefaultJspParserFactoryImpl(getResourceResolver());
 		parser = newParser();
 		rendererFactory = new JspRendererFactoryImpl();
 		renderer = rendererFactory.create();

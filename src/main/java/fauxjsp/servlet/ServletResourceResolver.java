@@ -38,4 +38,9 @@ public class ServletResourceResolver implements ResourceResolver {
 		}
 	}
 
+	@Override
+	public boolean canHandle(String path) {
+		return true;
+	}
+
 }

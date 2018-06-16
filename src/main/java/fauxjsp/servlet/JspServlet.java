@@ -80,8 +80,12 @@ public class JspServlet extends HttpServlet {
 	 * @return
 	 */
 	protected JspParserFactory getJspParserFactory(ServletConfig config) {
-		ResourceResolver location = new ServletResourceResolver(jspBase, getServletContext());
-		DefaultJspParserFactoryImpl factory = new DefaultJspParserFactoryImpl(location);
+		ResourceResolver servletResourceResolver = new ServletResourceResolver(jspBase, getServletContext());
+		ClasspathResourceResolver classpathResourceResolver = new ClasspathResourceResolver();
+		CompositeResourceResolver crr = new CompositeResourceResolver();
+		crr.register(classpathResourceResolver);
+		crr.register(servletResourceResolver);
+		DefaultJspParserFactoryImpl factory = new DefaultJspParserFactoryImpl(crr);
 		return factory;
 	}
 

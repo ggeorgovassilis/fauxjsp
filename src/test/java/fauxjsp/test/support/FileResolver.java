@@ -23,4 +23,9 @@ public class FileResolver implements ResourceResolver{
 		return Utils.readFile(new File(baseFile, path));
 	}
 
+	@Override
+	public boolean canHandle(String path) {
+		return true;
+	}
+
 }
