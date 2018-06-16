@@ -22,6 +22,7 @@ public class IntegrationTest extends BaseTest{
 
 	private Tomcat server;
 	private final String webapp="fauxjsp";
+	private int port = 13766;
 	
 	protected void copy(String cpResource, File target) throws Exception{
 		InputStream in = getClass().getResourceAsStream(cpResource);
@@ -54,7 +55,7 @@ public class IntegrationTest extends BaseTest{
 		File workingDir = createWorkingDirectory();
 		File webappDir = assembleWebApplication(workingDir);
 		server = new Tomcat();
-		server.setPort(7777);
+		server.setPort(port);
 		server.setBaseDir(workingDir.getAbsolutePath());
 		server.getHost().setAppBase(webappDir.getAbsolutePath());
 		server.getHost().setAutoDeploy(true);
@@ -63,11 +64,12 @@ public class IntegrationTest extends BaseTest{
 		server.addWebapp(server.getHost(), contextPath, webappDir.getAbsolutePath());
 		server.init();
 		server.start();
+		server.getConnector(); //required, because initialises lazily
 	}
 
 	@Test
 	public void testNewsPage() throws Exception{
-		URL url = new URL("http://localhost:7777/"+webapp+"/news");
+		URL url = new URL("http://localhost:"+port+"/"+webapp+"/news");
 		HttpURLConnection connection = (HttpURLConnection)url.openConnection();
 		connection.setDoInput(true);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();

@@ -7,6 +7,11 @@ Alternative JSP implementation for development use: it interprets (instead of co
 
 ## Change log
 
+0.0.5-SNAPSHOT
+- updated dependencies servlet-api 4.0.1, tomcat 9.0.8
+- handling Unicode in response
+- housekeeping
+
 0.0.4-SNAPSHOT 
 - Implemented JSP comments
 - populating context and session attributes as JSP variables
@@ -73,7 +78,7 @@ mvn install
 <dependency>
 	<groupId>com.github.ggeorgovassilis</groupId>
 	<artifactId>fauxjsp</artifactId>
-	<version>0.0.4-SNAPSHOT</version>
+	<version>0.0.5-SNAPSHOT</version>
 </dependency>
 ```
 
@@ -102,7 +107,7 @@ mvn install
 * JSP API 2.0
 * Java EL 3.0 API
 * JSTL 1.2
-* Servlet API 3.0
+* Servlet API 4.0
 * commons-lang 2.6
 * beanshell 2.0b5
 * log4j 4

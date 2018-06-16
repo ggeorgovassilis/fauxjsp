@@ -26,6 +26,7 @@ import fauxjsp.api.parser.CodeLocation;
 import fauxjsp.api.parser.JspParser;
 import fauxjsp.api.parser.JspParserFactory;
 import fauxjsp.api.parser.JspParsingException;
+import fauxjsp.api.parser.JspResourceNotFoundException;
 import fauxjsp.api.parser.ResourceResolver;
 import fauxjsp.impl.Utils;
 import fauxjsp.impl.logging.Logging;
@@ -437,7 +438,7 @@ public class JspParserImpl implements JspParser {
 			// TODO: configurable encoding
 			byte[] fileContent = location.getContents(path);
 			if (fileContent == null)
-				throw new JspParsingException("Location '" + path + "' not found.", getCurrentLocation());
+				throw new JspResourceNotFoundException("Location '" + path + "' not found.", getCurrentLocation());
 			this.jsp = Utils.string(fileContent, "UTF-8");
 			this.index = 0;
 			JspPage page = new JspPage(path, getCurrentLocation());
