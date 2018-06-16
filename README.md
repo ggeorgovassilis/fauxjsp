@@ -12,6 +12,8 @@ JSP standard.
 - ability to handle tagfiles and JSPs in classpath locations
 - updated dependencies servlet-api 4.0.1, tomcat 9.0.8
 - handling Unicode in response
+- fixed bug in foreach handling
+- fixed bug in xml namespace parsing
 - housekeeping
 
 0.0.4-SNAPSHOT 

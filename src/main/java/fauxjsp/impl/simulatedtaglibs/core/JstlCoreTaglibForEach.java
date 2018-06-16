@@ -50,12 +50,15 @@ public class JstlCoreTaglibForEach extends TaglibDefinition {
 		int end = 0;
 		int step = 1;
 
-		Object rawItems = evaluate(itemsExpression, session);
-		if (rawItems == null)
-			error(itemsExpression + " is null", invocation);
-		if (!(rawItems instanceof Collection) && !(rawItems.getClass().isArray()))
-			error("items attribute is neither a collection nor an array, but " + rawItems, invocation);
-		List<Object> items = toList(rawItems);
+		List<Object> items = null;
+		if (itemsExpression != null) {
+			Object rawItems = evaluate(itemsExpression, session);
+			if (rawItems == null)
+				error(itemsExpression + " is null", invocation);
+			if (!(rawItems instanceof Collection) && !(rawItems.getClass().isArray()))
+				error("items attribute is neither a collection nor an array, but " + rawItems, invocation);
+			items = toList(rawItems);
+		}
 		if (!Utils.isEmpty(sBegin))
 			begin = Utils.evalToInt(sBegin, session);
 		if (!Utils.isEmpty(sEnd))
@@ -66,8 +69,14 @@ public class JstlCoreTaglibForEach extends TaglibDefinition {
 			step = Utils.evalToInt(sStep, session);
 
 		for (int i = begin, count = 1; i < end; i = i + step, count++) {
-			Object item = items.get(i);
-			session.request.setAttribute(varName, item);
+			Object item = null;
+			if (items != null) {
+				item = items.get(i);
+				session.request.setAttribute(varName, item);
+			} else
+			if (!Utils.isEmpty(varName)) {
+				session.request.setAttribute(varName, i);
+			}
 			if (!Utils.isEmpty(varStatus)) {
 				Integer _begin = Utils.isEmpty(sBegin) ? null : begin;
 				Integer _end = Utils.isEmpty(sEnd) ? null : end;
@@ -84,7 +93,7 @@ public class JstlCoreTaglibForEach extends TaglibDefinition {
 
 	public JstlCoreTaglibForEach() {
 		super("forEach");
-		declareAttribute("items", List.class.getName(), true, true);
+		declareAttribute("items", List.class.getName(), true, false);
 		declareAttribute("var", Object.class.getName(), true, false);
 		declareAttribute("begin", Number.class.getName(), true, false);
 		declareAttribute("end", Number.class.getName(), true, false);

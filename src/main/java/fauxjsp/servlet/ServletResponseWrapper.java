@@ -64,7 +64,7 @@ public class ServletResponseWrapper extends javax.servlet.ServletResponseWrapper
 	
 	public void write(String content) {
 		try {
-			byte[] b = content.getBytes(getCharacterEncoding());
+			byte[] b = content!=null?content.getBytes(getCharacterEncoding()):new byte[0];
 			servletOutputStream.write(b);
 		} catch (Exception e) {
 			throw Utils.softenException(e);

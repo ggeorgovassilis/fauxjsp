@@ -200,5 +200,23 @@ public class TestJspParserAndRenderer extends BaseTest {
 				"<a class=nav href=\"http://www.example.com/q?a:bbb:cccc\" id=\"some/id\"><span class=\"some class\">[...]</span>Link</a>",
 				result);
 	}
+	
+	@Test
+	public void testRendererForEach_numeric() {
+		JspPage page = parser.parseJsp("WEB-INF/jsp/foreach_numeric.jsp");
+
+		request.setAttribute("listOfNews",
+				Arrays.asList(new News("0", "headline 0", "description 0", "full text of news 0", false),
+						new News("1", "headline 1", "description 1", "full text of news 1", false),
+						new News("2", "headline 2", "description 2", "full text of news 2", false)));
+		
+		request.setAttribute("end", 2);
+		renderer.render(page, session);
+		String text = getPrettyContent(response);
+		assertEquals(
+				"1,2,3,4,5,",
+				text);
+	}
+
 
 }
