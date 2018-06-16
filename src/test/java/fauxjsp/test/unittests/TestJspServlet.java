@@ -32,6 +32,7 @@ public class TestJspServlet extends BaseTest {
 		try {
 			session.servlet.service(request, response);
 		} catch (ServletException e) {
+			e.printStackTrace();
 			assertTrue(e.getMessage(), e.getMessage().contains("Error while parsing"));
 		}
 		verify(response).setContentType("text/html;charset=UTF-8");
