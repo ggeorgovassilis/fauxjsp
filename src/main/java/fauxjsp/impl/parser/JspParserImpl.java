@@ -213,7 +213,8 @@ public class JspParserImpl implements JspParser {
 		String namespace = invocation.getNamespace();
 		String path = taglibNamespaces.get(namespace);
 		if (path == null)
-			parsingError("Unknown taglib namespace '" + namespace + "'");
+			return null; //not a taglib, but something that looks like an XML element with a namespace
+//			parsingError("Unknown taglib namespace '" + namespace + "'");
 		String fullPath = null;
 		if (!path.startsWith("http:")) {
 			fullPath = path + "/" + invocation.getTaglib() + ".tag";
@@ -312,7 +313,10 @@ public class JspParserImpl implements JspParser {
 		parent.getChildren().remove(jspAttribute);
 	}
 
-	protected void processCloseTaglib(JspTaglibInvocation taglib) {
+	protected boolean processCloseTaglib(JspTaglibInvocation taglib) {
+		TaglibDefinition definition = getOrLoadDefinition(taglib);
+		if (definition == null)
+			return false;
 		if (nodeStack.isEmpty())
 			parsingError("Tag " + taglib + " closing at offset " + index + " without prior opening");
 		flushText();
@@ -326,16 +330,20 @@ public class JspParserImpl implements JspParser {
 						+ parent.getName() + " isn't one.", getCurrentLocation());
 			convertJspAttributeTagToAttributeOnParent(jspTaglib, (JspTaglibInvocation) parent);
 		}
+		return true;
 	}
 
-	protected void processCloseTaglibAndAdvance(JspTaglibInvocation taglib) {
-		processCloseTaglib(taglib);
+	protected boolean processCloseTaglibAndAdvance(JspTaglibInvocation taglib) {
+		if (!processCloseTaglib(taglib))
+			return false;
 		advance(taglib.getName());
 		advanceAfterNext(">");
+		return true;
 	}
 
-	protected void processOpenCloseTaglib(JspTaglibInvocation invocation) {
-		processOpenTaglib(invocation);
+	protected boolean processOpenCloseTaglib(JspTaglibInvocation invocation) {
+		if (!processOpenTaglib(invocation))
+			return false;
 		invocation = pullNode(invocation.getName());
 		if (nodeStack.isEmpty())
 			throw new IllegalArgumentException(
@@ -343,11 +351,15 @@ public class JspParserImpl implements JspParser {
 		flushText();
 		JspNodeWithChildren currentNode = getCurrentNode();
 		currentNode.getChildren().add(invocation);
+		return true;
 	}
 
-	protected void processOpenTaglib(JspTaglibInvocation invocation) {
+	protected boolean processOpenTaglib(JspTaglibInvocation invocation) {
+		TaglibDefinition definition = getOrLoadDefinition(invocation);
+		if (definition==null)
+			return false;
 		flushText();
-		invocation.setDefinition(getOrLoadDefinition(invocation));
+		invocation.setDefinition(definition);
 		advanceAfterNext(">");
 		// if attributes contain a > then we need to advance even further
 		for (NodeAttributeValue attr : invocation.getAttributes().values())
@@ -358,6 +370,7 @@ public class JspParserImpl implements JspParser {
 					advanceAfterNext(">");
 			}
 		pushNode(invocation);
+		return true;
 	}
 
 	protected void maybeIncludeContent(JspInstruction instruction, JspNodeWithChildren parent) {
@@ -411,18 +424,14 @@ public class JspParserImpl implements JspParser {
 		if (tag != null) {
 			switch (tag.type) {
 			case opening:
-				processOpenTaglib(tag.taglib);
-				break;
+				return processOpenTaglib(tag.taglib);
 			case openingAndClosing:
-				processOpenCloseTaglib(tag.taglib);
-				break;
+				return processOpenCloseTaglib(tag.taglib);
 			case closing:
-				processCloseTaglibAndAdvance(tag.taglib);
-				break;
+				return processCloseTaglibAndAdvance(tag.taglib);
 			default:
 				throw new RuntimeException("Unknown tag state");
 			}
-			return true;
 		}
 		return false;
 	}
