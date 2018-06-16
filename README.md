@@ -8,6 +8,7 @@ Alternative JSP implementation for development use: it interprets (instead of co
 ## Change log
 
 0.0.5-SNAPSHOT
+- ability to handle tagfiles and JSPs in classpath locations
 - updated dependencies servlet-api 4.0.1, tomcat 9.0.8
 - handling Unicode in response
 - housekeeping
@@ -40,6 +41,7 @@ Currently implemented features:
 * Supports most core JSTL taglibs
 * Supports scriptlets
 * Is modular and extensible
+* Supports tagfiles and JSPs which reside in classpath locations
 
 Constraints and missing features:
 
@@ -350,6 +352,13 @@ unless the Beanshell interpreter is found on the classpath. Current limitations 
 ### ... deal with a fauxjsp limitation?
 Ideally you'd find a way that works both in the production JSP environment as well as with fauxjsp. An example would be the case of
 varargs used in scriptlets we talked about earlier. The fauxjsp parser is likely to be confused by strings that appear in EL expressions and scriptlets which are used elsewhere as delimiters like <, >, {, } etc. In that case try to use escapes like \u007B for {.
+
+### ... reference tagfiles or JSPs which reside in the classpath?
+The use case is that your tagfiles or JSPs reference other tagfiles or JSPs which reside in the classpath (eg. a JAR file).
+Don't use ```tagdir``` but use ```uri``` instead when including the resource, eg:
+````jsp
+<%@ taglib prefix="cp" uri="classpath:/tagfiles" %>
+````
 
 ## Roadmap
 
