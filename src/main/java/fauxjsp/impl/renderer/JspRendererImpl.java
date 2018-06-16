@@ -50,8 +50,6 @@ public class JspRendererImpl implements JspRenderer {
 		// need this try/catch for exception translation
 		try {
 			node.renderSelf(session, this);
-//TODO: needed?
-			//			session.response.getWriter().flush();
 		} catch (Exception e) {
 			throw new JspRenderException(node, e);
 		}

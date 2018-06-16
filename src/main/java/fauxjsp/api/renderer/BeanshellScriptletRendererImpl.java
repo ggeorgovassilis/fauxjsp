@@ -1,7 +1,6 @@
 package fauxjsp.api.renderer;
 
 import java.io.PrintStream;
-import java.io.Writer;
 import java.util.Enumeration;
 
 import fauxjsp.api.logging.Logger;
@@ -31,7 +30,7 @@ public class BeanshellScriptletRendererImpl implements JspScriptletRenderer {
 			// TODO: more implicit objects
 			script.set("request", session.request);
 			script.set("response", session.response);
-			script.set("out", session.response.getWriter());
+			script.set("out", session.response.getOutputStream());
 			JspPageContextImpl pageContext = new JspPageContextImpl();
 			pageContext.initialize(null, session.request, session.response, null, false, 0, false);
 			script.set("pageContext", pageContext);
@@ -49,9 +48,7 @@ public class BeanshellScriptletRendererImpl implements JspScriptletRenderer {
 
 			Object returnValue = script.eval(scriptlet.getSourceCode());
 			if (scriptlet.isReturnsStatement() && returnValue != null) {
-				Writer writer = session.response.getWriter();
-				writer.write(returnValue.toString());
-				//TODO check if needed: writer.flush();
+				session.response.write(returnValue.toString());
 			}
 		} catch (Exception e) {
 			throw new JspRenderException(e.getMessage()+"\n\nScriptlet code was:\n "+scriptlet.getSourceCode(), scriptlet);

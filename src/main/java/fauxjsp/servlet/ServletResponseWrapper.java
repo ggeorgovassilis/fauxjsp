@@ -3,7 +3,6 @@ package fauxjsp.servlet;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-
 import javax.servlet.ServletOutputStream;
 import javax.servlet.ServletResponse;
 import javax.servlet.WriteListener;
@@ -18,18 +17,33 @@ import fauxjsp.impl.Utils;
 public class ServletResponseWrapper extends javax.servlet.ServletResponseWrapper{
 
 	protected ServletOutputStream servletOutputStream;
-	protected WriteListener writeListener;
 	protected PrintWriter printWriter;
 
 	public ServletResponseWrapper(ServletResponse response, OutputStream out) {
 		super(response);
 		this.printWriter = new PrintWriter(out, true);
+		servletOutputStream = new ServletOutputStream() {
+			
+			@Override
+			public void write(int b) throws IOException {
+				out.write(b);
+			}
+			
+			@Override
+			public void setWriteListener(WriteListener writeListener) {
+			}
+			
+			@Override
+			public boolean isReady() {
+				return true;
+			}
+		};
 	}
 
 	public ServletResponseWrapper(ServletResponse response) {
 		super(response);
 		try {
-			this.printWriter = response.getWriter();
+			this.servletOutputStream = response.getOutputStream();
 		} catch (IOException e) {
 			throw Utils.softenException(e);
 		}
@@ -37,36 +51,29 @@ public class ServletResponseWrapper extends javax.servlet.ServletResponseWrapper
 	
 	@Override
 	public ServletOutputStream getOutputStream() throws IOException {
-		if (servletOutputStream == null){
-			servletOutputStream = new ServletOutputStream() {
-				
-				@Override
-				public void write(int b) throws IOException {
-					printWriter.write(b);
-				}
-				
-				@Override
-				public void setWriteListener(WriteListener wl) {
-					writeListener = wl;
-				}
-				
-				@Override
-				public boolean isReady() {
-					return true;
-				}
-			};
-		}
 		return servletOutputStream;
 	}
 	
 	@Override
 	public PrintWriter getWriter() throws IOException {
+		if (printWriter==null) {
+			printWriter = new PrintWriter(servletOutputStream);
+		}
 		return printWriter;
+	}
+	
+	public void write(String content) {
+		try {
+			byte[] b = content.getBytes(getCharacterEncoding());
+			servletOutputStream.write(b);
+		} catch (Exception e) {
+			throw Utils.softenException(e);
+		}
 	}
 	
 	public void commit() {
 		try {
-			getWriter().flush();
+			servletOutputStream.flush();
 		} catch (IOException e) {
 			throw Utils.softenException(e);
 		}

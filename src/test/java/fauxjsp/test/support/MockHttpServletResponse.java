@@ -101,7 +101,9 @@ public class MockHttpServletResponse implements HttpServletResponse{
 
 	@Override
 	public void flushBuffer() throws IOException {
-		writer.flush();
+		if (writer!=null)
+			writer.flush();
+		out.flush();
 	}
 
 	@Override

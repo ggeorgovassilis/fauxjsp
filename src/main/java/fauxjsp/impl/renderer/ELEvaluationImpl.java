@@ -43,11 +43,6 @@ public class ELEvaluationImpl implements ELEvaluation {
 				expressionFactory.createValueExpression(session.request, HttpServletRequest.class));
 		variables.setVariable("response",
 				expressionFactory.createValueExpression(session.response, HttpServletResponse.class));
-		// TODO: set output stream and writer
-		// variables.setVariable(
-		// "out",
-		// expressionFactory.createValueExpression(
-		// session.response.getWriter(), PrintWriter.class));
 		HttpSession httpSession = session.request.getSession(false);
 		if (httpSession != null)
 			variables.setVariable("session", expressionFactory.createValueExpression(httpSession, HttpSession.class));
