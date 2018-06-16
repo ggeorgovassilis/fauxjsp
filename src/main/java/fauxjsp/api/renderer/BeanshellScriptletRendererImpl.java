@@ -22,7 +22,7 @@ public class BeanshellScriptletRendererImpl implements JspScriptletRenderer {
 	@Override
 	public void render(JspScriptlet scriptlet, RenderSession session) {
 		try {
-			PrintStream out = new PrintStream(session.response.getOut());
+			PrintStream out = new PrintStream(session.response.getOutputStream());
 			PrintStream err = out;
 			bsh.Interpreter script = new bsh.Interpreter();
 			script.setOut(out);
@@ -31,7 +31,7 @@ public class BeanshellScriptletRendererImpl implements JspScriptletRenderer {
 			// TODO: more implicit objects
 			script.set("request", session.request);
 			script.set("response", session.response);
-			script.set("out", session.response.getOutputStream());
+			script.set("out", session.response.getWriter());
 			JspPageContextImpl pageContext = new JspPageContextImpl();
 			pageContext.initialize(null, session.request, session.response, null, false, 0, false);
 			script.set("pageContext", pageContext);
@@ -51,7 +51,7 @@ public class BeanshellScriptletRendererImpl implements JspScriptletRenderer {
 			if (scriptlet.isReturnsStatement() && returnValue != null) {
 				Writer writer = session.response.getWriter();
 				writer.write(returnValue.toString());
-				writer.flush();
+				//TODO check if needed: writer.flush();
 			}
 		} catch (Exception e) {
 			throw new JspRenderException(e.getMessage()+"\n\nScriptlet code was:\n "+scriptlet.getSourceCode(), scriptlet);

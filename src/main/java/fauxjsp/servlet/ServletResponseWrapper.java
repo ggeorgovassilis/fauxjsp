@@ -16,13 +16,21 @@ import javax.servlet.WriteListener;
 public class ServletResponseWrapper extends javax.servlet.ServletResponseWrapper{
 
 	protected ServletOutputStream servletOutputStream;
-	protected OutputStream out;
 	protected WriteListener writeListener;
 	protected PrintWriter printWriter;
-	
+
 	public ServletResponseWrapper(ServletResponse response, OutputStream out) {
 		super(response);
-		this.out = out;
+		this.printWriter = new PrintWriter(out, true);
+	}
+
+	public ServletResponseWrapper(ServletResponse response) {
+		super(response);
+		try {
+			this.printWriter = response.getWriter();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	@Override
@@ -32,7 +40,7 @@ public class ServletResponseWrapper extends javax.servlet.ServletResponseWrapper
 				
 				@Override
 				public void write(int b) throws IOException {
-					out.write(b);
+					printWriter.write(b);
 				}
 				
 				@Override
@@ -49,15 +57,16 @@ public class ServletResponseWrapper extends javax.servlet.ServletResponseWrapper
 		return servletOutputStream;
 	}
 	
-	public OutputStream getOut() {
-		return out;
-	}
-	
 	@Override
 	public PrintWriter getWriter() throws IOException {
-		if (printWriter==null){
-			printWriter = new PrintWriter(out);
-		}
 		return printWriter;
+	}
+	
+	public void commit() {
+		try {
+			getWriter().flush();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }

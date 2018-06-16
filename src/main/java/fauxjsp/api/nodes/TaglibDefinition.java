@@ -80,7 +80,7 @@ public abstract class TaglibDefinition {
 
 	protected void write(String content, RenderSession session) {
 		try {
-			session.response.getOutputStream().write((content).getBytes(session.response.getCharacterEncoding()));
+			session.response.getWriter().write(content);
 		} catch (Exception e) {
 			throw Utils.translate(e);
 		}

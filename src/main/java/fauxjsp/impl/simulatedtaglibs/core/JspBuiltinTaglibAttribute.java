@@ -1,6 +1,7 @@
 package fauxjsp.impl.simulatedtaglibs.core;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 import fauxjsp.api.nodes.JspTaglibInvocation;
 import fauxjsp.api.nodes.TaglibDefinition;
@@ -33,6 +34,7 @@ public class JspBuiltinTaglibAttribute extends TaglibDefinition {
 		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 		session.response = new ServletResponseWrapper(oldResponse, buffer);
 		render(invocation.getChildren(), session);
+		session.response.commit();
 		session.response = oldResponse;
 		String renderedValue = Utils.string(buffer.toByteArray(),
 				session.response.getCharacterEncoding());

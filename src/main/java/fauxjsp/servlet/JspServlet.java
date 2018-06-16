@@ -132,9 +132,10 @@ public class JspServlet extends HttpServlet {
 			session.renderer = renderer;
 			session.elEvaluation = new ELEvaluationImpl(elFactory);
 			session.request = new ServletRequestWrapper(req);
-			session.response = new ServletResponseWrapper(resp, resp.getOutputStream());
+			session.response = new ServletResponseWrapper(resp);
 			session.servlet = this;
 			renderer.render(page, session);
+			session.response.flushBuffer();
 		} catch (JspParsingException pe) {
 			String explanation = parser.explain(pe);
 			throw new ServletException("Error while parsing " + servletPath + "\n" + explanation, pe);

@@ -2,6 +2,7 @@ package fauxjsp.test.unittests;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Enumeration;
@@ -79,6 +80,11 @@ public abstract class BaseTest {
 	}
 	
 	protected String getContent(MockHttpServletResponse response){
+		try {
+			response.flushBuffer();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 		return text(response.getBaos());
 	}
 	
@@ -136,7 +142,7 @@ public abstract class BaseTest {
 		request=session.request = new ServletRequestWrapper(originalRequest);
 		session.renderer = renderer;
 		session.elEvaluation = elEvaluation;
-		session.response = new ServletResponseWrapper(response, response.getBaos());
+		session.response = new ServletResponseWrapper(response);
 		session.servlet = new JspServlet();
 	}
 

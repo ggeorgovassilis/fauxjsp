@@ -64,7 +64,7 @@ public class MockHttpServletResponse implements HttpServletResponse{
 	@Override
 	public PrintWriter getWriter() throws IOException {
 		if (writer == null){
-			writer = new PrintWriter(getOutputStream());
+			writer = new PrintWriter(baos);
 		}
 		return writer;
 	}
@@ -101,7 +101,7 @@ public class MockHttpServletResponse implements HttpServletResponse{
 
 	@Override
 	public void flushBuffer() throws IOException {
-		throw new RuntimeException("Not implemented");
+		writer.flush();
 	}
 
 	@Override

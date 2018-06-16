@@ -2,6 +2,7 @@ package fauxjsp.test.integrationtests;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -90,6 +91,7 @@ public class TestPerformance extends BaseTest {
 					.getBytes()));
 			compare(doc.getDocumentElement(), tree);
 		} catch (Exception e) {
+			System.err.println(text);
 			throw new RuntimeException(e);
 		}
 	}
@@ -130,12 +132,16 @@ public class TestPerformance extends BaseTest {
 				session.request = new ServletRequestWrapper(request);
 				session.renderer = renderer;
 				session.elEvaluation = elEvaluation;
-				session.response = new ServletResponseWrapper(response,
-						response.getBaos());
+				session.response = new ServletResponseWrapper(response);
 				session.request.setAttribute("tree", tree);
 				session.servlet = servlet;
 
 				session.renderer.render(page, session);
+				try {
+					session.response.flushBuffer();
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
 				String text = text(baos);
 				int t = turn.incrementAndGet();
 				if ((t-1) % COMPARE_EVERY_SO_MANY_TURNS == 0){

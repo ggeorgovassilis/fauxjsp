@@ -38,6 +38,6 @@ public class JspText extends JspNode {
 	public void renderSelf(RenderSession session, JspRenderer renderer) throws IOException{
 		String content = getContentAsString();
 		content = (String) session.elEvaluation.evaluate(content, session);
-		session.response.getOutputStream().print(content);
+		session.response.getWriter().print(content);
 	}
 }

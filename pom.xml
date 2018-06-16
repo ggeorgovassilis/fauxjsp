@@ -173,6 +173,17 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.21.0</version>
+				<configuration> <!-- without those, there are charset encoding errors in tests when run in maven -->
+					<encoding>UTF-8</encoding>
+					<inputEncoding>UTF-8</inputEncoding>
+					<outputEncoding>UTF-8</outputEncoding>
+					<argLine>-Xmx64m -ea -Dfile.encoding=UTF-8</argLine>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 	<reports>
