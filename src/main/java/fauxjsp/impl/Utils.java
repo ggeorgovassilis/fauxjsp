@@ -24,12 +24,12 @@ import fauxjsp.api.renderer.RenderSession;
  *
  */
 public class Utils {
-	
+
 	protected static Map<String, WeakReference<Class<?>>> cachedClasses = new HashMap<>();
-	
 
 	/**
 	 * Get class of an object or return null for a null argument
+	 * 
 	 * @param o
 	 * @return
 	 */
@@ -39,6 +39,7 @@ public class Utils {
 
 	/**
 	 * Get file contents
+	 * 
 	 * @param f
 	 * @return
 	 */
@@ -48,12 +49,13 @@ public class Utils {
 			fis.read(b);
 			return b;
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			throw softenException(e);
 		}
 	}
 
 	/**
 	 * Silently close a closeable, no matter what
+	 * 
 	 * @param c
 	 */
 	public static void close(Closeable c) {
@@ -65,6 +67,7 @@ public class Utils {
 
 	/**
 	 * True if s is null or empty
+	 * 
 	 * @param s
 	 * @return
 	 */
@@ -74,6 +77,7 @@ public class Utils {
 
 	/**
 	 * Evalute "expression" as an EL expression and return its result as an integer
+	 * 
 	 * @param expression
 	 * @param session
 	 * @return
@@ -90,6 +94,7 @@ public class Utils {
 	/**
 	 * Replace all ocurrences of "what" in "sb" with "with". Modifies "sb" and
 	 * returns the "sb" parameter
+	 * 
 	 * @param sb
 	 * @param what
 	 * @param with
@@ -114,8 +119,9 @@ public class Utils {
 	}
 
 	/**
-	 * Makes a string out of a byte buffer. Convenience method that wraps
-	 * the standard API {@link UnsupportedEncodingException}
+	 * Makes a string out of a byte buffer. Convenience method that wraps the
+	 * standard API {@link UnsupportedEncodingException}
+	 * 
 	 * @param buffer
 	 * @param characterset
 	 * @return
@@ -124,14 +130,14 @@ public class Utils {
 		try {
 			return new String(buffer, characterset);
 		} catch (UnsupportedEncodingException e) {
-			throw new RuntimeException(e);
+			throw softenException(e);
 		}
 	}
 
 	/**
 	 * Attempts to cast expression to c. If that's not possible, then this method
-	 * will try a few obvious conversions if C is Boolean, Integer, Long,
-	 * Double, Float, Byte, Short
+	 * will try a few obvious conversions if C is Boolean, Integer, Long, Double,
+	 * Float, Byte, Short
 	 * 
 	 * @param expression
 	 * @param c
@@ -163,6 +169,7 @@ public class Utils {
 
 	/**
 	 * Copy input stream to output stream. Doesn't do anything if either is null.
+	 * 
 	 * @param in
 	 * @param out
 	 */
@@ -172,27 +179,27 @@ public class Utils {
 		byte[] buffer = new byte[1024];
 		try {
 			int length = 0;
-			while (-1!=(length=in.read(buffer))){
-				out.write(buffer,0,length);
+			while (-1 != (length = in.read(buffer))) {
+				out.write(buffer, 0, length);
 			}
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			throw softenException(e);
 		}
 	}
-	
-	public static String attr(String name, Map<String, NodeAttributeValue> attributes){
+
+	public static String attr(String name, Map<String, NodeAttributeValue> attributes) {
 		NodeAttributeValue attr = attributes.get(name);
-		if (attr==null)
+		if (attr == null)
 			return null;
 		if (!(attr instanceof StringNodeAttributeValue))
-			throw new RuntimeException("Attribute "+name+" isn't a string but a"+attr);
-		return ((StringNodeAttributeValue)attr).getValue();
+			throw new RuntimeException("Attribute " + name + " isn't a string but a" + attr);
+		return ((StringNodeAttributeValue) attr).getValue();
 	}
-	
-	public static Class<?> getClassForName(String className) throws ClassNotFoundException{
-		synchronized(cachedClasses){
+
+	public static Class<?> getClassForName(String className) throws ClassNotFoundException {
+		synchronized (cachedClasses) {
 			WeakReference<Class<?>> ref = cachedClasses.get(className);
-			if (ref==null){
+			if (ref == null) {
 				Class<?> c = Class.forName(className);
 				ref = new WeakReference<Class<?>>(c);
 				cachedClasses.put(className, ref);
@@ -200,10 +207,20 @@ public class Utils {
 			return ref.get();
 		}
 	}
-	
-	public static RuntimeException translate(Exception e){
+
+	public static RuntimeException translate(Exception e) {
 		if (e instanceof RuntimeException)
-			return (RuntimeException)e;
+			return (RuntimeException) e;
 		return new RuntimeException(e);
 	}
+
+	@SuppressWarnings("unchecked")
+	public static <T extends Exception> T checkednessRemover(Exception e) throws T {
+		throw (T) e;
+	}
+
+	public static RuntimeException softenException(Exception e) {
+		return checkednessRemover(e);
+	}
+
 }

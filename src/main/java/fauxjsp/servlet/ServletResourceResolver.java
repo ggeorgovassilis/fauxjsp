@@ -34,7 +34,7 @@ public class ServletResourceResolver implements ResourceResolver {
 			Utils.copy(in, baos);
 			return baos.toByteArray();
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			throw Utils.softenException(e);
 		}
 	}
 

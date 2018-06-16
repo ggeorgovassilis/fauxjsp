@@ -11,6 +11,7 @@ import fauxjsp.api.renderer.JspRenderer;
 import fauxjsp.api.renderer.JspScriptletRenderer;
 import fauxjsp.api.renderer.NOPScriptletRendererImpl;
 import fauxjsp.api.renderer.RenderSession;
+import fauxjsp.impl.Utils;
 import fauxjsp.impl.logging.Logging;
 
 /**
@@ -41,7 +42,7 @@ public class JspRendererImpl implements JspRenderer {
 		try {
 			out.write(content);
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			throw Utils.softenException(e);
 		}
 	}
 

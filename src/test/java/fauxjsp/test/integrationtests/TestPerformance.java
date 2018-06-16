@@ -18,6 +18,7 @@ import org.w3c.dom.NodeList;
 
 import fauxjsp.api.nodes.JspPage;
 import fauxjsp.api.renderer.RenderSession;
+import fauxjsp.impl.Utils;
 import fauxjsp.impl.parser.JspParserImpl;
 import fauxjsp.impl.renderer.JspRendererImpl;
 import fauxjsp.servlet.JspServlet;
@@ -140,7 +141,7 @@ public class TestPerformance extends BaseTest {
 				try {
 					session.response.flushBuffer();
 				} catch (IOException e) {
-					throw new RuntimeException(e);
+					throw Utils.softenException(e);
 				}
 				String text = text(baos);
 				int t = turn.incrementAndGet();

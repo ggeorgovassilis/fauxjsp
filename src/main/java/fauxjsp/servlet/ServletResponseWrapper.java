@@ -8,6 +8,8 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.ServletResponse;
 import javax.servlet.WriteListener;
 
+import fauxjsp.impl.Utils;
+
 /**
  * Injects new {@link OutputStream}s into a {@link ServletResponse}
  * @author George Georgovassilis
@@ -29,7 +31,7 @@ public class ServletResponseWrapper extends javax.servlet.ServletResponseWrapper
 		try {
 			this.printWriter = response.getWriter();
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			throw Utils.softenException(e);
 		}
 	}
 	
@@ -66,7 +68,7 @@ public class ServletResponseWrapper extends javax.servlet.ServletResponseWrapper
 		try {
 			getWriter().flush();
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			throw Utils.softenException(e);
 		}
 	}
 }

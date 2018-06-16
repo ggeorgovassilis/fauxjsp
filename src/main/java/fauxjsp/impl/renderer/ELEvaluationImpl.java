@@ -61,7 +61,7 @@ public class ELEvaluationImpl implements ELEvaluation {
 			variables.setVariable("pageContext",
 					expressionFactory.createValueExpression(pageContext, JspPageContextImpl.class));
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			throw Utils.softenException(e);
 		}
 		// TODO: check that servletConfig is spelled correctly
 		variables.setVariable("servletConfig",

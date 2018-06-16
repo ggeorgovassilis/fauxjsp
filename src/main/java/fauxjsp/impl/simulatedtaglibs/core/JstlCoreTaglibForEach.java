@@ -2,7 +2,6 @@ package fauxjsp.impl.simulatedtaglibs.core;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 

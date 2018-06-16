@@ -60,8 +60,8 @@ public class JspServlet extends HttpServlet {
 	protected JspRendererFactory jspRendererFactory;
 
 	/**
-	 * Finds the jsp base location from the "base-path" init parameter. This
-	 * field tells the servlet at which server location to look for JSP files.
+	 * Finds the jsp base location from the "base-path" init parameter. This field
+	 * tells the servlet at which server location to look for JSP files.
 	 * 
 	 * @param config
 	 * @return server location to look for JSP files
@@ -146,6 +146,8 @@ public class JspServlet extends HttpServlet {
 		} catch (JspRenderException re) {
 			String explanation = renderer.explain(re);
 			throw new ServletException("Error while rendering " + servletPath + "\n" + explanation, re);
+		} catch (IOException ioe) {
+			throw ioe;
 		} catch (Exception e) {
 			throw new ServletException(e);
 		}

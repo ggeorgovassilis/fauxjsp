@@ -16,6 +16,8 @@ import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.el.ExpressionEvaluator;
 import javax.servlet.jsp.el.VariableResolver;
 
+import fauxjsp.impl.Utils;
+
 /**
  * (Incomplete) implementation of a {@link PageContext}
  * @author George Georgovassilis
@@ -71,7 +73,7 @@ public class JspPageContextImpl extends PageContext{
 		try {
 			return getServletContext().getServlet("JspServlet").getServletConfig();
 		} catch (ServletException e) {
-			throw new RuntimeException(e);
+			throw Utils.softenException(e);
 		}
 	}
 

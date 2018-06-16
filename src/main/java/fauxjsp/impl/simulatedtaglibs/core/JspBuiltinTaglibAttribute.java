@@ -1,7 +1,6 @@
 package fauxjsp.impl.simulatedtaglibs.core;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 
 import fauxjsp.api.nodes.JspTaglibInvocation;
 import fauxjsp.api.nodes.TaglibDefinition;

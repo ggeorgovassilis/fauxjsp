@@ -1,7 +1,6 @@
 package fauxjsp.servlet;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 
 import fauxjsp.api.parser.ResourceResolver;

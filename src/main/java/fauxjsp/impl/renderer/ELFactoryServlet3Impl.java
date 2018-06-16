@@ -103,7 +103,7 @@ public class ELFactoryServlet3Impl implements ELFactory {
 						}
 			}
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			throw Utils.softenException(e);
 		}
 	}
 

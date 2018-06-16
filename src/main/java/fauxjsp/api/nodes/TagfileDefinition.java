@@ -31,7 +31,7 @@ public class TagfileDefinition extends TaglibDefinition {
 		try {
 			return Utils.getClassForName(type);
 		} catch (ClassNotFoundException e) {
-			throw new RuntimeException(e);
+			throw Utils.softenException(e);
 		}
 	}
 
