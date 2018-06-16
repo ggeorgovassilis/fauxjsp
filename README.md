@@ -74,6 +74,21 @@ cd fauxjsp
 mvn install
 ```
 
+*OR*
+
+add a repository declaration (maybe change updatePolicy to your needs):
+
+```xml
+<repository>
+	<id>fauxjsp-mvn-repo</id>
+	<url>https://raw.github.com/ggeorgovassilis/fauxjsp/mvn-pages/</url>
+	<snapshots>
+		<enabled>true</enabled>
+		<updatePolicy>always</updatePolicy>
+	</snapshots>
+</repository>
+```
+
 2) add the dependency to your project
 
 ```xml

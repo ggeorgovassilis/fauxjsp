@@ -11,7 +11,39 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<beanshell.version>2.0b5</beanshell.version>
+		<github.global.server>github</github.global.server>
 	</properties>
+
+	<url>https://github.com/ggeorgovassilis/fauxjsp</url>
+	<licenses>
+		<license>
+			<name>GPL v3.0</name>
+			<url>https://www.gnu.org/licenses/gpl-3.0.en.html</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<id>ggeorgovassilis</id>
+			<name>George Georgovassilis</name>
+			<email>g.georgovassilis@gmail.com</email>
+			<url>https://blog.georgovassilis.com/</url>
+			<roles>
+				<role>Developer</role>
+			</roles>
+		</developer>
+	</developers>
+	<scm>
+		<connection>scm:git:git@github.com:ggeorgovassilis/fauxjsp.git</connection>
+		<developerConnection>scm:git:git@github.com:ggeorgovassilis/fauxjsp.git</developerConnection>
+		<url>git@github.com:ggeorgovassilis/fauxjsp.git</url>
+	</scm>
+	<distributionManagement>
+		<repository>
+			<id>internal.repo</id>
+			<url>file://${project.build.directory}/mvn-repo</url>
+		</repository>
+	</distributionManagement>
 
 	<dependencies>
 		<dependency>
@@ -82,8 +114,6 @@
 			<version>2.4</version>
 			<scope>test</scope>
 		</dependency>
-		<!-- <dependency> <groupId>org.apache.tomcat.embed</groupId> <artifactId>tomcat-embed-logging-juli</artifactId> 
-			<version>8.0.30</version> <scope>test</scope> </dependency> -->
 		<dependency>
 			<groupId>org.apache.tomcat.embed</groupId>
 			<artifactId>tomcat-embed-jasper</artifactId>
@@ -177,15 +207,66 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.21.0</version>
-				<configuration> <!-- without those, there are charset encoding errors in tests when run in maven -->
+				<configuration> <!-- without those, there are charset encoding errors in tests when run in 
+						maven -->
 					<encoding>UTF-8</encoding>
 					<inputEncoding>UTF-8</inputEncoding>
 					<outputEncoding>UTF-8</outputEncoding>
 					<argLine>-Xmx64m -ea -Dfile.encoding=UTF-8</argLine>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>2.8.2</version>
+				<configuration>
+					<altDeploymentRepository>internal.repo::default::file://${project.build.directory}/mvn-repo</altDeploymentRepository>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>com.github.github</groupId>
+				<artifactId>site-maven-plugin</artifactId>
+				<version>0.12</version>
+				<configuration>
+					<message>Maven artifacts for ${project.version}</message>
+					<noJekyll>true</noJekyll>
+					<outputDirectory>${project.build.directory}/mvn-repo</outputDirectory>
+					<branch>refs/heads/mvn-pages</branch>
+					<merge>true</merge>
+					<includes>
+						<include>**/*</include>
+					</includes>
+					<repositoryName>fauxjsp</repositoryName>
+					<repositoryOwner>ggeorgovassilis</repositoryOwner>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>site</goal>
+						</goals>
+						<phase>deploy</phase>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<configuration> <!-- don't write links to external dependencies; dependency lookup takes 
+						long -->
+					<dependencyLocationsEnabled>false</dependencyLocationsEnabled>
+				</configuration>
+			</plugin>
+			<plugin> <!-- fix warning during report generation -->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jxr-plugin</artifactId>
+				<version>2.5</version>
+			</plugin>
+		</plugins>
+	</reporting>
 	<reports>
 		<report>maven-pmd-plugin</report>
 		<report>jacoco-maven-plugin</report>
