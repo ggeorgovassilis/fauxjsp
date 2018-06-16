@@ -18,7 +18,7 @@ import java.awt.Composite;
  * @author george georgovassilis
  *
  */
-public class TestTagfileInClasspath extends BaseTest {
+public class TestResourceInClasspath extends BaseTest {
 	
 	@Override
 	protected ResourceResolver getResourceResolver() {
@@ -29,12 +29,22 @@ public class TestTagfileInClasspath extends BaseTest {
 	}
 
 	@Test
-	public void test_choose() {
+	public void test_tagfile_in_classpath() {
 		request.setAttribute("value", "testvalue");
 		JspPage page = parser.parseJsp("WEB-INF/jsp/tagfile_in_classpath.jsp");
 		renderer.render(page, session);
 		String text = getPrettyContent(response);
 		assertEquals("<c>testvalue</c>",text);
+	}
+	
+	@Test
+	public void test_jsp_in_classpath() {
+		request.setAttribute("value", "testvalue");
+		JspPage page = parser.parseJsp("classpath:/webapp/WEB-INF/jsp/tagfile_in_classpath.jsp");
+		renderer.render(page, session);
+		String text = getPrettyContent(response);
+		assertEquals("<c>testvalue</c>",text);
+		
 	}
 
 }
