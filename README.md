@@ -3,7 +3,8 @@
 fauxjsp
 =======
 
-Alternative JSP implementation for development use: it interprets (instead of compiling) JSP which leads to fast application startup, fast page reloads when JSPs change and eliminates the need for server restarts. Best used when developing, probably of limited use in production because of poor performance.
+Alternative JSP implementation for use during development: JSP is interpreted lazily (instead of compiled) which reduces application and page startup times, speeds up page reloads when JSPs change and doesn't require server restarts. Best used when developing, probably of limited use in production because of poor performance and less-than-perfect compliance to the
+JSP standard.
 
 ## Change log
 
@@ -41,7 +42,7 @@ Currently implemented features:
 * Supports most core JSTL taglibs
 * Supports scriptlets
 * Is modular and extensible
-* Supports tagfiles and JSPs which reside in classpath locations
+* Supports an idiomatic way of loading tagfiles and JSPs which reside in classpath locations
 
 Constraints and missing features:
 
@@ -57,13 +58,20 @@ Constraints and missing features:
 * Scriptlets are implemented via [beanshell](http://www.beanshell.org) which means that there might be deviations from how scriptlets are handled in Jasper et al.
 * The JSP language ecosystem is rather complex; HTML, JSTL, EL and scriptlets are frequently mixed in the same file which is hard to parse. Fauxjsp uses a very simple parser which means that it's likely to get confused by characters in EL expressions which have special meaning in XML, e.g.
 "<" or ">" as strings in scriptlets, "{" or "}" as strings in EL - you might have to use [named entities](https://en.wikipedia.org/wiki/List_of_XML_and_HTML_character_entity_references). Note that release 0.0.4 significantly improved handling of such characters.
+* Does not support web fragments
+* Uses a ```classpath:``` prefix for resolving tagfiles and JSPs in the classpath. Does not support the standard way of resolving classpath resources.
 
-### With all these restrictions... why should you bother?
+### With all these restrictions, why should you bother?
 
 Because:
 
 * JSPs and tagfiles reload instantly saving you plenty of time and server restarts.
 * fauxjsp implements a subset of the JSP specification; if it works in fauxjsp, it will probably work in Jasper, too.
+* it's tested on large and complex pages and the important things seem to work
+
+Bonus:
+
+* If you're willing to abandon the standard JSP implementation, then fauxjsp comes with a few neat extra features and simplifications not available in standard JSP
 
 ## Getting started
 
