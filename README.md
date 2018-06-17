@@ -3,8 +3,21 @@
 fauxjsp
 =======
 
-Alternative JSP implementation for use during development: JSP is interpreted lazily (instead of compiled) which reduces application and page startup times, speeds up page reloads when JSPs change and doesn't require server restarts. Best used when developing, probably of limited use in production because of poor performance and less-than-perfect compliance to the
-JSP standard.
+fauxjsp is a [Java Server Pages (JSP)](http://www.oracle.com/technetwork/java/index-jsp-138231.html) implementation for use during development: JSPs are interpreted lazily (instead of compiled) which reduces application and page startup times, speeds up page reloads when JSPs change and doesn't require server restarts. Best used when developing, probably of limited use in production because of poor performance and less-than-perfect compliance with the JSP standard.
+
+## TL;DR
+
+```xml
+<servlet>
+        <servlet-name>FauxJsp</servlet-name>
+        <servlet-class>fauxjsp.servlet.JspServlet</servlet-class>
+</servlet>
+
+<servlet-mapping>
+	<servlet-name>FauxJsp</servlet-name>
+	<url-pattern>*.jsp</url-pattern>
+</servlet-mapping>
+```
 
 ## Change log
 
@@ -28,15 +41,16 @@ JSP standard.
 
 Yes. In short:
 - a. there aren't that many (I only know of two, [Oracle JSP](https://docs.oracle.com/cd/B10501_01/java.920/a96657/orajspov.htm) and [Jasper](https://tomcat.apache.org/tomcat-6.0-doc/jasper-howto.html))
-- b. it's much faster for development and reduces application start times compared to other implementations because it interprets JSP rather than compiling it to byte code
+- b. it's much faster during development than other implementations because it interprets JSP rather than compiling it to byte code
 - c. no memory leaks, more robust, more precise and helpful error messages for syntax- and runtime errors
 - d. extensible
+- e. if compliance and performance are not a top priority, it comes with a few neat features not available with standard JSP such as loading tagfiles and JSPs from the classpath.
 
 For most of you cool dudes JSP is horribly out of fashion, but I like using it for prototyping and [tagfiles](http://docs.oracle.com/javaee/1.4/tutorial/doc/JSPTags5.html). Sadly and surprisingly, not many people know about tagfiles despite them being a well-supported and mature technique for creating reusable web UI components.
 
 Starting a JSP-heavy application is slow because other JSP implementations will first compile JSP and tagfiles to java source code, then to byte code and then to machine code. Also, when making changes to JSP files, the entire process has to be repeated which slows down development. At some point you'll even get unexplainable compile errors, class loading errors, run out of memory and the likes, you'll know you've had enough and you'll restart the servlet container.
 
-Fauxjsp implements a JSP interpreter and a [JSP servlet](https://github.com/ggeorgovassilis/fauxjsp/blob/master/src/main/java/fauxjsp/servlet/JspServlet.java) which reads JSP files and interprets them on the fly, skipping compilation altogether. This brings the benefit of instant page reloads, fast application start times and robustness (no classloader fiddling!) but, obviously, the generated JSP pages are slower under load than the standard implementation and thus fauxjsp shouldn't be used for production.
+fauxjsp implements a JSP interpreter and a [JSP servlet](https://github.com/ggeorgovassilis/fauxjsp/blob/master/src/main/java/fauxjsp/servlet/JspServlet.java) which reads JSP files and interprets them on the fly, skipping compilation altogether. This brings the benefit of instant page reloads, fast application start times and robustness (no classloader fiddling!) but, obviously, the generated JSP pages are slower under load than the standard implementation and thus fauxjsp shouldn't be used for production.
 
 Currently implemented features:
 
@@ -45,21 +59,21 @@ Currently implemented features:
 * Supports most core JSTL taglibs
 * Supports scriptlets
 * Is modular and extensible
-* Supports an idiomatic way of loading tagfiles and JSPs which reside in classpath locations
+* Supports an idiomatic way of loading tagfiles and JSPs from the classpath
 
 Constraints and missing features:
 
-* Out-of-the-box only core taglibs are supported. This means that core taglibs like c:out will work but
+* Out-of-the-box only core taglibs are supported. This means that core taglibs like ```c:out``` will work but
   third party taglibs such as [displaytag](http://www.displaytag.org) won't, unless you re-implement them for fauxjsp.
 * Not all core taglibs are supported and not all features of the supported ones are implemented which is not an intentional omission. Please submit a bug report if you think something is missing.
-* I didn't read up on JSP/JSTL/servlet specifications. This implementation is "steer by sight" (aka "works for me").
+* I didn't read up on JSP/JSTL/servlet specifications, the implementation is empirical (aka "works for me").
 * Servlet containers needs to provide some EL 3.0 implementation (i.e. works with Tomcat 8, not with Tomcat 7)
 * I didn't read up on variable scoping; scopes work similarly to variable scopes in Java blocks.
 * Encoding is pinned to UTF-8.
 * Not all JSP [implicit objects](https://docs.oracle.com/cd/E19316-01/819-3669/bnaij/index.html) are available.
-* Newline handling in output may differ from main stream JSP implementations.
+* Newline handling in output may differ from standard JSP implementations.
 * Scriptlets are implemented via [beanshell](http://www.beanshell.org) which means that there might be deviations from how scriptlets are handled in Jasper et al.
-* The JSP language ecosystem is rather complex; HTML, JSTL, EL and scriptlets are frequently mixed in the same file which is hard to parse. Fauxjsp uses a very simple parser which means that it's likely to get confused by characters in EL expressions which have special meaning in XML, e.g.
+* The JSP language ecosystem is rather complex; HTML, JSTL, EL and scriptlets are frequently mixed in the same file which is hard to parse. fauxjsp uses a very simple parser which means that it's likely to get confused by characters in EL expressions which have special meaning in XML, e.g.
 "<" or ">" as strings in scriptlets, "{" or "}" as strings in EL - you might have to use [named entities](https://en.wikipedia.org/wiki/List_of_XML_and_HTML_character_entity_references). Note that release 0.0.4 significantly improved handling of such characters.
 * Does not support web fragments
 * Uses a ```classpath:``` prefix for resolving tagfiles and JSPs in the classpath. Does not support the standard way of resolving classpath resources.
@@ -151,7 +165,7 @@ For up-to-date details, [please see the pom](pom.xml).
 ## Extending fauxjsp's functionality and working around bugs
 
 Please submit a bug report when you find a bug or require a feature implemented. Now, in real (project) life, 
-you are probably on a tight schedule and don't want to wait for an official fix. Fauxjsp is modular and easily
+you are probably on a tight schedule and don't want to wait for an official fix. fauxjsp is modular and easily
 extensible. So have a look at the next chapter about fauxjsp's architecture which will help you understand the various,
 rather simple components, how to modify them and implement new functionality.
 
@@ -245,7 +259,7 @@ up under a special namespace, one for each taglib method.
 
 ### Functions
 
-Fauxjsp delegates to the standard JSTL function implementation used by the application server, so everything should work out of the box.
+fauxjsp delegates to the standard JSTL function implementation used by the application server, so everything should work out of the box.
 
 If you need more function taglibs, don't forget to declare them in web.xml:
 ```xml
@@ -389,7 +403,7 @@ Don't use ```tagdir``` but use ```uri``` instead when including the resource, eg
 ### ... make this work with Spring?
 You probably noticed that the ```JstlView``` and ```InternalViewResolver``` don't work and Spring doesn't find your JSPs.
 Under the hood, Spring should populate the model (the M in MVC) into the ```HttpServletRequest``` attributes and forward
-the request to Fauxjsp, but it doesn't. We can implement a simple forwarding mechanism like so:
+the request to fauxjsp, but it doesn't. We can implement a simple forwarding mechanism like so:
 
 ```java
 import java.util.Locale;
@@ -464,5 +478,5 @@ unit tests.
 
 ## License
 
-Fauxjsp is available under the [GPL](http://www.gnu.org/copyleft/gpl.html). Since fauxjsp is a development tool, you normally wouldn't deploy it with your
+fauxjsp is available under the [GPL](http://www.gnu.org/copyleft/gpl.html). Since fauxjsp is a development tool, you normally wouldn't deploy it with your
 application binaries into production, so the "non-commercial" aspect of the GPL doesn't affect your application.
