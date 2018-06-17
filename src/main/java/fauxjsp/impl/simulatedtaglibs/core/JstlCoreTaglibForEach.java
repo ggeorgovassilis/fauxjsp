@@ -23,12 +23,13 @@ import fauxjsp.impl.renderer.ForEachIndex;
 
 public class JstlCoreTaglibForEach extends TaglibDefinition {
 
+	@SuppressWarnings("unchecked")
 	protected List<Object> toList(Object rawItems) {
-		@SuppressWarnings({ "rawtypes", "unchecked" })
 		List<Object> items = null;
 		if (rawItems instanceof Collection)
-			items = new ArrayList<Object>((Collection) rawItems);
+			items = new ArrayList<Object>((Collection<Object>) rawItems);
 		else {
+			//TODO: speed up access by casting to Object[] ?
 			int length = Array.getLength(rawItems);
 			items = new ArrayList<Object>(length);
 			for (int i = 0; i < length; i++) {

@@ -4,13 +4,10 @@ import org.junit.Test;
 
 import fauxjsp.api.nodes.JspPage;
 import fauxjsp.api.parser.ResourceResolver;
-import fauxjsp.api.renderer.JspRenderException;
 import fauxjsp.servlet.ClasspathResourceResolver;
 import fauxjsp.servlet.CompositeResourceResolver;
 
 import static org.junit.Assert.*;
-
-import java.awt.Composite;
 
 /**
  * Tests that tagfiles residing in the classpath are resolved
