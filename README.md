@@ -9,6 +9,7 @@ JSP standard.
 ## Change log
 
 0.0.5-SNAPSHOT
+- implemented <%@page %> directive for content type and character encoding
 - ability to handle tagfiles and JSPs in classpath locations
 - updated dependencies servlet-api 4.0.1, tomcat 9.0.8
 - handling Unicode in response

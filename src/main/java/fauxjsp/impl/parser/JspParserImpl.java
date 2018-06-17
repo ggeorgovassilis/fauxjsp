@@ -3,7 +3,6 @@ package fauxjsp.impl.parser;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -504,29 +503,9 @@ public class JspParserImpl implements JspParser {
 		return causeExplanation + "\n" + exception.getCodeLocation();
 	}
 
-	/**
-	 * Removes instructions from a node and children since the parser already
-	 * constructed all definitions. Removing instruction nodes slims down the
-	 * page.
-	 * 
-	 * @param node
-	 */
-	// TODO: nodes should probably be removed during parsing already / not
-	// constructed at all?
-	protected void stripInstructions(JspNodeWithChildren node) {
-		for (Iterator<JspNode> ite = node.getChildren().iterator(); ite.hasNext();) {
-			JspNode child = ite.next();
-			if (child instanceof JspNodeWithChildren)
-				stripInstructions((JspNodeWithChildren) child);
-			else if (child instanceof JspInstruction)
-				ite.remove();
-		}
-	}
-
 	@Override
 	public JspPage parseJsp(String path) {
 		JspPage page = parseJspFragment(path);
-		stripInstructions(page);
 		return page;
 	}
 

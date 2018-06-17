@@ -23,6 +23,7 @@ public class MockHttpServletResponse implements HttpServletResponse{
 	protected ServletOutputStream out;
 	protected ByteArrayOutputStream baos = new ByteArrayOutputStream();
 	protected String characterEncoding = "UTF-8";
+	protected String contentType="text/html";
 
 	public ByteArrayOutputStream getBaos(){
 		return baos;
@@ -35,7 +36,7 @@ public class MockHttpServletResponse implements HttpServletResponse{
 
 	@Override
 	public String getContentType() {
-		throw new RuntimeException("Not implemented");
+		return contentType;
 	}
 
 	@Override
@@ -71,7 +72,7 @@ public class MockHttpServletResponse implements HttpServletResponse{
 
 	@Override
 	public void setCharacterEncoding(String charset) {
-		throw new RuntimeException("Not implemented");
+		this.characterEncoding = charset;
 	}
 
 	@Override
@@ -86,7 +87,7 @@ public class MockHttpServletResponse implements HttpServletResponse{
 
 	@Override
 	public void setContentType(String type) {
-		throw new RuntimeException("Not implemented");
+		this.contentType = type;
 	}
 
 	@Override
