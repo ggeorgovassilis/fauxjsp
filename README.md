@@ -386,6 +386,64 @@ Don't use ```tagdir``` but use ```uri``` instead when including the resource, eg
 <%@ taglib prefix="cp" uri="classpath:/tagfiles" %>
 ````
 
+### ... make this work with Spring?
+You probably noticed that the ```JstlView``` and ```InternalViewResolver``` don't work and Spring doesn't find your JSPs.
+Under the hood, Spring should populate the model (the M in MVC) into the ```HttpServletRequest``` attributes and forward
+the request to Fauxjsp, but it doesn't. We can implement a simple forwarding mechanism like so:
+
+```java
+import java.util.Locale;
+
+import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.ViewResolver;
+
+@Component
+public class ForwardingViewResolver implements ViewResolver{
+
+	@Override
+	public View resolveViewName(String viewName, Locale locale) throws Exception {
+		ForwardingView view = new ForwardingView();
+		view.setUrl("classpath:/jsp/"+viewName+".jsp");
+		return view;
+	}
+}
+```
+
+```java
+import java.util.Map;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.web.servlet.view.InternalResourceView;
+
+public class ForwardingView extends InternalResourceView {
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void render(Map<String, ?> model, HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		HttpServletRequestWrapper wrapper = new HttpServletRequestWrapper(request) {
+			
+			@Override
+			public String getServletPath() {
+				return getUrl();
+			}
+		};
+		exposeModelAsRequestAttributes((Map<String, Object>)model, wrapper);
+		exposeHelpers(wrapper);
+		RequestDispatcher rd = request.getServletContext().getNamedDispatcher("FauxJsp");
+		rd.forward(wrapper, response);
+	}
+
+}
+```
+
+The simple presence of those two components in the web application context should be enough for them to be picked up
+and activated.
+
 ## Roadmap
 
 Features to come ~~in the near~~ sometime in the future:
