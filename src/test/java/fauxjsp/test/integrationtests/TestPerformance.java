@@ -10,6 +10,7 @@ import javax.servlet.Servlet;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -38,6 +39,7 @@ import static org.junit.Assert.*;
  * @author George Georgovassilis
  *
  */
+@Ignore
 public class TestPerformance extends BaseTest {
 
 	final long WARMUP_MS = 1000;
