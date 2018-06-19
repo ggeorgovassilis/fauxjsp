@@ -32,7 +32,7 @@ public class JspTaglibInvocation extends JspNodeWithChildren {
 
 	/**
 	 * Convenience getter which returns the namespace part of the fully qualified name
-	 * @return
+	 * @return namespace
 	 */
 	public String getNamespace() {
 		return getName().split(":")[0];
@@ -40,7 +40,7 @@ public class JspTaglibInvocation extends JspNodeWithChildren {
 
 	/**
 	 * Convenience getter which returns the taglib part of the fully qualified name
-	 * @return
+	 * @return taglib
 	 */
 	public String getTaglib() {
 		return getName().split(":")[1];

@@ -28,8 +28,10 @@ public abstract class JspNode {
 	
 	/**
 	 * This method renders the node to session.response.outputstream
-	 * @param session
-	 * @param renderer
+	 * @param session Session to use for rendering. Input attributes reside in {@link RenderSession#request}, response can be sent to
+	 * {@link RenderSession#response}
+	 * @param renderer Renderer to use. Nodes with children can/should invoke {@link JspRenderer#render(JspNode, RenderSession)} for each of their children.
+	 * @throws IOException .
 	 */
 	public abstract void renderSelf(RenderSession session, JspRenderer renderer) throws IOException;
 }

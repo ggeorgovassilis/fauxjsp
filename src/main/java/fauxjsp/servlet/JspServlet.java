@@ -63,7 +63,7 @@ public class JspServlet extends HttpServlet {
 	 * Finds the jsp base location from the "base-path" init parameter. This field
 	 * tells the servlet at which server location to look for JSP files.
 	 * 
-	 * @param config
+	 * @param config Servlet configuration to use
 	 * @return server location to look for JSP files
 	 */
 	protected String getJspBase(ServletConfig config) {
@@ -76,8 +76,8 @@ public class JspServlet extends HttpServlet {
 	/**
 	 * Initializes a thread-safe {@link JspParserFactory}
 	 * 
-	 * @param config
-	 * @return
+	 * @param config Servlet configuration to use
+	 * @return a factory for {@link JspParser} instances
 	 */
 	protected JspParserFactory getJspParserFactory(ServletConfig config) {
 		ResourceResolver servletResourceResolver = new ServletResourceResolver(jspBase, getServletContext());
@@ -92,8 +92,8 @@ public class JspServlet extends HttpServlet {
 	/**
 	 * Creates an {@link ELFactory} instance
 	 * 
-	 * @param config
-	 * @return
+	 * @param config Configuration to use with {@link ELFactoryServlet3Impl}
+	 * @return an expression language factory
 	 */
 	protected ELFactory getElFactory(ServletConfig config) {
 		ELFactoryServlet3Impl factory = new ELFactoryServlet3Impl();
@@ -104,8 +104,8 @@ public class JspServlet extends HttpServlet {
 	/**
 	 * Creates an {@link JspRendererFactory} instance
 	 * 
-	 * @param config
-	 * @return
+	 * @param config servlet configuration to use
+	 * @return a new {@link JspRendererFactoryImpl} instance
 	 */
 	protected JspRendererFactory getJspRendererFactory(ServletConfig config) {
 		return new JspRendererFactoryImpl();

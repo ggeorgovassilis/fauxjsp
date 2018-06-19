@@ -111,7 +111,7 @@ public abstract class TaglibDefinition {
 	 * Should render(...) create a new variable scope? Implementations extending
 	 * this class can decide on their own by overriding this method
 	 * 
-	 * @return
+	 * @return true
 	 */
 	protected boolean shouldUseNewVariableScope() {
 		return true;

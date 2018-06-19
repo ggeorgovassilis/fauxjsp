@@ -161,7 +161,7 @@ public class TagParser {
 	 *            Big string containing (somewhere) the tag.
 	 * @param offset
 	 *            Look for tag only after "offset"
-	 * @return
+	 * @return True if this looks like a declaration.
 	 */
 	public boolean mightContainDeclaration(String text, int offset) {
 		/*

@@ -3,7 +3,7 @@ package fauxjsp.impl.renderer;
 import javax.servlet.jsp.jstl.core.LoopTagStatus;
 
 /**
- * Status variable for the <c:forEach > loop
+ * Status variable for the &lt;c:forEach &gt; loop
  * @author George Georgovassilis
  *
  */

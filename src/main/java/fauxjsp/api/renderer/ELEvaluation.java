@@ -12,7 +12,7 @@ public interface ELEvaluation {
 	 * @param expression A standard java EL expression
 	 * @param session The render session to use. {@link RenderSession#request} attributes are populated as 
 	 * values into the expression context
-	 * @return
+	 * @return Evaluation result
 	 */
 	Object evaluate(String expression, RenderSession session);
 }

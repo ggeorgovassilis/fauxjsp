@@ -33,8 +33,8 @@ public class JspParsingException extends RuntimeException {
 
 	/**
 	 * Used to record a parsing error that occurred at the provided location
-	 * @param message
-	 * @param codeLocation
+	 * @param message Error message
+	 * @param codeLocation location where error happened
 	 */
 	public JspParsingException(String message, CodeLocation codeLocation) {
 		super(codeLocation.toString() + ": " + message);
