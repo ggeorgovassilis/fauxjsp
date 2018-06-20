@@ -21,6 +21,9 @@ fauxjsp is a [Java Server Pages (JSP)](http://www.oracle.com/technetwork/java/in
 
 ## Change log
 
+0.0.9
+- released to maven central, otherwise identical to 0.0.5-SNAPSHOT
+
 0.0.5-SNAPSHOT
 - implemented <%@page %> directive for content type and character encoding
 - ability to handle tagfiles and JSPs in classpath locations
@@ -92,36 +95,24 @@ Bonus:
 
 ## Getting started
 
-1) download sources and compile
-```sh
-git clone https://github.com/ggeorgovassilis/fauxjsp.git
-cd fauxjsp
-mvn install
-```
-
-*OR*
-
-add a repository declaration (maybe change updatePolicy to your needs):
-
-```xml
-<repository>
-	<id>fauxjsp-mvn-repo</id>
-	<url>https://raw.github.com/ggeorgovassilis/fauxjsp/mvn-pages/</url>
-	<snapshots>
-		<enabled>true</enabled>
-		<updatePolicy>always</updatePolicy>
-	</snapshots>
-</repository>
-```
-
-2) add the dependency to your project
+1) add the dependency to your project
 
 ```xml
 <dependency>
 	<groupId>com.github.ggeorgovassilis</groupId>
 	<artifactId>fauxjsp</artifactId>
-	<version>0.0.5-SNAPSHOT</version>
+	<version>0.0.9</version>
 </dependency>
+```
+
+*OR*
+
+download sources and compile
+
+```sh
+git clone https://github.com/ggeorgovassilis/fauxjsp.git
+cd fauxjsp
+mvn install
 ```
 
 3) Declare an instance of the JspServlet in web.xml:
