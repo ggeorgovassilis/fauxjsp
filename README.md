@@ -8,6 +8,7 @@ fauxjsp is a [Java Server Pages (JSP)](http://www.oracle.com/technetwork/java/in
 ## TL;DR
 
 ```xml
+web.xml:
 <servlet>
         <servlet-name>FauxJsp</servlet-name>
         <servlet-class>fauxjsp.servlet.JspServlet</servlet-class>
@@ -19,6 +20,14 @@ fauxjsp is a [Java Server Pages (JSP)](http://www.oracle.com/technetwork/java/in
 </servlet-mapping>
 ```
 
+```xml
+pom.xml:
+<dependency>
+	<groupId>com.github.ggeorgovassilis</groupId>
+	<artifactId>fauxjsp</artifactId>
+	<version>0.0.9</version>
+</dependency>
+```
 ## Change log
 
 0.0.9
