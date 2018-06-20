@@ -1,5 +1,7 @@
 <img src="https://travis-ci.org/ggeorgovassilis/fauxjsp.svg"/> <img src="https://coveralls.io/repos/github/ggeorgovassilis/fauxjsp/badge.svg?branch=master"/>
 
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.ggeorgovassilis/fauxjsp/badge.png)](https://maven-badges.herokuapp.com/maven-central/com.github.ggeorgovassilis/fauxjsp/)
+
 fauxjsp
 =======
 
