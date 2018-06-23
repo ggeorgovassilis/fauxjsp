@@ -31,7 +31,7 @@ pom.xml:
 ## Change log
 
 1.0.0-SNAPSHOT
-- handling `trimDirectiveWhiteSpaces`
+- handling `trimDirectiveWhiteSpaces`, `c:set` body content implemented
 
 0.0.9
 - released to maven central, otherwise identical to 0.0.5-SNAPSHOT

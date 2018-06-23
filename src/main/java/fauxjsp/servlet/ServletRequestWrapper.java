@@ -45,6 +45,11 @@ public class ServletRequestWrapper extends HttpServletRequestWrapper implements 
 		attributes.put(name, o);
 	}
 
+	/**
+	 * Sets an attribute on this and on the parent request
+	 * @param name Attribute name
+	 * @param o value
+	 */
 	public void overwriteAttribute(String name, Object o) {
 		setAttribute(name, o);
 		if (super.getRequest() instanceof ServletRequestWrapper)
