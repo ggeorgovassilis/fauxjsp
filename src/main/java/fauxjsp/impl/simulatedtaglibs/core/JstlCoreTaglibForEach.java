@@ -102,4 +102,9 @@ public class JstlCoreTaglibForEach extends TaglibDefinition {
 		declareAttribute("varStatus", String.class.getName(), false, false);
 	}
 
+	@Override
+	protected boolean isInstruction() {
+		return true;
+	}
+
 }

@@ -33,11 +33,24 @@ public class JspText extends JspNode {
 	public String toString() {
 		return getContentAsString();
 	}
+	
+	protected String trim(String content) {
+		while (content.startsWith(" ")||content.startsWith("\n")||content.startsWith("\r")||content.startsWith("\t"))
+			content = content.substring(1);
+		return content;
+	}
 
 	@Override
 	public void renderSelf(RenderSession session, JspRenderer renderer) throws IOException{
 		String content = getContentAsString();
 		content = (String) session.elEvaluation.evaluate(content, session);
+		if (session.trimDirectiveWhiteSpaces && session.previousElementWasInstructionOrTaglib)
+			content = trim(content);
 		session.response.write(content);
+	}
+
+	@Override
+	public boolean isInstruction() {
+		return false;
 	}
 }

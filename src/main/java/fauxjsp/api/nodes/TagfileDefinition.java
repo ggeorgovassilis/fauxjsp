@@ -96,4 +96,9 @@ public class TagfileDefinition extends TaglibDefinition {
 		session.request.setAttribute(BODY_ATTRIBUTE, bodyNode);
 		session.renderer.render(body, session);
 	}
+
+	@Override
+	protected boolean isInstruction() {
+		return false;
+	}
 }

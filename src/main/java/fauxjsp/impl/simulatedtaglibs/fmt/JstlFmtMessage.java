@@ -40,4 +40,9 @@ public class JstlFmtMessage extends TaglibDefinition{
 		runMsg(session, invocation);
 	}
 
+	@Override
+	protected boolean isInstruction() {
+		return true;
+	}
+
 }

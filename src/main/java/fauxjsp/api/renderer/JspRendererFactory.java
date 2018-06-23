@@ -9,4 +9,5 @@ package fauxjsp.api.renderer;
 public interface JspRendererFactory {
 
 	JspRenderer create();
+	
 }

@@ -36,4 +36,9 @@ public class JspBuiltinTaglibDoBody extends TaglibDefinition {
 			session.request = oldRequest;
 		}
 	}
+
+	@Override
+	protected boolean isInstruction() {
+		return true;
+	}
 }

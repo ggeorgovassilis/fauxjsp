@@ -42,4 +42,9 @@ public class JspScriptlet extends JspNode {
 		renderer.getScriptletRenderer().render(this, session);
 	}
 
+	@Override
+	public boolean isInstruction() {
+		return true;
+	}
+
 }

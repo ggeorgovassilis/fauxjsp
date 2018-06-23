@@ -145,5 +145,7 @@ public abstract class TaglibDefinition {
 	}
 
 	protected abstract void renderNode(RenderSession session, JspTaglibInvocation invocation);
+	
+	protected abstract boolean isInstruction();
 
 }

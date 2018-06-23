@@ -26,6 +26,8 @@ public abstract class JspNode {
 	
 	public abstract String debugLabel();
 	
+	public abstract boolean isInstruction();
+	
 	/**
 	 * This method renders the node to session.response.outputstream
 	 * @param session Session to use for rendering. Input attributes reside in {@link RenderSession#request}, response can be sent to

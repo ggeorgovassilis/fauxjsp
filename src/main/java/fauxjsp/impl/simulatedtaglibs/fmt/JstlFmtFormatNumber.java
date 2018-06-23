@@ -123,4 +123,9 @@ public class JstlFmtFormatNumber extends TaglibDefinition {
 		run(session, invocation);
 	}
 
+	@Override
+	protected boolean isInstruction() {
+		return true;
+	}
+
 }

@@ -19,20 +19,25 @@ import fauxjsp.impl.Utils;
 public class JspInstruction extends JspNodeWithAttributes {
 	
 	protected Pattern pattern = Pattern.compile("([^;]*)[;]?.*?(charset)?.*?([^=]*)");
+	
+	protected boolean isInstruction;
+	
+	public void setInstruction(boolean isInstruction) {
+		this.isInstruction = isInstruction;
+	}
 
 	public JspInstruction(String name, CodeLocation location) {
 		super(name, location);
 	}
-
-	@Override
-	public void renderSelf(RenderSession session, JspRenderer renderer) throws IOException {
+	
+	protected void processContentType(RenderSession session, JspRenderer renderer) {
 		StringNodeAttributeValue contentTypeAttr = (StringNodeAttributeValue) getAttributes().get("contentType");
 		if (contentTypeAttr == null)
 			return;
-		String declaration = contentTypeAttr.getValue();
-		if (Utils.isEmpty(declaration))
+		String value = contentTypeAttr.getValue();
+		if (Utils.isEmpty(value))
 			return;
-		Matcher m = pattern.matcher(declaration);
+		Matcher m = pattern.matcher(value);
 		if (!m.matches())
 			return;
 		String contentType = m.group(1);
@@ -41,6 +46,27 @@ public class JspInstruction extends JspNodeWithAttributes {
 			session.response.setContentType(contentType);
 		if (!Utils.isEmpty(charset))
 			session.response.setCharacterEncoding(charset);
+	}
+
+	protected void processWhitespaceTrimming(RenderSession session, JspRenderer renderer) {
+		StringNodeAttributeValue tdwAttribute = (StringNodeAttributeValue) getAttributes().get("trimDirectiveWhitespaces");
+		if (tdwAttribute == null)
+			return;
+		String value = tdwAttribute.getValue();
+		if (Utils.isEmpty(value))
+			return;
+		session.trimDirectiveWhiteSpaces = Boolean.parseBoolean(value);
+	}
+
+	@Override
+	public void renderSelf(RenderSession session, JspRenderer renderer) throws IOException {
+		processContentType(session, renderer);
+		processWhitespaceTrimming(session, renderer);
+	}
+
+	@Override
+	public boolean isInstruction() {
+		return isInstruction;
 	}
 
 }

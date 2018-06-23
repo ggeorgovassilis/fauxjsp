@@ -258,6 +258,7 @@ public class JspParserImpl implements JspParser {
 		if (tag == null)
 			parsingError("Can't parse instruction from " + sInstruction);
 		JspInstruction instruction = new JspInstruction(tag.taglib.getTaglib(), getCurrentLocation());
+		instruction.setInstruction(true);
 		instruction.getAttributes().putAll(tag.taglib.getAttributes());
 		advanceAfterNext(CLOSE_INSTRUCTION);
 		return instruction;

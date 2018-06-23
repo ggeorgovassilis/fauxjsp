@@ -30,4 +30,9 @@ public class JstlCoreTaglibWhen extends TaglibDefinition {
 		super("when");
 		declareAttribute("test", Boolean.class.getName(), true, true);
 	}
+
+	@Override
+	protected boolean isInstruction() {
+		return true;
+	}
 }

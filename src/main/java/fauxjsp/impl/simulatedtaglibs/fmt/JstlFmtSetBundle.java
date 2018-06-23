@@ -29,4 +29,9 @@ public class JstlFmtSetBundle extends TaglibDefinition{
 		runSetBundle(session, invocation);
 	}
 
+	@Override
+	protected boolean isInstruction() {
+		return true;
+	}
+
 }

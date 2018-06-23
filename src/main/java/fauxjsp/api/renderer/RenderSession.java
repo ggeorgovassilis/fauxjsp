@@ -19,5 +19,7 @@ public class RenderSession {
 	public ServletResponseWrapper response;
 	public ELEvaluation elEvaluation;
 	public Servlet servlet;
+	public boolean previousElementWasInstructionOrTaglib;
+	public boolean trimDirectiveWhiteSpaces;
 
 }

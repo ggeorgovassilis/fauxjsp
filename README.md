@@ -30,6 +30,9 @@ pom.xml:
 ```
 ## Change log
 
+1.0.0-SNAPSHOT
+- handling `trimDirectiveWhiteSpaces`
+
 0.0.9
 - released to maven central, otherwise identical to 0.0.5-SNAPSHOT
 
@@ -457,6 +460,22 @@ public class ForwardingView extends InternalResourceView {
 
 The simple presence of those two components in the web application context should be enough for them to be picked up
 and activated.
+
+### How to remove excessive blanks and line breaks?
+
+Specify a servlet init parameter `trimDirectiveWhiteSpaces`
+
+
+```xml
+<servlet>
+        <servlet-name>FauxJsp</servlet-name>
+        <servlet-class>fauxjsp.servlet.JspServlet</servlet-class>
+		<init-param>
+			<param-name>trimDirectiveWhiteSpaces</param-name>
+			<param-value>true</param-value>
+		</init-param>
+</servlet>
+```
 
 ## Roadmap
 

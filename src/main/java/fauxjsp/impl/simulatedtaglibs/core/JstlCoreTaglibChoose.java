@@ -59,4 +59,9 @@ public class JstlCoreTaglibChoose extends TaglibDefinition {
 	public JstlCoreTaglibChoose() {
 		super("choose");
 	}
+
+	@Override
+	protected boolean isInstruction() {
+		return true;
+	}
 }

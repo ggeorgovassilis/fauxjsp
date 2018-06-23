@@ -28,4 +28,9 @@ public class JspBuiltinTaglibBody extends TaglibDefinition {
 		session.request.setAttribute(TagfileDefinition.BODY_ATTRIBUTE,
 				invocation);
 	}
+
+	@Override
+	protected boolean isInstruction() {
+		return true;
+	}
 }

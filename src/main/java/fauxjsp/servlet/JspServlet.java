@@ -58,12 +58,14 @@ public class JspServlet extends HttpServlet {
 	protected JspParserFactory jspParserFactory;
 	protected ELFactory elFactory;
 	protected JspRendererFactory jspRendererFactory;
+	protected boolean trimDirectiveWhiteSpaces = false;
 
 	/**
 	 * Finds the jsp base location from the "base-path" init parameter. This field
 	 * tells the servlet at which server location to look for JSP files.
 	 * 
-	 * @param config Servlet configuration to use
+	 * @param config
+	 *            Servlet configuration to use
 	 * @return server location to look for JSP files
 	 */
 	protected String getJspBase(ServletConfig config) {
@@ -76,7 +78,8 @@ public class JspServlet extends HttpServlet {
 	/**
 	 * Initializes a thread-safe {@link JspParserFactory}
 	 * 
-	 * @param config Servlet configuration to use
+	 * @param config
+	 *            Servlet configuration to use
 	 * @return a factory for {@link JspParser} instances
 	 */
 	protected JspParserFactory getJspParserFactory(ServletConfig config) {
@@ -92,7 +95,8 @@ public class JspServlet extends HttpServlet {
 	/**
 	 * Creates an {@link ELFactory} instance
 	 * 
-	 * @param config Configuration to use with {@link ELFactoryServlet3Impl}
+	 * @param config
+	 *            Configuration to use with {@link ELFactoryServlet3Impl}
 	 * @return an expression language factory
 	 */
 	protected ELFactory getElFactory(ServletConfig config) {
@@ -104,7 +108,8 @@ public class JspServlet extends HttpServlet {
 	/**
 	 * Creates an {@link JspRendererFactory} instance
 	 * 
-	 * @param config servlet configuration to use
+	 * @param config
+	 *            servlet configuration to use
 	 * @return a new {@link JspRendererFactoryImpl} instance
 	 */
 	protected JspRendererFactory getJspRendererFactory(ServletConfig config) {
@@ -119,6 +124,7 @@ public class JspServlet extends HttpServlet {
 		jspParserFactory = getJspParserFactory(config);
 		elFactory = getElFactory(config);
 		jspRendererFactory = getJspRendererFactory(config);
+		trimDirectiveWhiteSpaces = Boolean.parseBoolean(config.getInitParameter("trimDirectiveWhiteSpaces"));
 	}
 
 	@Override
@@ -138,6 +144,7 @@ public class JspServlet extends HttpServlet {
 			session.request = new ServletRequestWrapper(req);
 			session.response = new ServletResponseWrapper(resp);
 			session.servlet = this;
+			session.trimDirectiveWhiteSpaces = trimDirectiveWhiteSpaces;
 			renderer.render(page, session);
 			session.response.flushBuffer();
 		} catch (JspParsingException pe) {

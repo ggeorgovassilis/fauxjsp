@@ -26,4 +26,9 @@ public class JstlCoreTaglibSet extends TaglibDefinition {
 		declareAttribute("var", String.class.getName(), false, true);
 		declareAttribute("value", String.class.getName(), true, true);
 	}
+
+	@Override
+	protected boolean isInstruction() {
+		return true;
+	}
 }

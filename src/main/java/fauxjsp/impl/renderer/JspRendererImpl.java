@@ -25,7 +25,11 @@ public class JspRendererImpl implements JspRenderer {
 
 	protected Logger logger = Logging.getLogger(JspRendererImpl.class);
 	protected JspScriptletRenderer scriptletRenderer = new NOPScriptletRendererImpl();
-
+	
+	protected boolean isInstructionOrTaglib(JspNode node) {
+		return node.isInstruction();
+	}
+	
 	public void setScriptletRenderer(JspScriptletRenderer scriptletRenderer) {
 		this.scriptletRenderer = scriptletRenderer;
 	}
@@ -50,6 +54,7 @@ public class JspRendererImpl implements JspRenderer {
 		// need this try/catch for exception translation
 		try {
 			node.renderSelf(session, this);
+			session.previousElementWasInstructionOrTaglib = isInstructionOrTaglib(node);
 		} catch (Exception e) {
 			throw new JspRenderException(node, e);
 		}

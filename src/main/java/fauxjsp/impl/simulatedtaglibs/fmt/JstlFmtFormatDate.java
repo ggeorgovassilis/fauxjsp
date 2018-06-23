@@ -109,4 +109,9 @@ public class JstlFmtFormatDate extends TaglibDefinition {
 		run(session, invocation);
 	}
 
+	@Override
+	protected boolean isInstruction() {
+		return true;
+	}
+
 }

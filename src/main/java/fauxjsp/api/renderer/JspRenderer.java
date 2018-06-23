@@ -30,4 +30,5 @@ public interface JspRenderer {
 	 * @return Renderer instance
 	 */
 	JspScriptletRenderer getScriptletRenderer();
+	
 }

@@ -18,4 +18,9 @@ public class JspPage extends JspNodeWithChildren{
 	public String toString() {
 		return "FRAGMENT "+super.toString();
 	}
+
+	@Override
+	public boolean isInstruction() {
+		return true;
+	}
 }

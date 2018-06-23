@@ -51,4 +51,9 @@ public class JspTaglibInvocation extends JspNodeWithChildren {
 		getDefinition().render(session, this);
 	}
 
+	@Override
+	public boolean isInstruction() {
+		return getDefinition().isInstruction();
+	}
+
 }

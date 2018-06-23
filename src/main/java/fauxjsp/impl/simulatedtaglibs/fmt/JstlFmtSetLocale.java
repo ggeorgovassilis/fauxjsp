@@ -30,4 +30,9 @@ public class JstlFmtSetLocale extends TaglibDefinition{
 		run(session, invocation);
 	}
 
+	@Override
+	protected boolean isInstruction() {
+		return true;
+	}
+
 }

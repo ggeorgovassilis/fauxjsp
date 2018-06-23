@@ -26,4 +26,9 @@ public class JstlCoreTaglibIf extends TaglibDefinition {
 		super("if");
 		declareAttribute("test", Boolean.class.getName(), true, true);
 	}
+
+	@Override
+	protected boolean isInstruction() {
+		return true;
+	}
 }

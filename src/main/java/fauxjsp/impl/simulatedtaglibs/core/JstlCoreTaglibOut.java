@@ -26,4 +26,9 @@ public class JstlCoreTaglibOut extends TaglibDefinition {
 		super("out");
 		declareAttribute("value", Object.class.getName(), true, true);
 	}
+
+	@Override
+	protected boolean isInstruction() {
+		return true;
+	}
 }

@@ -39,4 +39,9 @@ public class JspBuiltinTaglibAttribute extends TaglibDefinition {
 				session.response.getCharacterEncoding());
 		session.request.setAttribute(attributeName, renderedValue);
 	}
+
+	@Override
+	protected boolean isInstruction() {
+		return true;
+	}
 }

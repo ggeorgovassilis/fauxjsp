@@ -1,0 +1,2 @@
+line1 <a value="some value"></a>
+line2
