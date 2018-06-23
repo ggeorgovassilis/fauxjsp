@@ -25,12 +25,12 @@ pom.xml:
 <dependency>
 	<groupId>com.github.ggeorgovassilis</groupId>
 	<artifactId>fauxjsp</artifactId>
-	<version>0.0.9</version>
+	<version>1.0.0</version>
 </dependency>
 ```
 ## Change log
 
-1.0.0-SNAPSHOT
+1.0.0
 - handling `trimDirectiveWhiteSpaces`, `c:set` body content implemented
 
 0.0.9
