@@ -30,7 +30,7 @@ pom.xml:
 ```
 ## Change log
 
-1.1.0-SNAPSHOT
+1.1.0
 - simplified EL expression handling, improved rendering performance
 
 1.0.0
