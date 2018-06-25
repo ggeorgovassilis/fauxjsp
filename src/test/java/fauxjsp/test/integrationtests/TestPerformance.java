@@ -40,10 +40,11 @@ import static org.junit.Assert.*;
  * @author George Georgovassilis
  *
  */
+
 public class TestPerformance extends BaseTest {
 
-	final long WARMUP_MS = 2000;
-	final long RUNS_MS = 60000;
+	final long WARMUP_MS = 1000;
+	final long RUNS_MS = 100;
 
 	protected int run(Runnable r, long duration) {
 		int loops = 0;
@@ -135,7 +136,7 @@ public class TestPerformance extends BaseTest {
 				session.request = new ServletRequestWrapper(request);
 				session.renderer = renderer;
 				session.elEvaluation = elEvaluation;
-				session.fauxELContext = new FauxELContext(elFactory.newElContext(), elFactory.newExpressionFactory());
+				session.fauxELContext = new FauxELContext(elFactory.newElContext());
 				session.response = new ServletResponseWrapper(response);
 				session.request.setAttribute("tree", tree);
 				session.servlet = servlet;

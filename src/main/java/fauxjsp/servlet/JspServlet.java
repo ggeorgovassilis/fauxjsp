@@ -142,7 +142,7 @@ public class JspServlet extends HttpServlet {
 			JspPage page = parser.parseJsp(servletPath);
 			session.renderer = renderer;
 			session.elEvaluation = new ELEvaluationImpl(elFactory);
-			session.fauxELContext = new FauxELContext(elFactory.newElContext(), elFactory.newExpressionFactory());
+			session.fauxELContext = new FauxELContext(elFactory.newElContext());
 			session.request = new ServletRequestWrapper(req);
 			session.response = new ServletResponseWrapper(resp);
 			session.servlet = this;

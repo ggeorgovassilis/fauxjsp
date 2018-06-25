@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 import javax.el.ELContext;
+import javax.el.ELResolver;
 import javax.el.ExpressionFactory;
 import javax.el.ValueExpression;
 import javax.el.VariableMapper;
@@ -40,57 +41,40 @@ public class ELEvaluationImpl implements ELEvaluation {
 	}
 
 	protected void populateVariables(ELContext context, ExpressionFactory expressionFactory, RenderSession session) {
-		VariableMapper variables = context.getVariableMapper();
-		variables.setVariable("request",
-				expressionFactory.createValueExpression(session.request, HttpServletRequest.class));
-		variables.setVariable("response",
-				expressionFactory.createValueExpression(session.response, HttpServletResponse.class));
+		ELResolver elResolver = context.getELResolver();
+		elResolver.setValue(context, null, "request", session.request);
+		elResolver.setValue(context, null, "response", session.response);
 		HttpSession httpSession = session.request.getSession(false);
-		if (httpSession != null)
-			variables.setVariable("session", expressionFactory.createValueExpression(httpSession, HttpSession.class));
-
-		variables.setVariable("application",
-				expressionFactory.createValueExpression(session.request.getServletContext(), ServletContext.class));
-
+		elResolver.setValue(context, null, "session", httpSession);
+		elResolver.setValue(context, null, "application", session.request.getServletContext());
+		//TODO: reuse pageContext?
 		JspPageContextImpl pageContext = new JspPageContextImpl();
 		try {
 			pageContext.initialize(session.servlet, session.request, session.response, null, false, 0, false);
-			variables.setVariable("pageContext",
-					expressionFactory.createValueExpression(pageContext, JspPageContextImpl.class));
+			elResolver.setValue(context, null, "pageContext", pageContext);
 		} catch (Exception e) {
 			throw Utils.softenException(e);
 		}
-		// TODO: check that servletConfig is spelled correctly
-		variables.setVariable("servletConfig",
-				expressionFactory.createValueExpression(session.servlet.getServletConfig(), ServletConfig.class));
+		elResolver.setValue(context, null, "config", session.servlet.getServletConfig());
 		// TODO: set page page attribute
 		// TODO: set exception page attribute
 		ServletContext sc = session.request.getServletContext();
-		populateAttributes("contextScope", sc.getAttributeNames(), expressionFactory,
-				variables, (attr) -> sc.getAttribute(attr));
-		if (session.request.getSession() != null) {
-			populateAttributes("sessionScope", httpSession.getAttributeNames(), expressionFactory,
-					variables, (attr) -> httpSession.getAttribute(attr));
+		populateAttributes(context, sc.getAttributeNames(), (attr) -> sc.getAttribute(attr));
+		if (httpSession != null) {
+			populateAttributes(context, httpSession.getAttributeNames(), (attr) -> httpSession.getAttribute(attr));
 		}
 		ServletRequestWrapper srw = session.request;
-		populateAttributes("requestScope", srw.getAttributeNames(), expressionFactory, variables,
-				(attr) -> srw.getAttribute(attr));
-		populateAttributes("applicationScope", Collections.emptyEnumeration(), expressionFactory, variables,
-				null);
+		populateAttributes(context, srw.getAttributeNames(), (attr) -> srw.getAttribute(attr));
 	}
 
-	protected void populateAttributes(String scopeObjectName, Enumeration<String> attributes,
-			ExpressionFactory expressionFactory, VariableMapper variables, Function<String, Object> l) {
-		Map<String, Object> scopeObject = new HashMap<>();
+	protected void populateAttributes(ELContext elContext, Enumeration<String> attributes,
+			Function<String, Object> valueResolver) {
+		ELResolver elResolver = elContext.getELResolver();
 		while (attributes.hasMoreElements()) {
 			String attribute = attributes.nextElement();
-			Object value = l.apply(attribute);
-			if (value != null) {
-				variables.setVariable(attribute, expressionFactory.createValueExpression(value, value.getClass()));
-				scopeObject.put(attribute, value);
-			}
+			Object value = valueResolver.apply(attribute);
+			elResolver.setValue(elContext, null, attribute, value);
 		}
-		variables.setVariable(scopeObjectName, expressionFactory.createValueExpression(scopeObject, scopeObject.getClass()));
 	}
 
 	protected Object evaluateSimpleExpression(String expression, RenderSession session) {
@@ -99,10 +83,11 @@ public class ELEvaluationImpl implements ELEvaluation {
 		if (!expression.endsWith("}"))
 			throw new RuntimeException(expression + " is not a simple EL expression, expected to end with }");
 		ExpressionFactory expressionFactory = elFactory.newExpressionFactory();
-		ELContext context = new FauxELContext(elFactory.newElContext(session.fauxELContext), expressionFactory);
+		ELContext context = new FauxELContext(session.fauxELContext);
 		populateVariables(context, expressionFactory, session);
 
 		expression = Utils.unescapeHtml(expression);
+		//TODO: use elresolver?
 		ValueExpression expr = expressionFactory.createValueExpression(context, expression, Object.class);
 		try {
 			Object result = expr.getValue(context);

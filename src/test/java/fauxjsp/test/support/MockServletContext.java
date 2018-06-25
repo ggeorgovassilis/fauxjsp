@@ -306,44 +306,37 @@ public class MockServletContext implements ServletContext {
 
 	@Override
 	public Dynamic addJspFile(String servletName, String jspFile) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new RuntimeException("Not implemented");
 	}
 
 	@Override
 	public int getSessionTimeout() {
-		// TODO Auto-generated method stub
-		return 0;
+		throw new RuntimeException("Not implemented");
 	}
 
 	@Override
 	public void setSessionTimeout(int sessionTimeout) {
-		// TODO Auto-generated method stub
-		
+		throw new RuntimeException("Not implemented");
 	}
 
 	@Override
 	public String getRequestCharacterEncoding() {
-		// TODO Auto-generated method stub
-		return null;
+		throw new RuntimeException("Not implemented");
 	}
 
 	@Override
 	public void setRequestCharacterEncoding(String encoding) {
-		// TODO Auto-generated method stub
-		
+		throw new RuntimeException("Not implemented");
 	}
 
 	@Override
 	public String getResponseCharacterEncoding() {
-		// TODO Auto-generated method stub
-		return null;
+		throw new RuntimeException("Not implemented");
 	}
 
 	@Override
 	public void setResponseCharacterEncoding(String encoding) {
-		// TODO Auto-generated method stub
-		
+		throw new RuntimeException("Not implemented");
 	}
 
 }

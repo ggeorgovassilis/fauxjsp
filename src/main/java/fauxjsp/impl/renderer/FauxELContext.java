@@ -14,37 +14,8 @@ import javax.el.VariableMapper;
  */
 public class FauxELContext extends StandardELContext {
 
-	protected final String nullProperty = "__fauxjsp_null";
-	protected VariableMapper variableMapper;
-	
-	public FauxELContext(final ELContext context, ExpressionFactory expressionFactory) {
+	public FauxELContext(ELContext context) {
 		super(context);
-//		variableMapper = new VariableMapper() {
-//
-//			@Override
-//			public ValueExpression setVariable(String variable,
-//					ValueExpression expression) {
-//				return context.getVariableMapper().setVariable(variable, expression);
-//			}
-//
-//			@Override
-//			public ValueExpression resolveVariable(String variable) {
-//				ValueExpression ve = context.getVariableMapper().resolveVariable(variable);
-//				if (ve == null) {
-//					return context.getVariableMapper().resolveVariable(nullProperty);
-//				}
-//				return ve;
-//			}
-//		};
-//
-//		getVariableMapper().setVariable(nullProperty,
-//				expressionFactory.createValueExpression(null, Object.class));
-		
 	}
-
-//	@Override
-//	public VariableMapper getVariableMapper() {
-//		return variableMapper;
-//	}
 
 }

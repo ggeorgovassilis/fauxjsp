@@ -145,7 +145,7 @@ public abstract class BaseTest {
 		});
 		elEvaluation = new ELEvaluationImpl(elFactory);
 		session = new RenderSession();
-		session.fauxELContext = new FauxELContext(elFactory.newElContext(), elFactory.newExpressionFactory());
+		session.fauxELContext = new FauxELContext(elFactory.newElContext());
 		request=session.request = new ServletRequestWrapper(originalRequest);
 		session.renderer = renderer;
 		session.elEvaluation = elEvaluation;
