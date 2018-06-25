@@ -90,7 +90,8 @@ public class TestFmt extends BaseTest {
 			renderer.render(page, session);
 			fail("Excpected failure");
 		} catch (JspRenderException e) {
-			assertTrue(e.getMessage(), e.getMessage().contains("'${now}' is null"));
+			String message = e.getMessage();
+			assertTrue(e.getMessage(), message.contains("'${now}'") && (message.contains("rror")||message.contains("null") ));
 		}
 	}
 

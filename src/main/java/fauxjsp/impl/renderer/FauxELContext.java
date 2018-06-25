@@ -19,32 +19,32 @@ public class FauxELContext extends StandardELContext {
 	
 	public FauxELContext(final ELContext context, ExpressionFactory expressionFactory) {
 		super(context);
-		variableMapper = new VariableMapper() {
-
-			@Override
-			public ValueExpression setVariable(String variable,
-					ValueExpression expression) {
-				return context.getVariableMapper().setVariable(variable, expression);
-			}
-
-			@Override
-			public ValueExpression resolveVariable(String variable) {
-				ValueExpression ve = context.getVariableMapper().resolveVariable(variable);
-				if (ve == null) {
-					return context.getVariableMapper().resolveVariable(nullProperty);
-				}
-				return ve;
-			}
-		};
-
-		getVariableMapper().setVariable(nullProperty,
-				expressionFactory.createValueExpression(null, Object.class));
+//		variableMapper = new VariableMapper() {
+//
+//			@Override
+//			public ValueExpression setVariable(String variable,
+//					ValueExpression expression) {
+//				return context.getVariableMapper().setVariable(variable, expression);
+//			}
+//
+//			@Override
+//			public ValueExpression resolveVariable(String variable) {
+//				ValueExpression ve = context.getVariableMapper().resolveVariable(variable);
+//				if (ve == null) {
+//					return context.getVariableMapper().resolveVariable(nullProperty);
+//				}
+//				return ve;
+//			}
+//		};
+//
+//		getVariableMapper().setVariable(nullProperty,
+//				expressionFactory.createValueExpression(null, Object.class));
 		
 	}
 
-	@Override
-	public VariableMapper getVariableMapper() {
-		return variableMapper;
-	}
+//	@Override
+//	public VariableMapper getVariableMapper() {
+//		return variableMapper;
+//	}
 
 }

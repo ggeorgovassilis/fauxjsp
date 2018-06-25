@@ -23,6 +23,7 @@ import fauxjsp.impl.Utils;
 import fauxjsp.impl.parser.DefaultJspParserFactoryImpl;
 import fauxjsp.impl.renderer.ELEvaluationImpl;
 import fauxjsp.impl.renderer.ELFactoryServlet3Impl;
+import fauxjsp.impl.renderer.FauxELContext;
 import fauxjsp.impl.renderer.JspRendererFactoryImpl;
 import fauxjsp.servlet.JspServlet;
 import fauxjsp.servlet.ServletRequestWrapper;
@@ -49,6 +50,7 @@ public abstract class BaseTest {
 	protected ServletRequestWrapper request;
 	protected MockHttpServletResponse response;
 	protected RenderSession session;
+	protected ELFactoryServlet3Impl elFactory;
 
 
 	protected String sanitize(String s) {
@@ -118,7 +120,7 @@ public abstract class BaseTest {
 		originalRequest = new MockHttpServletRequest();
 		response = new MockHttpServletResponse();
 
-		ELFactoryServlet3Impl elFactory = new ELFactoryServlet3Impl();
+		elFactory = new ELFactoryServlet3Impl();
 		elFactory.configure(new ServletConfig() {
 
 			@Override
@@ -143,6 +145,7 @@ public abstract class BaseTest {
 		});
 		elEvaluation = new ELEvaluationImpl(elFactory);
 		session = new RenderSession();
+		session.fauxELContext = new FauxELContext(elFactory.newElContext(), elFactory.newExpressionFactory());
 		request=session.request = new ServletRequestWrapper(originalRequest);
 		session.renderer = renderer;
 		session.elEvaluation = elEvaluation;

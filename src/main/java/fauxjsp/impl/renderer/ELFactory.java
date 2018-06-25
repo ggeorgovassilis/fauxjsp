@@ -13,4 +13,5 @@ public interface ELFactory {
 
 	ExpressionFactory newExpressionFactory();
 	ELContext newElContext();
+	ELContext newElContext(ELContext parent);
 }

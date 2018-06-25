@@ -31,6 +31,7 @@ public class TestFunctions extends BaseTest {
 				new String[] { "The", "rain", "in", "Spain" });
 		request.setAttribute("list",
 				Arrays.asList(new String[] { "The", "rain", "in", "Spain" }));
+		session.request.setAttribute("xml", "<howdy/>");
 		renderer.render(page, session);
 		text = getPrettyContent(response);
 	}
@@ -64,7 +65,6 @@ public class TestFunctions extends BaseTest {
 		// TODO: escapeXml(...) will work as advertised. however, if I <c:out
 		// expression="fn:escapeXml(...)"/> this will double-encode
 		// the result. verify how "standard" JSP does it.
-		session.request.setAttribute("xml", "<howdy/>");
 		renderer.render(page, session);
 		String text = getPrettyContent(response);
 		assertTrue(text, text.contains("escapeXml &lt;howdy/&gt;"));

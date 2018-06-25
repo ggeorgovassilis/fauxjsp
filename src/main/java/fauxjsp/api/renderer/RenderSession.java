@@ -3,6 +3,7 @@ package fauxjsp.api.renderer;
 import javax.servlet.Servlet;
 
 import fauxjsp.api.nodes.JspPage;
+import fauxjsp.impl.renderer.FauxELContext;
 import fauxjsp.servlet.ServletRequestWrapper;
 import fauxjsp.servlet.ServletResponseWrapper;
 
@@ -12,12 +13,16 @@ import fauxjsp.servlet.ServletResponseWrapper;
  *
  */
 public class RenderSession {
+	
+	public RenderSession() {
+	}
 
 	public final static String ATTR_TIMEZONE = "__fauxjsp_timezone";
 	public JspRenderer renderer;
 	public ServletRequestWrapper request;
 	public ServletResponseWrapper response;
 	public ELEvaluation elEvaluation;
+	public FauxELContext fauxELContext;
 	public Servlet servlet;
 	public boolean previousElementWasInstructionOrTaglib;
 	public boolean trimDirectiveWhiteSpaces;

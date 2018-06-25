@@ -14,6 +14,7 @@ import javax.el.ValueExpression;
 import javax.el.VariableMapper;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -22,6 +23,7 @@ import fauxjsp.api.renderer.ELEvaluation;
 import fauxjsp.api.renderer.JspPageContextImpl;
 import fauxjsp.api.renderer.RenderSession;
 import fauxjsp.impl.Utils;
+import fauxjsp.servlet.ServletRequestWrapper;
 
 /**
  * Default implementation that evaluates java EL expressions
@@ -63,14 +65,16 @@ public class ELEvaluationImpl implements ELEvaluation {
 				expressionFactory.createValueExpression(session.servlet.getServletConfig(), ServletConfig.class));
 		// TODO: set page page attribute
 		// TODO: set exception page attribute
-
-		populateAttributes("contextScope", session.request.getServletContext().getAttributeNames(), expressionFactory,
-				variables, (attr) -> session.request.getServletContext().getAttribute(attr));
-		if (session.request.getSession() != null)
-			populateAttributes("sessionScope", session.request.getSession().getAttributeNames(), expressionFactory,
-					variables, (attr) -> session.request.getSession().getAttribute(attr));
-		populateAttributes("requestScope", session.request.getAttributeNames(), expressionFactory, variables,
-				(attr) -> session.request.getAttribute(attr));
+		ServletContext sc = session.request.getServletContext();
+		populateAttributes("contextScope", sc.getAttributeNames(), expressionFactory,
+				variables, (attr) -> sc.getAttribute(attr));
+		if (session.request.getSession() != null) {
+			populateAttributes("sessionScope", httpSession.getAttributeNames(), expressionFactory,
+					variables, (attr) -> httpSession.getAttribute(attr));
+		}
+		ServletRequestWrapper srw = session.request;
+		populateAttributes("requestScope", srw.getAttributeNames(), expressionFactory, variables,
+				(attr) -> srw.getAttribute(attr));
 		populateAttributes("applicationScope", Collections.emptyEnumeration(), expressionFactory, variables,
 				null);
 	}
@@ -95,7 +99,7 @@ public class ELEvaluationImpl implements ELEvaluation {
 		if (!expression.endsWith("}"))
 			throw new RuntimeException(expression + " is not a simple EL expression, expected to end with }");
 		ExpressionFactory expressionFactory = elFactory.newExpressionFactory();
-		ELContext context = new FauxELContext(elFactory.newElContext(), expressionFactory);
+		ELContext context = new FauxELContext(elFactory.newElContext(session.fauxELContext), expressionFactory);
 		populateVariables(context, expressionFactory, session);
 
 		expression = Utils.unescapeHtml(expression);

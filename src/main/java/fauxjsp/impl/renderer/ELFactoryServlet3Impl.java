@@ -185,5 +185,11 @@ public class ELFactoryServlet3Impl implements ELFactory {
 		setupFunctions(context);
 		return context;
 	}
+	
+	@Override
+	public ELContext newElContext(ELContext parent) {
+		ELContext context = new StandardELContext(parent);
+		return context;
+	}
 
 }
