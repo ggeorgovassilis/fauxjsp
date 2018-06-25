@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 import javax.el.ELContext;
+import javax.el.ELException;
 import javax.el.ELResolver;
 import javax.el.ExpressionFactory;
 import javax.el.PropertyNotFoundException;
@@ -77,18 +78,17 @@ public class ELEvaluationImpl implements ELEvaluation {
 			elResolver.setValue(elContext, null, attribute, value);
 		}
 	}
-
+	
 	protected Object evaluateSimpleExpression(String expression, RenderSession session) {
 		if (!expression.startsWith("${"))
 			throw new RuntimeException(expression + " is not a simple EL expression, expected to start with ${");
 		if (!expression.endsWith("}"))
 			throw new RuntimeException(expression + " is not a simple EL expression, expected to end with }");
 		ExpressionFactory expressionFactory = elFactory.newExpressionFactory();
-		ELContext context = new FauxELContext(session.fauxELContext);
+		ELContext context = elFactory.newElContext(session.elContext);
 		populateVariables(context, expressionFactory, session);
 
 		expression = Utils.unescapeHtml(expression);
-		//TODO: use elresolver?
 		ValueExpression expr = expressionFactory.createValueExpression(context, expression, Object.class);
 		try {
 			Object result = expr.getValue(context);

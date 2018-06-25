@@ -23,7 +23,6 @@ import fauxjsp.impl.Utils;
 import fauxjsp.impl.parser.DefaultJspParserFactoryImpl;
 import fauxjsp.impl.renderer.ELEvaluationImpl;
 import fauxjsp.impl.renderer.ELFactoryServlet3Impl;
-import fauxjsp.impl.renderer.FauxELContext;
 import fauxjsp.impl.renderer.JspRendererFactoryImpl;
 import fauxjsp.servlet.JspServlet;
 import fauxjsp.servlet.ServletRequestWrapper;
@@ -145,7 +144,7 @@ public abstract class BaseTest {
 		});
 		elEvaluation = new ELEvaluationImpl(elFactory);
 		session = new RenderSession();
-		session.fauxELContext = new FauxELContext(elFactory.newElContext());
+		session.elContext = elFactory.newElContext();
 		request=session.request = new ServletRequestWrapper(originalRequest);
 		session.renderer = renderer;
 		session.elEvaluation = elEvaluation;

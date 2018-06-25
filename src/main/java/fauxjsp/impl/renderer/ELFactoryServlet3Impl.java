@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.el.CompositeELResolver;
 import javax.el.ELContext;
 import javax.el.ELManager;
 import javax.el.ExpressionFactory;
@@ -18,6 +19,7 @@ import javax.el.StandardELContext;
 import javax.servlet.ServletConfig;
 import javax.servlet.descriptor.JspConfigDescriptor;
 import javax.servlet.descriptor.TaglibDescriptor;
+import javax.servlet.jsp.el.ScopedAttributeELResolver;
 
 import fauxjsp.api.logging.Logger;
 import fauxjsp.impl.Utils;
@@ -181,8 +183,9 @@ public class ELFactoryServlet3Impl implements ELFactory {
 
 	@Override
 	public ELContext newElContext() {
-		ELContext context = new StandardELContext(newExpressionFactory());
+		StandardELContext context = new StandardELContext(newExpressionFactory());
 		setupFunctions(context);
+		((CompositeELResolver)context.getELResolver()).add(new AlwaysSucceedingPropertyResolver());
 		return context;
 	}
 	

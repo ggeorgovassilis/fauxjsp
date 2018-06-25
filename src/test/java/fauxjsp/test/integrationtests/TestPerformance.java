@@ -21,7 +21,6 @@ import fauxjsp.api.nodes.JspPage;
 import fauxjsp.api.renderer.RenderSession;
 import fauxjsp.impl.Utils;
 import fauxjsp.impl.parser.JspParserImpl;
-import fauxjsp.impl.renderer.FauxELContext;
 import fauxjsp.impl.renderer.JspRendererImpl;
 import fauxjsp.servlet.JspServlet;
 import fauxjsp.servlet.ServletRequestWrapper;
@@ -44,7 +43,7 @@ import static org.junit.Assert.*;
 public class TestPerformance extends BaseTest {
 
 	final long WARMUP_MS = 5000;
-	final long RUNS_MS = 55000;
+	final long RUNS_MS = 10000;
 
 	protected int run(Runnable r, long duration) {
 		int loops = 0;
@@ -136,7 +135,7 @@ public class TestPerformance extends BaseTest {
 				session.request = new ServletRequestWrapper(request);
 				session.renderer = renderer;
 				session.elEvaluation = elEvaluation;
-				session.fauxELContext = new FauxELContext(elFactory.newElContext());
+				session.elContext = elFactory.newElContext();
 				session.response = new ServletResponseWrapper(response);
 				session.request.setAttribute("tree", tree);
 				session.servlet = servlet;
