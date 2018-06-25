@@ -40,11 +40,11 @@ import static org.junit.Assert.*;
  * @author George Georgovassilis
  *
  */
-
+@Ignore
 public class TestPerformance extends BaseTest {
 
-	final long WARMUP_MS = 1000;
-	final long RUNS_MS = 100;
+	final long WARMUP_MS = 5000;
+	final long RUNS_MS = 55000;
 
 	protected int run(Runnable r, long duration) {
 		int loops = 0;

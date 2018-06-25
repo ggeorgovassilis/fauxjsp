@@ -11,6 +11,7 @@ import java.util.function.Function;
 import javax.el.ELContext;
 import javax.el.ELResolver;
 import javax.el.ExpressionFactory;
+import javax.el.PropertyNotFoundException;
 import javax.el.ValueExpression;
 import javax.el.VariableMapper;
 import javax.servlet.ServletConfig;
@@ -92,7 +93,11 @@ public class ELEvaluationImpl implements ELEvaluation {
 		try {
 			Object result = expr.getValue(context);
 			return result;
-		} catch (Exception e) {
+		} 
+		catch (PropertyNotFoundException pnfe) {
+			return null;
+		}
+		catch (Exception e) {
 			throw new RuntimeException("Error when evaluating expression '" + expression + "'", e);
 		}
 

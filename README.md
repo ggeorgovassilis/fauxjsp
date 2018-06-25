@@ -30,8 +30,8 @@ pom.xml:
 ```
 ## Change log
 
-1.0.1-SNAPSHOT
-- hierarchical ELContext for faster expression evaluation
+1.1.0-SNAPSHOT
+- simplified EL expression handling, improved rendering performance
 
 1.0.0
 - handling `trimDirectiveWhiteSpaces`, `c:set` body content implemented
