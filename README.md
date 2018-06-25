@@ -116,7 +116,7 @@ Bonus:
 <dependency>
 	<groupId>com.github.ggeorgovassilis</groupId>
 	<artifactId>fauxjsp</artifactId>
-	<version>0.0.9</version>
+	<version>1.1.0</version>
 </dependency>
 ```
 
