@@ -11,6 +11,9 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 /**
  * Tests a few things other tests didn't catch (mostly error handling)
  * 
@@ -28,6 +31,7 @@ public class TestJspServlet extends BaseTest {
 		when(response.getContentType()).thenReturn(null);
 		when(response.getCharacterEncoding()).thenReturn(null);
 		when(config.getServletContext()).thenReturn(context);
+		when(request.getAttributeNames()).thenReturn(Collections.enumeration(Collections.emptyList()));
 		session.servlet.init(config);
 		try {
 			session.servlet.service(request, response);

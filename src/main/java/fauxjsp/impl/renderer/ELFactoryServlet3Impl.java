@@ -19,8 +19,6 @@ import javax.el.StandardELContext;
 import javax.servlet.ServletConfig;
 import javax.servlet.descriptor.JspConfigDescriptor;
 import javax.servlet.descriptor.TaglibDescriptor;
-import javax.servlet.jsp.el.ScopedAttributeELResolver;
-
 import fauxjsp.api.logging.Logger;
 import fauxjsp.impl.Utils;
 import fauxjsp.impl.logging.Logging;

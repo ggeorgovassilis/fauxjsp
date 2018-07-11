@@ -30,6 +30,9 @@ pom.xml:
 ```
 ## Change log
 
+1.2.0-SNAPSHOT
+- permanently caching parsed JSP and tagfiles in "production" mode
+
 1.1.0
 - simplified EL expression handling, improved rendering performance
 
@@ -463,6 +466,22 @@ public class ForwardingView extends InternalResourceView {
 
 The simple presence of those two components in the web application context should be enough for them to be picked up
 and activated.
+
+# ... enable caching?
+
+`FauxJspServlet` can be configured to cache parsed JSPs. This is a minor performance improvement as normally rendering is
+slower than parsing.
+
+```xml
+<servlet>
+        <servlet-name>FauxJsp</servlet-name>
+        <servlet-class>fauxjsp.servlet.JspServlet</servlet-class>
+		<init-param>
+			<param-name>cachePages</param-name>
+			<param-value>true</param-value>
+		</init-param>
+</servlet>
+```
 
 ### How to remove excessive blanks and line breaks?
 

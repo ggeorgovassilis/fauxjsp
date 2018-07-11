@@ -21,6 +21,8 @@ import fauxjsp.api.renderer.JspRenderer;
 import fauxjsp.api.renderer.JspRendererFactory;
 import fauxjsp.api.renderer.RenderSession;
 import fauxjsp.impl.parser.DefaultJspParserFactoryImpl;
+import fauxjsp.impl.parser.PageCache;
+import fauxjsp.impl.parser.SimplePageCacheImpl;
 import fauxjsp.impl.renderer.ELEvaluationImpl;
 import fauxjsp.impl.renderer.ELFactory;
 import fauxjsp.impl.renderer.ELFactoryServlet3Impl;
@@ -59,6 +61,21 @@ public class JspServlet extends HttpServlet {
 	protected ELFactory elFactory;
 	protected JspRendererFactory jspRendererFactory;
 	protected boolean trimDirectiveWhiteSpaces = false;
+	protected PageCache pageCache = null;
+
+	/**
+	 * Enables or disables page cache. This method will disable an existing page
+	 * cache, enable a disabled page cache or re-initialise an existing page cache.
+	 * 
+	 * @param enabled
+	 *            state
+	 */
+	public void setPageCacheEnabled(boolean enabled) {
+		if (!enabled)
+			pageCache = null;
+		else
+			pageCache = new SimplePageCacheImpl();
+	}
 
 	/**
 	 * Finds the jsp base location from the "base-path" init parameter. This field
@@ -125,6 +142,21 @@ public class JspServlet extends HttpServlet {
 		elFactory = getElFactory(config);
 		jspRendererFactory = getJspRendererFactory(config);
 		trimDirectiveWhiteSpaces = Boolean.parseBoolean(config.getInitParameter("trimDirectiveWhiteSpaces"));
+		boolean cachePages = Boolean.parseBoolean(config.getInitParameter("cachePages"));
+		setPageCacheEnabled(cachePages);
+	}
+
+	JspPage parsePage(String servletPath, JspParser parser) {
+		JspPage page = null;
+		if (pageCache != null)
+			page = pageCache.get(servletPath);
+		if (page == null) {
+			page = parser.parseJsp(servletPath);
+			if (pageCache != null) {
+				pageCache.put(servletPath, page);
+			}
+		}
+		return page;
 	}
 
 	@Override
@@ -138,7 +170,6 @@ public class JspServlet extends HttpServlet {
 			if (resp.getCharacterEncoding() == null)
 				resp.setCharacterEncoding("UTF-8");
 			RenderSession session = new RenderSession();
-			JspPage page = parser.parseJsp(servletPath);
 			session.renderer = renderer;
 			session.elEvaluation = new ELEvaluationImpl(elFactory);
 			session.elContext = elFactory.newElContext();
@@ -146,6 +177,7 @@ public class JspServlet extends HttpServlet {
 			session.response = new ServletResponseWrapper(resp);
 			session.servlet = this;
 			session.trimDirectiveWhiteSpaces = trimDirectiveWhiteSpaces;
+			JspPage page = parsePage(servletPath, parser);
 			renderer.render(page, session);
 			session.response.flushBuffer();
 		} catch (JspParsingException pe) {
