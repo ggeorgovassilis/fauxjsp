@@ -469,7 +469,7 @@ and activated.
 
 # ... enable caching?
 
-`FauxJspServlet` can be configured to cache parsed JSPs. This is a minor performance improvement as normally rendering is
+`JspServlet` can be configured to cache parsed JSPs. This is a minor performance improvement as normally rendering is
 slower than parsing.
 
 ```xml
