@@ -30,6 +30,9 @@ pom.xml:
 ```
 ## Change log
 
+1.2.1-SNAPSHOT
+- fixed bug in resolving classpath includes
+
 1.2.0
 - permanently caching parsed JSP and tagfiles in "production" mode
 

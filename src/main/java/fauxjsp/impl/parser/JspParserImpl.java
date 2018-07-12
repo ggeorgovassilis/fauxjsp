@@ -380,7 +380,7 @@ public class JspParserImpl implements JspParser {
 			if (Utils.isEmpty(path))
 				parsingError("Missing 'file' attribute");
 
-			if (!path.startsWith("/")) {
+			if (!path.startsWith("/")&&(!path.startsWith("classpath:"))) {
 				// relative path needs translation
 				File currentJsp = new File(pagePath);
 				File includedFile = new File(currentJsp.getParentFile(), path);
