@@ -30,7 +30,7 @@ pom.xml:
 ```
 ## Change log
 
-1.2.1-SNAPSHOT
+1.2.1
 - fixed bug in resolving classpath includes
 
 1.2.0

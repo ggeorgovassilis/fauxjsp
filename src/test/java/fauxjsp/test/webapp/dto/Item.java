@@ -8,6 +8,15 @@ public class Item {
 	private String id;
 	private List<Item> items=new ArrayList<Item>();
 	private Item parent;
+	private String text;
+	
+	public String getText() {
+		return text;
+	}
+	
+	public void setText(String text) {
+		this.text = text;
+	}
 	
 	public Item getParent() {
 		return parent;

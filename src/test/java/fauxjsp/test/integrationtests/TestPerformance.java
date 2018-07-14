@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.servlet.Servlet;
@@ -39,11 +40,12 @@ import static org.junit.Assert.*;
  * @author George Georgovassilis
  *
  */
-@Ignore
 public class TestPerformance extends BaseTest {
 
-	final long WARMUP_MS = 5000;
-	final long RUNS_MS = 10000;
+	final long WARMUP_MS = 10000;
+	final long RUNS_MS = 60000;
+	final int TREE_DEPTH=5;
+	final int CHILDREN_PER_LEVEL=3;
 
 	protected int run(Runnable r, long duration) {
 		int loops = 0;
@@ -69,12 +71,13 @@ public class TestPerformance extends BaseTest {
 		System.out.println("Parse runs / sec : " + loops * 1000 / RUNS_MS);
 	}
 
-	protected Item makeTree(Item parent, int id, int depth, int childrenPerLevel) {
+	protected Item makeTree(Item parent, int orderInSiblings, int depth, int childrenPerLevel) {
 		if (depth < 1)
 			return null;
 		Item item = new Item();
-		item.setId("" + id);
+		item.setId(parent.getId()+"/"+orderInSiblings);
 		item.setParent(parent);
+		item.setText("Item #"+item.getId());
 		for (int i = 0; i < childrenPerLevel; i++) {
 			Item subTree = makeTree(item, i, depth - 1, childrenPerLevel);
 			if (subTree != null) {
@@ -120,7 +123,7 @@ public class TestPerformance extends BaseTest {
 		final JspPage page = newParser().parseJsp("WEB-INF/jsp/big.jsp");
 		Item root = new Item();
 		root.setId("0");
-		final Item tree = makeTree(root, 0, 5, 10);
+		final Item tree = makeTree(root, 0, TREE_DEPTH, CHILDREN_PER_LEVEL);
 		final int COMPARE_EVERY_SO_MANY_TURNS = 100;
 		final AtomicInteger turn = new AtomicInteger(-1);
 		final Servlet servlet = new JspServlet();
@@ -150,7 +153,7 @@ public class TestPerformance extends BaseTest {
 				int t = turn.incrementAndGet();
 				if ((t-1) % COMPARE_EVERY_SO_MANY_TURNS == 0){
 					compare(text, tree);
-					assertEquals(text, "796c9c440c4f44e223852d272c18cd0f",
+					assertEquals(text, "ad77f69b6c636fcbc404c66aece5b1d4",
 							TestSupportUtils.MD5(text));
 				}
 			}
