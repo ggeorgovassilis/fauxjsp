@@ -40,15 +40,18 @@ import static org.junit.Assert.*;
  * @author George Georgovassilis
  *
  */
+@Ignore
 public class TestPerformance extends BaseTest {
 
 	final long WARMUP_MS = 10000;
-	final long RUNS_MS = 60000;
-	final int TREE_DEPTH=5;
-	final int CHILDREN_PER_LEVEL=3;
+	final long RUNS_MS = 2000;
+	final int TREE_DEPTH = 4;
+	final int CHILDREN_PER_LEVEL = 4;
+	final String RECORDED_CHECKSUM = "fe4404ea1462078a428460fdaa0e457f";
 
-	protected int run(Runnable r, long duration) {
+	protected int run(Runnable r, long duration) throws Exception {
 		int loops = 0;
+		Thread.sleep(1000); // give GC time to run
 		long start = System.currentTimeMillis();
 		while (start + duration > System.currentTimeMillis()) {
 			r.run();
@@ -58,7 +61,7 @@ public class TestPerformance extends BaseTest {
 	}
 
 	@Test
-	public void testJspParser() {
+	public void testJspParser() throws Exception {
 		Runnable r = new Runnable() {
 
 			@Override
@@ -75,9 +78,9 @@ public class TestPerformance extends BaseTest {
 		if (depth < 1)
 			return null;
 		Item item = new Item();
-		item.setId(parent.getId()+"/"+orderInSiblings);
+		item.setId(parent.getId() + "/" + orderInSiblings);
 		item.setParent(parent);
-		item.setText("Item #"+item.getId());
+		item.setText("Item #" + item.getId());
 		for (int i = 0; i < childrenPerLevel; i++) {
 			Item subTree = makeTree(item, i, depth - 1, childrenPerLevel);
 			if (subTree != null) {
@@ -90,11 +93,9 @@ public class TestPerformance extends BaseTest {
 
 	protected void compare(String text, Item tree) {
 		try {
-			DocumentBuilderFactory dbFactory = DocumentBuilderFactory
-					.newInstance();
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-			Document doc = dBuilder.parse(new ByteArrayInputStream(text
-					.getBytes()));
+			Document doc = dBuilder.parse(new ByteArrayInputStream(text.getBytes()));
 			compare(doc.getDocumentElement(), tree);
 		} catch (Exception e) {
 			System.err.println(text);
@@ -119,7 +120,7 @@ public class TestPerformance extends BaseTest {
 	}
 
 	@Test
-	public void testJspRenderer() {
+	public void testJspRenderer() throws Exception {
 		final JspPage page = newParser().parseJsp("WEB-INF/jsp/big.jsp");
 		Item root = new Item();
 		root.setId("0");
@@ -151,10 +152,9 @@ public class TestPerformance extends BaseTest {
 				}
 				String text = text(baos);
 				int t = turn.incrementAndGet();
-				if ((t-1) % COMPARE_EVERY_SO_MANY_TURNS == 0){
+				if ((t - 1) % COMPARE_EVERY_SO_MANY_TURNS == 0) {
 					compare(text, tree);
-					assertEquals(text, "ad77f69b6c636fcbc404c66aece5b1d4",
-							TestSupportUtils.MD5(text));
+					assertEquals(text, RECORDED_CHECKSUM, TestSupportUtils.MD5(text));
 				}
 			}
 		};

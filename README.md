@@ -25,10 +25,13 @@ pom.xml:
 <dependency>
 	<groupId>com.github.ggeorgovassilis</groupId>
 	<artifactId>fauxjsp</artifactId>
-	<version>1.0.0</version>
+	<version>1.2.2</version>
 </dependency>
 ```
 ## Change log
+
+1.2.2-SNAPSHOT
+- performance test extends to scriptlets
 
 1.2.1
 - fixed bug in resolving classpath includes
