@@ -1,0 +1,1 @@
+<%@ attribute name="value" required="true" rtexprvalue="true" type="java.lang.String"%><b value="${value}"><jsp:doBody/></b>

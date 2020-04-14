@@ -1,0 +1,6 @@
+<%@ taglib prefix="" uri="http://java.sun.com/jsp/jstl/core" %>
+<t:structure>
+<h2><c:out value="${news.headline}"/></h2>
+<p class=description><c:out value="${news.description}"/></p>
+<p class=fulltext><c:out value="${news.fulltext}"/></p>
+</t:structure>

@@ -1,0 +1,13 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="d" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:choose>
+<c:when test="${1==1}">
+this
+</c:when>
+<d:when test="${1==2}">
+that
+</d:when>
+<c:otherwise>
+otherwise
+</c:otherwise>
+</c:choose>

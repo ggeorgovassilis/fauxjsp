@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+
+	<jsp-config>
+		<taglib>
+			<taglib-uri>http://java.sun.com/jstl/core-rt</taglib-uri>
+			<taglib-location>META-INF/c-1_0-rt.tld</taglib-location>
+		</taglib>
+	</jsp-config>
+
+	<servlet>
+		<servlet-name>FauxJsp</servlet-name>
+		<servlet-class>fauxjsp.servlet.JspServlet</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>NewsServlet</servlet-name>
+		<servlet-class>fauxjsp.test.webapp.NewsServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>FauxJsp</servlet-name>
+		<url-pattern>*.jsp</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>NewsServlet</servlet-name>
+		<url-pattern>/news</url-pattern>
+	</servlet-mapping>
+
+</web-app>
