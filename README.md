@@ -3,7 +3,7 @@
 fauxjsp
 =======
 
-fauxjsp is a [Java Server Pages (JSP)](http://www.oracle.com/technetwork/java/index-jsp-138231.html) implementation for use during development: JSPs are interpreted lazily (instead of compiled) which reduces application and page startup times, speeds up page reloads when JSPs change and doesn't require server restarts. Best used when developing, probably of limited use in production because of poor performance and less-than-perfect compliance with the JSP standard.
+fauxjsp is a [Java Server Pages (JSP)](http://www.oracle.com/technetwork/java/index-jsp-138231.html) implementation for use during development: JSPs are interpreted lazily (instead of compiled) which reduces application and page startup times, speeds up page reloads when JSPs change and doesn't require server restarts. Best used when developing, can be used in production also if specification compliance isn't critical.
 
 ## TL;DR
 
