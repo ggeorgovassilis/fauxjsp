@@ -71,7 +71,7 @@ pom.xml:
 
 Yes. In short:
 - a. there aren't that many (I only know of two, [Oracle JSP](https://docs.oracle.com/cd/B10501_01/java.920/a96657/orajspov.htm) and [Jasper](https://tomcat.apache.org/tomcat-6.0-doc/jasper-howto.html))
-- b. it's much faster during development than other implementations because it interprets JSP rather than compiling it to byte code
+- b. faster page reload than other implementations because it interprets JSP rather than compiling it to byte code
 - c. no memory leaks, more robust, more precise and helpful error messages for syntax- and runtime errors
 - d. extensible
 - e. if compliance and performance are not a top priority, it comes with a few neat features not available with standard JSP such as loading tagfiles and JSPs from the classpath.
