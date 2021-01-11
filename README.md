@@ -512,7 +512,7 @@ Specify a servlet init parameter `trimDirectiveWhiteSpaces`
 
 Features to come ~~in the near~~ sometime in the future:
 
-* jsp:var, import
+* import
 * spring mvc taglibs
 
 Science fiction (things I have a rough idea how to implement but need to work out yet and may never come):
