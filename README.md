@@ -80,7 +80,7 @@ For most of you cool dudes JSP is horribly out of fashion, but I like using it f
 
 Starting a JSP-heavy application is slow because other JSP implementations will first compile JSP and tagfiles to java source code, then to byte code and then to machine code. Also, when making changes to JSP files, the entire process has to be repeated which slows down development. At some point you'll even get unexplainable compile errors, class loading errors, run out of memory and the likes, you'll know you've had enough and you'll restart the servlet container.
 
-fauxjsp implements a JSP interpreter and a [JSP servlet](https://github.com/ggeorgovassilis/fauxjsp/blob/master/src/main/java/fauxjsp/servlet/JspServlet.java) which reads JSP files and interprets them on the fly, skipping compilation altogether. This brings the benefit of instant page reloads, fast application start times and robustness (no classloader fiddling!) but, obviously, the generated JSP pages are slower under load than the standard implementation and thus fauxjsp shouldn't be used for production.
+fauxjsp implements a JSP interpreter and a [JSP servlet](https://github.com/ggeorgovassilis/fauxjsp/blob/master/src/main/java/fauxjsp/servlet/JspServlet.java) which reads JSP files and interprets them on the fly, skipping compilation altogether. This brings the benefit of instant page reloads, fast application start times and robustness (no classloader fiddling!) but, obviously, the generated JSP pages are slower under load than the standard implementation which may be an issue in production.
 
 Currently implemented features:
 
