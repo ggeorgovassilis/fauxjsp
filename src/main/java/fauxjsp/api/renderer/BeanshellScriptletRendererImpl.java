@@ -47,7 +47,6 @@ public class BeanshellScriptletRendererImpl implements JspScriptletRenderer {
 				script.set(attr, value);
 			}
 
-			System.out.println(scriptlet.getSourceCode());
 			Object returnValue = script.eval(scriptlet.getSourceCode());
 			if (scriptlet.isReturnsStatement() && returnValue != null) {
 				session.response.write(returnValue.toString());
