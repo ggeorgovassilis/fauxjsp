@@ -8,7 +8,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<beanshell.version>2.0b5</beanshell.version>
+		<beanshell.version>2.0b6</beanshell.version>
 	</properties>
 
 	<url>https://github.com/ggeorgovassilis/fauxjsp</url>
