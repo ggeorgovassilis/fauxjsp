@@ -1,7 +1,6 @@
 package fauxjsp.api.renderer;
 
 import java.io.PrintStream;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,17 +48,6 @@ public class BeanshellScriptletRendererImpl implements JspScriptletRenderer {
 			JspPageContextImpl pageContext = new JspPageContextImpl();
 			pageContext.initialize(null, session.request, session.response, null, false, 0, false);
 			script.set("pageContext", pageContext);
-
-
-			//TODO: should populate only attributes that were declared in the parent scope as <@ attribute...>
-			Enumeration<String> attributes = session.request.getAttributeNames();
-			while (attributes.hasMoreElements()) {
-				String attr = attributes.nextElement();
-				if (attr.contains("."))
-					continue;
-				Object value = session.request.getAttribute(attr);
-				script.set(attr, value);
-			}
 
 			Object returnValue = script.eval(dummyMethodName+"()");
 			if (scriptlet.isReturnsStatement() && returnValue != null) {

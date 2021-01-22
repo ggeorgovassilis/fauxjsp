@@ -4,7 +4,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Iterator;
-import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.servlet.Servlet;
@@ -40,10 +39,11 @@ import static org.junit.Assert.*;
  * @author George Georgovassilis
  *
  */
+@Ignore
 public class TestPerformance extends BaseTest {
 
-	final long WARMUP_MS = 10000;
-	final long RUNS_MS = 10000;
+	final long WARMUP_MS = 20000;
+	final long RUNS_MS = 2000;
 	final int TREE_DEPTH = 4;
 	final int CHILDREN_PER_LEVEL = 4;
 	final String RECORDED_CHECKSUM = "9269cd586cf4c801f058b3c60fb114b2";
@@ -118,13 +118,13 @@ public class TestPerformance extends BaseTest {
 		}
 	}
 
-	@Test //290 runs/sec - 330 with method wrapping
+	@Test //290 runs/sec - 380 with method wrapping
 	public void testJspRenderer() throws Exception {
 		final JspPage page = newParser().parseJsp("WEB-INF/jsp/big.jsp");
 		Item root = new Item();
 		root.setId("0");
 		final Item tree = makeTree(root, 0, TREE_DEPTH, CHILDREN_PER_LEVEL);
-		final int COMPARE_EVERY_SO_MANY_TURNS = 100;
+		final int COMPARE_EVERY_SO_MANY_TURNS = 1000;
 		final AtomicInteger turn = new AtomicInteger(-1);
 		final Servlet servlet = new JspServlet();
 		Runnable r = new Runnable() {
@@ -149,9 +149,9 @@ public class TestPerformance extends BaseTest {
 				} catch (IOException e) {
 					throw Utils.softenException(e);
 				}
-				String text = text(baos);
 				int t = turn.incrementAndGet();
 				if ((t - 1) % COMPARE_EVERY_SO_MANY_TURNS == 0) {
+					String text = text(baos);
 					compare(text, tree);
 					assertEquals(text, RECORDED_CHECKSUM, TestSupportUtils.MD5(text));
 				}
