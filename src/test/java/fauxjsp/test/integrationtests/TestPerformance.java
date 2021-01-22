@@ -44,10 +44,10 @@ import static org.junit.Assert.*;
 public class TestPerformance extends BaseTest {
 
 	final long WARMUP_MS = 10000;
-	final long RUNS_MS = 2000;
+	final long RUNS_MS = 10000;
 	final int TREE_DEPTH = 4;
 	final int CHILDREN_PER_LEVEL = 4;
-	final String RECORDED_CHECKSUM = "fe4404ea1462078a428460fdaa0e457f";
+	final String RECORDED_CHECKSUM = "9269cd586cf4c801f058b3c60fb114b2";
 
 	protected int run(Runnable r, long duration) throws Exception {
 		int loops = 0;
@@ -60,7 +60,7 @@ public class TestPerformance extends BaseTest {
 		return loops;
 	}
 
-	@Test
+	@Test // 15810 without method wrapping, 15623 runs/sec with method wrapping
 	public void testJspParser() throws Exception {
 		Runnable r = new Runnable() {
 
@@ -119,7 +119,7 @@ public class TestPerformance extends BaseTest {
 		}
 	}
 
-	@Test
+	@Test //290 runs/sec - 330 with method wrapping
 	public void testJspRenderer() throws Exception {
 		final JspPage page = newParser().parseJsp("WEB-INF/jsp/big.jsp");
 		Item root = new Item();

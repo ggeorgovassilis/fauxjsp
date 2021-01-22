@@ -30,6 +30,10 @@ pom.xml:
 ```
 ## Change log
 
+
+1.2.4-SNAPSHOT (not released on maven central)
+- improved scriptlet execution performance
+
 1.2.3
 - less aggressive HTML escaping (don't escape high-end unicode characters)
 
