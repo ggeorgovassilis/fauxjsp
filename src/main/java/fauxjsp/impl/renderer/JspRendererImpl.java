@@ -25,6 +25,11 @@ public class JspRendererImpl implements JspRenderer {
 
 	protected Logger logger = Logging.getLogger(JspRendererImpl.class);
 	protected JspScriptletRenderer scriptletRenderer = new NOPScriptletRendererImpl();
+	protected TimeZone defaultTimeZone;
+	
+	public JspRendererImpl() {
+		defaultTimeZone = TimeZone.getDefault();
+	}
 	
 	protected boolean isInstructionOrTaglib(JspNode node) {
 		return node.isInstruction();
@@ -37,7 +42,7 @@ public class JspRendererImpl implements JspRenderer {
 	@Override
 	public Void render(JspNode page, RenderSession session) {
 		if (session.request.getAttribute(RenderSession.ATTR_TIMEZONE) == null)
-			session.request.setAttribute(RenderSession.ATTR_TIMEZONE, TimeZone.getDefault());
+			session.request.setAttribute(RenderSession.ATTR_TIMEZONE, defaultTimeZone);
 		renderNode(page, session);
 		return null;
 	}
