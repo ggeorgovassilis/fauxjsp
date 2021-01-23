@@ -1,6 +1,5 @@
 package fauxjsp.impl.simulatedtaglibs.core;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -26,14 +25,15 @@ public class JstlCoreTaglibForEach extends TaglibDefinition {
 	@SuppressWarnings("unchecked")
 	protected List<Object> toList(Object rawItems) {
 		List<Object> items = null;
-		if (rawItems instanceof Collection)
+		if (rawItems instanceof List)
+			items = (List<Object>) rawItems;
+		else if (rawItems instanceof Collection)
 			items = new ArrayList<Object>((Collection<Object>) rawItems);
 		else {
-			//TODO: speed up access by casting to Object[] ?
-			int length = Array.getLength(rawItems);
-			items = new ArrayList<Object>(length);
-			for (int i = 0; i < length; i++) {
-				items.add(Array.get(rawItems, i));
+			Object[] array = (Object[])rawItems;
+			items = new ArrayList<Object>(array.length);
+			for (int i = 0; i < array.length; i++) {
+				items.add(array[i]);
 			}
 		}
 		return items;
@@ -74,8 +74,7 @@ public class JstlCoreTaglibForEach extends TaglibDefinition {
 			if (items != null) {
 				item = items.get(i);
 				session.request.setAttribute(varName, item);
-			} else
-			if (!Utils.isEmpty(varName)) {
+			} else if (!Utils.isEmpty(varName)) {
 				session.request.setAttribute(varName, i);
 			}
 			if (!Utils.isEmpty(varStatus)) {
