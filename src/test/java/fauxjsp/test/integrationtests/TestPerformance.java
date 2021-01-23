@@ -39,6 +39,7 @@ import static org.junit.Assert.*;
  * @author George Georgovassilis
  *
  */
+@Ignore
 public class TestPerformance extends BaseTest {
 
 	final long WARMUP_MS = 20000;
