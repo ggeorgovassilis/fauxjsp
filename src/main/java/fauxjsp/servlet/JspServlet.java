@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import fauxjsp.api.logging.Logger;
 import fauxjsp.api.nodes.JspPage;
 import fauxjsp.api.parser.JspParser;
 import fauxjsp.api.parser.JspParserFactory;
@@ -20,6 +21,7 @@ import fauxjsp.api.renderer.JspRenderException;
 import fauxjsp.api.renderer.JspRenderer;
 import fauxjsp.api.renderer.JspRendererFactory;
 import fauxjsp.api.renderer.RenderSession;
+import fauxjsp.impl.logging.Logging;
 import fauxjsp.impl.parser.DefaultJspParserFactoryImpl;
 import fauxjsp.impl.parser.PageCache;
 import fauxjsp.impl.parser.SimplePageCacheImpl;
@@ -27,6 +29,7 @@ import fauxjsp.impl.renderer.ELEvaluationImpl;
 import fauxjsp.impl.renderer.ELFactory;
 import fauxjsp.impl.renderer.ELFactoryServlet3Impl;
 import fauxjsp.impl.renderer.JspRendererFactoryImpl;
+import fauxjsp.impl.renderer.JspRendererImpl;
 
 /**
  * Servlet that will open the requested file and render it as JSP. This
@@ -62,15 +65,16 @@ public class JspServlet extends HttpServlet {
 	protected JspRendererFactory jspRendererFactory;
 	protected boolean trimDirectiveWhiteSpaces = false;
 	protected PageCache pageCache = null;
+	protected Logger logger = Logging.getLogger(JspServlet.class);
 
 	/**
 	 * Enables or disables page cache. This method will disable an existing page
 	 * cache, enable a disabled page cache or re-initialise an existing page cache.
 	 * 
-	 * @param enabled
-	 *            state
+	 * @param enabled state
 	 */
 	public void setPageCacheEnabled(boolean enabled) {
+		logger.debug("Enabling page cache : " + enabled);
 		if (!enabled)
 			pageCache = null;
 		else
@@ -81,22 +85,21 @@ public class JspServlet extends HttpServlet {
 	 * Finds the jsp base location from the "base-path" init parameter. This field
 	 * tells the servlet at which server location to look for JSP files.
 	 * 
-	 * @param config
-	 *            Servlet configuration to use
+	 * @param config Servlet configuration to use
 	 * @return server location to look for JSP files
 	 */
 	protected String getJspBase(ServletConfig config) {
 		String jspBase = config.getInitParameter("base-path");
 		if (jspBase == null)
 			jspBase = "/";
+		logger.debug("Resolving JSP base " + jspBase);
 		return jspBase;
 	}
 
 	/**
 	 * Initializes a thread-safe {@link JspParserFactory}
 	 * 
-	 * @param config
-	 *            Servlet configuration to use
+	 * @param config Servlet configuration to use
 	 * @return a factory for {@link JspParser} instances
 	 */
 	protected JspParserFactory getJspParserFactory(ServletConfig config) {
@@ -112,8 +115,7 @@ public class JspServlet extends HttpServlet {
 	/**
 	 * Creates an {@link ELFactory} instance
 	 * 
-	 * @param config
-	 *            Configuration to use with {@link ELFactoryServlet3Impl}
+	 * @param config Configuration to use with {@link ELFactoryServlet3Impl}
 	 * @return an expression language factory
 	 */
 	protected ELFactory getElFactory(ServletConfig config) {
@@ -125,8 +127,7 @@ public class JspServlet extends HttpServlet {
 	/**
 	 * Creates an {@link JspRendererFactory} instance
 	 * 
-	 * @param config
-	 *            servlet configuration to use
+	 * @param config servlet configuration to use
 	 * @return a new {@link JspRendererFactoryImpl} instance
 	 */
 	protected JspRendererFactory getJspRendererFactory(ServletConfig config) {
@@ -146,10 +147,18 @@ public class JspServlet extends HttpServlet {
 		setPageCacheEnabled(cachePages);
 	}
 
+	//TODO: concurrent access: there is a chance a page is parsed multiple times if not found in the cache the first time.
 	JspPage parsePage(String servletPath, JspParser parser) {
+		logger.debug("Parsing page " + servletPath);
 		JspPage page = null;
-		if (pageCache != null)
+		if (pageCache != null) {
+			logger.debug("Looking page " + servletPath + " up in cache.");
 			page = pageCache.get(servletPath);
+			if (page == null)
+				logger.debug("Page " + servletPath + " not found in cache.");
+			else
+				logger.debug("Page " + servletPath + " found in cache.");
+		}
 		if (page == null) {
 			page = parser.parseJsp(servletPath);
 			if (pageCache != null) {

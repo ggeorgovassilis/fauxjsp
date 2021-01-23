@@ -41,6 +41,7 @@ public class JspRendererImpl implements JspRenderer {
 
 	@Override
 	public Void render(JspNode page, RenderSession session) {
+		logger.debug("Rendering "+page.getLocation());
 		if (session.request.getAttribute(RenderSession.ATTR_TIMEZONE) == null)
 			session.request.setAttribute(RenderSession.ATTR_TIMEZONE, defaultTimeZone);
 		renderNode(page, session);
