@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata modelVersion="1.1.0">
+  <groupId>com.github.ggeorgovassilis</groupId>
+  <artifactId>fauxjsp</artifactId>
+  <version>1.2.5-SNAPSHOT</version>
+  <versioning>
+    <snapshot>
+      <timestamp>20210123.092333</timestamp>
+      <buildNumber>3</buildNumber>
+    </snapshot>
+    <lastUpdated>20210123092333</lastUpdated>
+    <snapshotVersions>
+      <snapshotVersion>
+        <extension>jar</extension>
+        <value>1.2.5-20210123.092333-3</value>
+        <updated>20210123092333</updated>
+      </snapshotVersion>
+      <snapshotVersion>
+        <extension>pom</extension>
+        <value>1.2.5-20210123.092333-3</value>
+        <updated>20210123092333</updated>
+      </snapshotVersion>
+    </snapshotVersions>
+  </versioning>
+</metadata>
