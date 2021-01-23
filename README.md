@@ -50,7 +50,7 @@ Versions after 1.2.3 require a repository:
 ## Change log
 
 
-1.2.5-SNAPSHOT (not released on maven central)
+1.2.7-SNAPSHOT (not released on maven central)
 - improved scriptlet execution performance
 
 1.2.3
