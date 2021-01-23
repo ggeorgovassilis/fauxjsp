@@ -20,6 +20,8 @@ web.xml:
 </servlet-mapping>
 ```
 
+Versions below (and including) 1.2.3 are in maven central:
+
 ```xml
 pom.xml:
 <dependency>
@@ -28,6 +30,23 @@ pom.xml:
 	<version>1.2.3</version>
 </dependency>
 ```
+
+Versions after 1.2.3 require a repository:
+
+```
+<repositories>
+		<repository>
+			<id>fauxjsp-repo</id>
+			<url>https://github.com/ggeorgovassilis/fauxjsp/raw/gh-pages/</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
+		</repository>
+</repositories>
+```
+
+
 ## Change log
 
 
