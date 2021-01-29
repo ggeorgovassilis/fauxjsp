@@ -33,7 +33,7 @@ pom.xml:
 
 Versions after 1.2.3 require a repository:
 
-```
+```xml
 <repositories>
 		<repository>
 			<id>fauxjsp-repo</id>
